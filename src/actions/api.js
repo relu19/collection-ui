@@ -1,6 +1,6 @@
 'use strict';
 
-const SERVER_URI = 'http://localhost:3000/'
+const SERVER_URI = 'http://localhost:3001/'
 
 class Actions {
   /**
@@ -46,8 +46,7 @@ class Actions {
       url,
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:3000'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data),
     };
@@ -87,7 +86,7 @@ class Actions {
 
     return fetch(SERVER_URI + request.url, params)
         .then((res) => res.json())
-        .then((response) => {console.log(response)})
+        .then((response) => response)
         .catch((err) => {
           console.log('err', err);
           // Detect no internet
