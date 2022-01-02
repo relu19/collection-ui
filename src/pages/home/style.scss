@@ -1,0 +1,45 @@
+
+
+.set-wrapper {
+  width: 300px;
+
+  margin-bottom: 30px;
+  .set-title {
+    cursor: pointer;
+    width: 100%;
+    padding: 2px;
+    box-sizing: border-box;
+    background-color:beige;
+    font-weight: bold;
+  }
+  .set_numbers {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    .set-number {
+      padding: 5px;
+      text-align: center;
+      cursor: pointer;
+      box-sizing: border-box;
+      font-weight: bold;
+      width: 10%;
+      border:1px solid black;
+      user-select: none;
+      &:hover {
+        border:1px solid #999;
+      }
+      &.missing {
+        background-color: red;
+      }
+      &.default {
+        background-color: white;
+      }
+      &.double {
+        background-color: greenyellow;
+      }
+      &.damaged {
+        background-color: dimgray;
+      }
+    }
+  }
+}
