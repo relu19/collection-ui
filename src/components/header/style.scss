@@ -1,0 +1,53 @@
+@import "../../style/constants";
+
+.panel-body {
+  word-break: normal !important;
+}
+.pure-modal .close {
+  right: 6px !important;
+  top: 4px !important;
+}
+.pure-modal-backdrop {
+  margin-top: -10%;
+}
+
+.cl-header {
+  width: 100%;
+  position: fixed;
+  padding: 10px;
+  height: 50px;
+  box-sizing: border-box;
+  top: 0;
+  background-color: $background;
+  border-bottom: 1px solid $border;
+  .header-data {
+    display: flex;
+    justify-content: space-between;
+    color: antiquewhite;
+    line-height: 30px;
+
+    a {
+      cursor: pointer;
+      margin-right: 30px;
+    }
+    .user-info {
+      display: flex;
+      img {
+        height: 30px;
+        border-radius: 100%;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+.pop-up-buttons {
+  text-align: center;
+  .fb-login-button {
+    background-color: #3b5998;
+    padding: 5px 10px;
+    margin: 20px auto 10px;
+    border: 1px solid #1c1e21;
+    color: #fff;
+    cursor: pointer;
+  }
+}

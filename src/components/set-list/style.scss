@@ -1,0 +1,105 @@
+@import "../../style/constants";
+
+.set-wrapper {
+  margin: 20px auto;
+  padding: 30px;
+  background-color: $content;
+  border-radius: 10px;
+  width: 740px;
+  position: relative;
+
+}
+
+.set-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.remove-set {
+  position: absolute;
+  background: url('../../images/x.png');
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: 100%;
+}
+
+.set-list {
+  width: 400px;
+  font-size: 14px;
+}
+
+.set-title {
+  cursor: pointer;
+  width: 100%;
+  padding:5px 10px;
+  box-sizing: border-box;
+  background-color: $border;
+  color: $text;
+  font-weight: bold;
+  border-radius: 5px 5px 0 0;
+  a {
+    color: $text;
+    text-decoration: none;
+    text-transform: capitalize;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+.set-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+
+  img {
+    border: 2px solid #000;
+    margin: 0 10px;
+    height: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+  }
+}
+
+.set-numbers {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+
+  .set-number {
+    padding: 5px;
+    text-align: center;
+    box-sizing: border-box;
+    font-weight: bold;
+    width: 10%;
+    border: 1px solid black;
+    user-select: none;
+    //border-radius: 100%;
+    &.missing {
+      background-color: $missing;
+    }
+
+    &.default {
+      background-color: $have;
+    }
+
+    &.double {
+      background-color: $double;
+    }
+
+    &.damaged {
+      background-color: $bad;
+    }
+  }
+}
+
+.set-statistic {
+  color: $text;
+  font-size: 13px;
+}

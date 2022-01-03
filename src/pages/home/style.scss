@@ -1,50 +1,23 @@
+@import "../../style/constants";
 
-.set-wrapper {
-  width: 300px;
-
-  margin-bottom: 30px;
-
-  .set-title {
-    cursor: pointer;
-    width: 100%;
-    padding: 2px;
-    box-sizing: border-box;
-    background-color: beige;
-    font-weight: bold;
-  }
-
-  .set-numbers {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-
-    .set-number {
-      padding: 5px;
-      text-align: center;
-      box-sizing: border-box;
-      font-weight: bold;
-      width: 10%;
-      border: 1px solid black;
-      user-select: none;
-      //border-radius: 100%;
-      &.missing {
-        background-color: red;
-      }
-
-      &.default {
-        background-color: white;
-      }
-
-      &.double {
-        background-color: greenyellow;
-      }
-
-      &.damaged {
-        background-color: dimgray;
-      }
-    }
-  }
+@font-face {
+  font-family: pageFont;
+  src: url('../../fonts/historic.ttf');
 }
+
+
+body {
+  font-family: pageFont, sans-serif !important;
+  background-color: #18191A;
+}
+
+.page-content {
+  width: 40%;
+  margin: 0 auto;
+}
+
+
+
 
 .pointer {
   cursor: pointer;
@@ -53,4 +26,8 @@
       border: 1px solid #999;
     }
   }
+}
+
+.cl-content {
+  padding-top: 200px;
 }
