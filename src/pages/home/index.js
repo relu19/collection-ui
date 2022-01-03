@@ -1,10 +1,11 @@
 import {
     addSet,
     addSetNumbers,
-    changeNumberStatus,
+    changeNumberStatus, deleteSetAndNumbers,
     getAllSetsWithNumbers,
-    getUser, removeSetNumbers
-} from "../../actions/actions";
+    removeSetNumbers
+} from "../../actions/set";
+import {getUser} from '../../actions/users'
 import {useEffect, useState} from "react";
 import FaceBookLogin from "../../components/facebook-login";
 import './style.scss'
@@ -69,10 +70,12 @@ const HomeScreen = () => {
 
 
     const removeSetToCollection = (elem) => {
-        console.log(elem)
         removeSetNumbers(elem, loggedUser.id).then(() => fetchData())
     }
-    console.log('data', data)
+
+    const deleteSet = (set) => {
+        deleteSetAndNumbers(set).then(() => fetchData())
+    }
 
     return (
         <div>
@@ -81,6 +84,7 @@ const HomeScreen = () => {
                 <div key={i} className='set-wrapper'>
                     <p className='set-title'>
                         <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
+                        {loggedUser.isAdmin && <span onClick={() => deleteSet(elem)}>delete set</span>}
                     </p>
                     <div className={`set-numbers ${userDetails && 'pointer'}`}>
                         {elem?.numbers.map((item, i) => {

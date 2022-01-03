@@ -84,8 +84,13 @@ class Actions {
     params.body = request.method !== 'GET' && request.body ? request.body : params.body;
     // Do the API Request
 
+    const _handleResponse = async (response) => {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
+
     return fetch(SERVER_URI + request.url, params)
-        .then((res) => res.json())
+        .then( async (res) => await _handleResponse(res))
         .then((response) => response)
         .catch((err) => {
           console.log('err', err);
@@ -95,6 +100,7 @@ class Actions {
           }
         });
   }
+
 }
 
 export default Actions;

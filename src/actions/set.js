@@ -1,4 +1,3 @@
-import ApiActions from "./api";
 import Actions from "./api";
 
 
@@ -10,7 +9,7 @@ export const getAllSetsWithNumbers = async (userId) => {
 
 
 export const getSets = async () => {
-    return ApiActions.get(`sets`)
+    return Actions.get(`sets`)
         .then((res) => {
             return res;
         }).catch((err) => {
@@ -49,7 +48,7 @@ const getNumbersForSet = async (setId, userId) => {
 
 export const changeNumberStatus = async (nr) => {
     const newValue = nr.type > 2 ? 0 : nr.type + 1;
-    return Actions.patch({ type: newValue }, `/numbers/${nr.id}`);
+    return Actions.patch({type: newValue}, `/numbers/${nr.id}`);
 }
 
 export const addSetNumbers = async (newSet) => {
@@ -75,24 +74,13 @@ export const removeSetNumbers = async (set, userId) => {
     }, 'remove-numbers')
 }
 
-
-export const createNewUser = async (user) => {
+export const deleteSetAndNumbers = async (set) => {
     return Actions.post({
-        'name': user.name,
-        'email': user.email,
-        'phone': user.phone,
-        'type': 1,
-        'fbId': user.id,
-    }, 'users')
-};
+        'id': set.id,
+        'name': set.name,
+        'minNr': set.minNr,
+        'maxNr': set.maxNr,
+        'type': set.type,
+    }, 'remove-set')
+}
 
-
-export const getUser = async (user) => {
-    return Actions.get(
-        `/users?filter=${JSON.stringify({
-            where: {
-                fbId: user.id,
-            },
-        })}`,
-    );
-};

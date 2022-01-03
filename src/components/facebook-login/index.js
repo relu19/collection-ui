@@ -1,6 +1,6 @@
 import FacebookLogin from "react-facebook-login";
 import {deleteStorageItem, setStorageItem} from "../../storage";
-import {createNewUser} from "../../actions/actions";
+import {createNewUser} from "../../actions/users";
 
 const FaceBookLogin = ({userDetails, setUserDetails}) => {
 
