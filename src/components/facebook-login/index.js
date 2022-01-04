@@ -1,7 +1,7 @@
 import FacebookLogin from "react-facebook-login";
 import {createNewUser} from "../../actions/users";
 
-const FaceBookLogin = ({userDetails, setUserDetails}) => {
+const FaceBookLogin = ({setUserDetails}) => {
 
 
     const responseFacebook = (response) => {
@@ -9,7 +9,7 @@ const FaceBookLogin = ({userDetails, setUserDetails}) => {
     }
     return (
         <FacebookLogin
-                appId="355705533027242"
+                appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                 fields="name,email,picture"
                 callback={responseFacebook}
                 autoLoad={false}

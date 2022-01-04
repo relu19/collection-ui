@@ -27,6 +27,15 @@
   background-size: 100%;
 }
 
+.delete-set {
+  color: $missing;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-weight: bold;
+
+}
+
 .set-list {
   width: 400px;
   font-size: 14px;

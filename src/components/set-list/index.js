@@ -1,21 +1,19 @@
-import {types} from "../../config";
 import {
-    addSet,
     addSetNumbers,
     changeNumberStatus,
     deleteSetAndNumbers,
-    getAllSetsWithNumbers,
+    getAllSetsWithNumbers, markAllAtOnce,
     removeSetNumbers
 } from "../../actions/set";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import './style.scss'
-import PureModal from "react-pure-modal";
+import Modal from "react-modal";
+import NewSet from "../new-set";
 
 const SetList = ({userDetails}) => {
 
-    const [newSet, setNewSet] = useState({name: '', min: 1, max: 70, link: '', image: ''});
     const [data, dataSet] = useState([])
-    const [showRemovePopUp, setShowRemovePopUp] = useState(null)
+    const [modalData, setModalData] = useState();
     const collection = data.filter(sets => sets.type === 'inCollection')
     const remaining = data.filter(sets => sets.type === 'remaining')
 
@@ -50,8 +48,10 @@ const SetList = ({userDetails}) => {
         changeNumberStatus(nr).then(() => fetchData())
     }
 
+    const changeStatusBulk = (set, type, userId) => {
+        markAllAtOnce(set, type, userId).then(() => fetchData())
+    }
 
-    console.log('userDetails', userDetails)
 
     const addSetToCollection = (set) => {
         const elem = {
@@ -66,27 +66,34 @@ const SetList = ({userDetails}) => {
 
     const removeSetToCollection = (elem) => {
         removeSetNumbers(elem, userDetails.id).then(() => fetchData())
-        setShowRemovePopUp(false)
+        setModalData(null)
     }
 
     const deleteSet = (set) => {
+        console.log('set', set)
         deleteSetAndNumbers(set).then(() => fetchData())
+        setModalData(null)
     }
 
     const getTotal = (set, total) => {
-        return total ? set.numbers.length : set.numbers.filter(s=> s.type === 1 || s.type === 2 || s.type === 3).length
+        return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
     }
+
+    const isAdmin = userDetails && userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE)
 
     return (
         <div>
             {collection && collection.map((elem, i) =>
                 <div key={i} className='set-wrapper'>
-                    <div onClick={() => setShowRemovePopUp(elem)} className='remove-set'/>
+
+                    <div onClick={() => setModalData({...elem, remove: false, delete: true})}
+                         className='delete-set'>Delete Set
+                    </div>
+                    <div onClick={() => setModalData({...elem, remove: true, delete: false})} className='remove-set'/>
                     <div className='set-content'>
-                        <div  className='set-list'>
+                        <div className='set-list'>
                             <p className='set-title'>
                                 <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
-                                {userDetails?.god && <span onClick={() => deleteSet(elem)}>delete set</span>}
                             </p>
                             <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                 {elem?.numbers.map((item, i) => {
@@ -98,10 +105,16 @@ const SetList = ({userDetails}) => {
                             </div>
                         </div>
                         <div className='set-image'>
-                            <img src={elem?.image} />
+                            <img alt='' src={elem?.image}/>
                         </div>
                     </div>
-                    <div className='set-statistic'>{`You have ${getTotal(elem, false)} out of ${getTotal(elem, true)}` }</div>
+                    <div
+                        className='set-statistic'>{`You have ${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</div>
+
+
+                    <div onClick={() => changeStatusBulk(elem, 1, userDetails.id)}>I Have All</div>
+                    <div onClick={() => changeStatusBulk(elem, 0, userDetails.id)}>I Have None</div>
+                    <div onClick={() => changeStatusBulk(elem, 2, userDetails.id)}>I All For Exchange</div>
                 </div>
             )}
             {remaining && remaining.map((elem, i) =>
@@ -112,47 +125,27 @@ const SetList = ({userDetails}) => {
                     {userDetails.id && <div onClick={() => addSetToCollection(elem)}>add to collection</div>}
                 </div>
             )}
-            {userDetails?.god &&
-                <div>
-                    <input type='text' value={newSet.name}
-                           onChange={(e) => setNewSet({...newSet, name: e.target.value})}/>
-                    <input type='number' value={newSet.min}
-                           onChange={(e) => setNewSet({...newSet, min: parseInt(e.target.value)})}/>
-                    <input type='number' value={newSet.max}
-                           onChange={(e) => setNewSet({...newSet, max: parseInt(e.target.value)})}/>
-                    <select onChange={(e) => setNewSet({...newSet, type: e.target.value})}>
-                        <option value=''>Select Category</option>
-                        {types.map((type, i) =>
-                            <option key={i} value={type}>{type}</option>)
-                        }
-                    </select>
-                    <input type='text' value={newSet.link}
-                           onChange={(e) => setNewSet({...newSet, link: e.target.value})}/>
-                    <input type='text' value={newSet.image}
-                           onChange={(e) => setNewSet({...newSet, image: e.target.value})}/>
 
-                    <input type='text' value={data.length}
-                           onChange={(e) => setNewSet({...newSet, order: e.target.value})}/>
-                    <input type='button' value='Add'
-                           onClick={() => addSet(newSet, userDetails).then(() => fetchData())}/>
-                </div>}
-
-            <PureModal
-                header="Remove Set"
-                isOpen={showRemovePopUp}
-                width='350px'
-                onClose={() => setShowRemovePopUp(false)}
-
-                footer={
-                    <div>
-                        <button onClick={() => setShowRemovePopUp(false)}>Cancel</button>
-                        <button onClick={() => removeSetToCollection(showRemovePopUp)}>Yes</button>
-                    </div>
-                }
+            {isAdmin && <NewSet userDetails={userDetails} data={data} fetchData={fetchData} />}
+            <Modal
+                isOpen={!!modalData}
+                onRequestClose={() => setModalData(null)}
+                contentLabel="My dialog"
+                className="page-modal"
+                ariaHideApp={false}
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
             >
-                <p>Are you sure you want to remove this set from your collection?</p>
-
-            </PureModal>
+                {modalData?.delete ?
+                    <p>{`Are you sure you want to remove ${modalData?.name} from your collection?`} </p> :
+                    <p>{`Are you sure you want to delete ${modalData?.name}?`} </p>}
+                <div className='modal-buttons'>
+                    <button onClick={() => setModalData(null)}>Cancel</button>
+                    <button
+                        onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetToCollection(modalData)}>Yes
+                    </button>
+                </div>
+            </Modal>
         </div>
     )
 }

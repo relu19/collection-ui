@@ -51,20 +51,32 @@ export const changeNumberStatus = async (nr) => {
     return Actions.patch({type: newValue}, `/numbers/${nr.id}`);
 }
 
+export const markAllAtOnce = async (set, type, userId) => {
+    const numbersData = {
+        number: 0,
+        type: type,
+        setId: set.setId,
+        userId: userId
+    };
+    return Actions.patch(numbersData, `numbers`);
+}
+
+
 export const addSetNumbers = async (newSet) => {
-    return Actions.post(newSet, 'numbers')
+    const numbersData = {
+        number: 0,
+        type: 0,
+        setId: newSet.setId,
+        userId: newSet.userId
+    };
+    const minNr = newSet.minNr
+    const maxNr = newSet.maxNr
+    return Actions.post({numbersData, minNr, maxNr}, 'numbers')
 };
 
 
 export const addSet = async (newSet) => {
-    return Actions.post({
-        'name': newSet.name,
-        'minNr': newSet.min,
-        'maxNr': newSet.max,
-        'type': newSet.type,
-        'image': newSet.image,
-        'link': newSet.link
-    }, 'sets')
+    return Actions.post(newSet, 'sets')
 };
 
 export const removeSetNumbers = async (set, userId) => {
@@ -75,12 +87,14 @@ export const removeSetNumbers = async (set, userId) => {
 }
 
 export const deleteSetAndNumbers = async (set) => {
+    console.log('set', set)
     return Actions.post({
         'id': set.id,
         'name': set.name,
         'minNr': set.minNr,
         'maxNr': set.maxNr,
         'type': set.type,
+        'category': set.category,
     }, 'remove-set')
 }
 
