@@ -2,32 +2,34 @@ import {
     addSetNumbers,
     changeNumberStatus,
     deleteSetAndNumbers,
-    getAllSetsWithNumbers, markAllAtOnce,
+    markAllAtOnce,
     removeSetNumbers
 } from "../../actions/set";
-import React, {useEffect, useState} from "react";
-import './style.scss'
+import {useState} from "react";
 import Modal from "react-modal";
-import NewSet from "../new-set";
+import './style.scss'
+import AvailableSets from "../available-sets";
+import ConditionalRender from "../../utils/conditional-render";
 
-const SetList = ({userDetails}) => {
+const SetList = ({userDetails, data, fetchData}) => {
 
-    const [data, dataSet] = useState([])
     const [modalData, setModalData] = useState();
-    const collection = data.filter(sets => sets.type === 'inCollection')
-    const remaining = data.filter(sets => sets.type === 'remaining')
 
-    const fetchData = async () => {
-        dataSet(userDetails ? await getAllSetsWithNumbers(userDetails.id) : [])
+    const getTotal = (set, total) => {
+        return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            dataSet(userDetails ? await getAllSetsWithNumbers(userDetails.id) : [])
-        }
+    const changeStatus = (nr) => {
+        changeNumberStatus(nr).then(() => fetchData())
+    }
 
-        fetchData()
-    }, [userDetails]);
+    const collection = data.filter(sets => sets.inCollection)
+    const remaining = data.filter(sets => !sets.inCollection)
+
+    const changeStatusBulk = (set, type, userId) => {
+        console.log('set', set)
+        markAllAtOnce(set, type, userId).then(() => fetchData())
+    }
 
     const getClassName = (type) => {
         switch (type) {
@@ -44,12 +46,14 @@ const SetList = ({userDetails}) => {
         }
     }
 
-    const changeStatus = (nr) => {
-        changeNumberStatus(nr).then(() => fetchData())
+    const removeSetToCollection = (elem) => {
+        removeSetNumbers(elem, userDetails.id).then(() => fetchData())
+        setModalData(null)
     }
 
-    const changeStatusBulk = (set, type, userId) => {
-        markAllAtOnce(set, type, userId).then(() => fetchData())
+    const deleteSet = (set) => {
+        deleteSetAndNumbers(set).then(() => fetchData())
+        setModalData(null)
     }
 
 
@@ -63,70 +67,62 @@ const SetList = ({userDetails}) => {
         addSetNumbers(elem).then(() => fetchData())
     }
 
-
-    const removeSetToCollection = (elem) => {
-        removeSetNumbers(elem, userDetails.id).then(() => fetchData())
-        setModalData(null)
-    }
-
-    const deleteSet = (set) => {
-        console.log('set', set)
-        deleteSetAndNumbers(set).then(() => fetchData())
-        setModalData(null)
-    }
-
-    const getTotal = (set, total) => {
-        return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
-    }
-
-    const isAdmin = userDetails && userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE)
-
     return (
         <div>
-            {collection && collection.map((elem, i) =>
-                <div key={i} className='set-wrapper'>
+            <ConditionalRender if={!collection.length}>
+                <div className='no-set'>No set added yet. You need to add(<i className="fas fa-plus-square"/>) some set
+                    from Available Sets list
+                </div>
+            </ConditionalRender>
 
-                    <div onClick={() => setModalData({...elem, remove: false, delete: true})}
-                         className='delete-set'>Delete Set
-                    </div>
-                    <div onClick={() => setModalData({...elem, remove: true, delete: false})} className='remove-set'/>
-                    <div className='set-content'>
-                        <div className='set-list'>
-                            <p className='set-title'>
-                                <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
-                            </p>
-                            <div className={`set-numbers ${userDetails && 'pointer'}`}>
-                                {elem?.numbers.map((item, i) => {
-                                    return (
-                                        <span key={i} onClick={() => userDetails ? changeStatus(item) : {}}
-                                              className={`set-number ${getClassName(item.type)}`}>{item.number}</span>
-                                    )
-                                })}
+            <ConditionalRender if={collection.length}>
+                {collection.map((elem, i) =>
+                    <div key={i} className='set-wrapper'>
+
+                        <i onClick={() => setModalData({...elem, remove: false, delete: true})}
+                           className="fas fa-minus-circle pointer remove-set left"/>
+                        <i onClick={() => setModalData({...elem, remove: true, delete: false})}
+                           className="fas fa-trash-alt pointer remove-set right"/>
+                        <div className='set-content'>
+                            <div className='set-list'>
+                                <p className='set-title'>
+                                    <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
+                                </p>
+                                <div className={`set-numbers ${userDetails && 'pointer'}`}>
+                                    {elem?.numbers.map((item, i) => {
+                                        return (
+                                            <span key={i} onClick={() => userDetails ? changeStatus(item) : {}}
+                                                  className={`set-number ${getClassName(item.type)}`}>{item.number}</span>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                            <div
+                                className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
+                                <img alt='' src={elem?.image}/>
                             </div>
                         </div>
-                        <div className='set-image'>
-                            <img alt='' src={elem?.image}/>
+                        <div className='set-statistics'>
+                            <span>{`You have ${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
+                            <div className='bulk-actions'>
+                                <i title='I Have All' onClick={() => changeStatusBulk(elem, 1, userDetails.id)}
+                                   className="fas fa-check"/>
+                                <i title='I Have All Twice' onClick={() => changeStatusBulk(elem, 2, userDetails.id)}
+                                   className="fas fa-check-double"/>
+                                <i title='I Have None' onClick={() => changeStatusBulk(elem, 0, userDetails.id)}
+                                   className="fas fa-ban"/>
+                            </div>
                         </div>
+
                     </div>
-                    <div
-                        className='set-statistic'>{`You have ${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</div>
+                )}
+            </ConditionalRender>
 
 
-                    <div onClick={() => changeStatusBulk(elem, 1, userDetails.id)}>I Have All</div>
-                    <div onClick={() => changeStatusBulk(elem, 0, userDetails.id)}>I Have None</div>
-                    <div onClick={() => changeStatusBulk(elem, 2, userDetails.id)}>I All For Exchange</div>
-                </div>
-            )}
-            {remaining && remaining.map((elem, i) =>
-                <div key={i} className='set-wrapper'>
-                    <p className='set-title'>
-                        <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
-                    </p>
-                    {userDetails.id && <div onClick={() => addSetToCollection(elem)}>add to collection</div>}
-                </div>
-            )}
-
-            {isAdmin && <NewSet userDetails={userDetails} data={data} fetchData={fetchData} />}
+            <ConditionalRender if={remaining.length}>
+                <AvailableSets userDetails={userDetails} remainingSets={remaining}
+                               addSetToCollection={addSetToCollection}/>
+            </ConditionalRender>
             <Modal
                 isOpen={!!modalData}
                 onRequestClose={() => setModalData(null)}
@@ -136,18 +132,19 @@ const SetList = ({userDetails}) => {
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                {modalData?.delete ?
+                {!modalData?.delete ?
                     <p>{`Are you sure you want to remove ${modalData?.name} from your collection?`} </p> :
                     <p>{`Are you sure you want to delete ${modalData?.name}?`} </p>}
                 <div className='modal-buttons'>
-                    <button onClick={() => setModalData(null)}>Cancel</button>
+                    <button onClick={() => setModalData(null)}>No</button>
                     <button
                         onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetToCollection(modalData)}>Yes
                     </button>
                 </div>
             </Modal>
+
         </div>
+
     )
 }
 export default SetList
-

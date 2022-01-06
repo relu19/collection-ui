@@ -1,15 +1,17 @@
 import Actions from "./api";
 
 
-export const getAllSetsWithNumbers = async (userId) => {
-    const allSets = await getSets();
-    const setWithNumbers = await _getNumbersForSet(allSets, userId);
-    return setWithNumbers;
+export const getAllSetsWithNumbers = async (userId, type) => {
+    const allSets = await getSets(type);
+    return _getNumbersForSet(allSets, userId);
 };
 
 
-export const getSets = async () => {
-    return Actions.get(`sets`)
+export const getSets = async (type) => {
+    const filter = { where: {
+            type: type
+        }}
+    return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
         .then((res) => {
             return res;
         }).catch((err) => {
@@ -31,7 +33,7 @@ const _addNumbersToSet = async (set, setId, userId) => {
     return {
         ...set,
         numbers: numbers,
-        type: numbers.length ? 'inCollection' : 'remaining'
+        inCollection: numbers.length
     };
 }
 
@@ -55,7 +57,7 @@ export const markAllAtOnce = async (set, type, userId) => {
     const numbersData = {
         number: 0,
         type: type,
-        setId: set.setId,
+        setId: set.id,
         userId: userId
     };
     return Actions.patch(numbersData, `numbers`);
@@ -87,7 +89,6 @@ export const removeSetNumbers = async (set, userId) => {
 }
 
 export const deleteSetAndNumbers = async (set) => {
-    console.log('set', set)
     return Actions.post({
         'id': set.id,
         'name': set.name,

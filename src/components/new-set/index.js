@@ -15,8 +15,6 @@ const NewSet = ({userDetails, data, fetchData}) => {
             <option selected={type === newSet.type} key={i} value={type}>{type}</option>)
     }
 
-    console.log('newSet', newSet)
-
     return (
         <div>
             <button onClick={() => setModalData({})}>Add new Set</button>

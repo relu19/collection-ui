@@ -1,0 +1,45 @@
+@import "./constants";
+
+@font-face {
+  font-family: pageFont;
+  src: url('../fonts/historic.ttf');
+}
+
+
+body {
+  font-family: pageFont, sans-serif !important;
+  background-color: #18191A;
+  color: $text;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.sub-title {
+  padding: 20px 0 15px;
+  text-align: left;
+  width: 800px;
+  font-size: 20px;
+  margin: 0 auto;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  opacity:0.1;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.5);
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}

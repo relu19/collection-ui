@@ -1,33 +1,9 @@
 @import "../../style/constants";
 
-@font-face {
-  font-family: pageFont;
-  src: url('../../fonts/historic.ttf');
-}
-
-
-body {
-  font-family: pageFont, sans-serif !important;
-  background-color: #18191A;
-}
-
-.page-content {
-  width: 40%;
-  margin: 0 auto;
-}
-
-
-
-
-.pointer {
-  cursor: pointer;
-  .set-number {
-    &:hover {
-      border: 1px solid #999;
-    }
-  }
-}
-
 .cl-content {
-  padding-top: 200px;
+  padding-top: 50px;
+  position: fixed;
+  width: 100%;
+  height: calc(100vh - 50px);
+  overflow: hidden;
 }

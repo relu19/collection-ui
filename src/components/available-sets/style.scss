@@ -1,0 +1,35 @@
+@import "../../style/constants";
+
+.available-sets {
+  margin: 0 auto;
+  width: 800px;
+}
+
+.add-set {
+  background-color: #242526;
+  border-radius: 10px;
+  padding: 10px 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-set-title {
+  color: #cccccc;
+  text-decoration: none;
+  text-transform: capitalize;
+  font-weight: bold;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.add-set-icon {
+  cursor: pointer;
+  transition: all ease .5s;
+
+  &:hover {
+    color: $double;
+  }
+}
