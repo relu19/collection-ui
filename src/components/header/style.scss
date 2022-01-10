@@ -12,6 +12,7 @@
 }
 
 .cl-header {
+  z-index: 9;
   width: 100%;
   position: fixed;
   padding: 10px;
@@ -32,6 +33,7 @@
     }
     .user-info {
       display: flex;
+      cursor: pointer;
       img {
         height: 30px;
         border-radius: 100%;

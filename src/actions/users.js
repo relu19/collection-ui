@@ -13,7 +13,13 @@ export const createNewUser = async (user) => {
 };
 
 
-export const getUser = async (user) => {
+export const getUsers = async () => {
+    return Actions.get(
+        `/users`,
+    );
+};
+
+export const getUser = (user) => {
     return Actions.get(
         `/users?filter=${JSON.stringify({
             where: {
@@ -21,4 +27,16 @@ export const getUser = async (user) => {
             },
         })}`,
     );
+};
+
+export const getUserName = async (user) => {
+    const userData = await Actions.get(
+        `/users?filter=${JSON.stringify({
+            where: {
+                publicId: user?.userId,
+            },
+            fields: ['name']
+        })}`,
+    );
+    return userData ? userData[0].name : {}
 };

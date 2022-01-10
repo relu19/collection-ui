@@ -5,6 +5,7 @@ $background: #18191A;
 $border: #464646;
 $content: #242526;
 $text: #cccccc;
+$modalHeader: #94d8de;
 
 
 $missing: #D15553;
@@ -13,25 +14,10 @@ $bad: #7B7B7B;
 $double: #75D153;
 
 
-/* Content constants */
-$laptop-width: 1439px;
-$tablet-width: 1023px;
-$tablet-portrait: 767px;
-$mobile-landscape: 638px;
-$mobile-width: 374px;
-$mobile-height-landscape: 420px;
+$color-1st: #ffea92;
+$color-2nd: #464646;
 
 
-
-/* Other constants */
-$inputPadding: 30px 15px 30px 45px;
-$inputPaddingWithValue: 46px 15px 15px;
-$boxShadow: 0 2px 7px 0 rgba(0, 0, 0, 0.13);
-$inputHeight: 60px;
-
-
-@mixin border-radius($radius) {
-  border-radius: $radius;
-  -webkit-border-radius: $radius;
-  -moz-border-radius: $radius;
-}
+$menu-width-desktop: 220px;
+$menu-width-tablet: 120px;
+$menu-width-smartphone: 200px;

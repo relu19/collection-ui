@@ -1,15 +1,17 @@
 import Actions from "./api";
 
 
-export const getAllSetsWithNumbers = async (userId, type) => {
-    const allSets = await getSets(type);
-    return _getNumbersForSet(allSets, userId);
+export const getAllSetsWithNumbers = async (params) => {
+    const allSets = await getSets(params);
+    return _getNumbersForSet(allSets, params.userId);
 };
 
 
-export const getSets = async (type) => {
+export const getSets = async (params) => {
     const filter = { where: {
-            type: type
+            type: params.type,
+            category: params.category,
+            userId: params.userId
         }}
     return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
         .then((res) => {
@@ -33,7 +35,7 @@ const _addNumbersToSet = async (set, setId, userId) => {
     return {
         ...set,
         numbers: numbers,
-        inCollection: numbers.length
+        inCollection: numbers.length > 0
     };
 }
 

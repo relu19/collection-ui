@@ -1,15 +1,18 @@
 import FaceBookLogin from "../facebook-login";
-import {deleteStorageItem, setStorageItem} from "../../storage";
+import {deleteStorageItem, getStorageItem, setStorageItem} from "../../storage";
 import {getUser} from "../../actions/users";
 import React, {useState} from "react";
-import './style.scss';
 import Modal from "react-modal";
+import './style.scss';
+import UsersList from "../users-list";
 
 
-const Header = ({userDetails, setUserDetails}) => {
+const Header = () => {
 
-    const [modal, setModal] = useState(false);
-
+    const [logInModal, setLogInModal] = useState(false);
+    const [logOutModal, setLogOutModal] = useState(false);
+    const [usersModal, setUsersModal] = useState(false);
+    const [userDetails, setUserDetails] = useState(getStorageItem('collector-data'))
 
     const fetchUser = async (data) => {
         const userInfo = await getUser(data)
@@ -17,7 +20,7 @@ const Header = ({userDetails, setUserDetails}) => {
         const userType = userInfo.length && userInfo[0].type
         const userData = {...data, id: userId, type: userType}
         setUserDetails(userData)
-        setModal(false)
+        setLogInModal(false)
         setStorageItem('collector-data', userData)
     }
 
@@ -28,29 +31,85 @@ const Header = ({userDetails, setUserDetails}) => {
 
     return (
         <div className='cl-header'>
-            {!userDetails && <div className='header-data'>
-                <div/>
-                <span onClick={() => setModal(true)}>Log In</span></div>}
-            {userDetails && <div className='header-data'>
-                <div className='user-info'><img alt={''} src={userDetails?.picture?.data?.url}/>
-                    <p>{userDetails?.name}</p></div>
-                <span onClick={() => logOutUser()}>Log Out</span></div>}
+            <div className='header-data'>
+                <span onClick={() => setUsersModal(true)}>Select Collector</span>
+                {!userDetails && <span className='pointer' onClick={() => setLogInModal(true)}>Log In</span>}
+                {userDetails && <div className='user-info' onClick={() => setLogOutModal(true)}>
+                    <img alt={''} src={userDetails?.picture?.data?.url}/>
+                    <p>{userDetails?.name}</p>
+                </div>}
+
+            </div>
+
 
             <Modal
-                isOpen={modal}
-                onRequestClose={() => setModal(false)}
+                isOpen={logOutModal}
+                onRequestClose={() => setLogOutModal(false)}
                 contentLabel="My dialog"
                 className="page-modal"
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                <p>Create an account so you can add your own collection and share it with others</p>
-                <div className='modal-buttons'>
-                    <button onClick={() => setModal(false)}>Cancel</button>
+                <div className='modal-header'>
+                    Log Out
+                </div>
+
+                <div className='modal-content'>
+                    <p>Are you sure you want to log out</p>
+                </div>
+                <hr/>
+                <div className='modal-footer'>
+                    <button className='button' onClick={() => setLogOutModal(false)}>No</button>
+                    <button className='button' onClick={() => logOutUser()}>Yes</button>
+                </div>
+            </Modal>
+
+
+            <Modal
+                isOpen={logInModal}
+                onRequestClose={() => setLogInModal(false)}
+                contentLabel="My dialog"
+                className="page-modal"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                <div className='modal-header'>
+                    Log In
+                </div>
+
+                <div className='modal-content'>
+                    <p>Create an account so you can add your own collection and share it with others</p>
+                    <p>By creating an account you agree that your data will be saved and associated with any sets you
+                        add to your collection</p>
+                </div>
+                <hr/>
+                <div className='modal-footer'>
+                    <button className='button' onClick={() => setLogInModal(false)}>Cancel</button>
                     <FaceBookLogin userDetails={userDetails} setUserDetails={fetchUser}/>
                 </div>
             </Modal>
 
+
+            <Modal
+                isOpen={usersModal}
+                onRequestClose={() => setLogInModal(false)}
+                contentLabel="My dialog"
+                className="page-modal"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                <div className='modal-header'>
+                    Select Collector
+                </div>
+
+                <div className='modal-content'>
+                    <UsersList />
+                </div>
+                <hr/>
+                <div className='modal-footer'>
+                    <button className='button' onClick={() => setUsersModal(false)}>Close</button>
+                </div>
+            </Modal>
         </div>
     )
 }

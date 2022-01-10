@@ -1,0 +1,121 @@
+@import "../../style/constants";
+
+.right-menu {
+  height: 100vh;
+  width: 220px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 50px;
+  box-sizing: border-box;
+}
+
+
+
+.set-info {
+  display: flex;
+  flex-direction: column;
+
+  div {
+    border: 1px solid #999;
+    margin-bottom: -1px;
+    display: flex;
+
+    &:before {
+      width: 30px;
+      float: left;
+    }
+
+    &:first-child {
+      &:before {
+        content: '';
+        background: $have;
+      }
+    }
+
+    &:nth-child(2) {
+      &:before {
+        content: '';
+        background: $double;
+      }
+    }
+
+    &:nth-child(3) {
+      &:before {
+        content: '';
+        background: $missing;
+      }
+    }
+
+    &:nth-child(4) {
+      &:before {
+        content: '';
+        background: $bad;
+      }
+    }
+
+    &:nth-child(5) p {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  p {
+    padding: 5px 10px;
+  }
+}
+
+
+@media screen and (max-width: 1000px) {
+
+  .set-info {
+    font-size: 12px;
+  }
+  .right-menu {
+    background: $color-2nd;
+    width: $menu-width-smartphone;
+    box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
+    transform: translate3d($menu-width-smartphone, 0, 0);;
+    transition: all 0.3s ease-in-out;
+
+    .smartphone-menu-trigger {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      right: 100%;
+      background: $color-2nd;
+      top: 50px;
+
+      &:before, &:after {
+        content: '';
+        width: 50%;
+        height: 2px;
+        background: #fff;
+        border-radius: 10px;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+      }
+
+      &:after {
+        top: 55%;
+        transform: translate3d(-50%, -50%, 0);
+      }
+    }
+
+    &:focus {
+      transform: translate3d(0, 0, 0);
+      box-shadow: 0 0 0 100em rgba(0, 0, 0, 0.6);
+
+      .smartphone-menu-trigger {
+        pointer-events: none;
+      }
+    }
+  }
+}

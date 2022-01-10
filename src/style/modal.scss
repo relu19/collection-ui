@@ -1,16 +1,53 @@
+@import "constants";
 
 .page-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
+  z-index: 12;
   border: 1px solid #ccc;
   background: #fff;
   overflow: auto;
   border-radius: 4px;
   outline: none;
+  color: $black;
+  width: 400px;
+}
+
+.modal-header {
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom, #87CEFA 0%, #78BFEB 100%);
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #999;
+}
+
+.modal-content {
   padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  p {
+    padding: 10px 0;
+    line-height: 20px;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  padding: 20px;
+  justify-content: space-evenly;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  width: 90%;
+  margin: 0 auto;
+  background: #333;
+  background: -webkit-gradient(linear, 0 0, 100% 0, from(#CCC), to(#CCC), color-stop(50%, #333));
 }
 
 .modal-overlay {
@@ -19,17 +56,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, .15);
+  backdrop-filter: blur(5px);
 }
+
 .modal-buttons {
   display: flex;
   justify-content: center;
   padding: 30px 10px 10px;
+
   button {
     margin: 0 10px;
+    min-width: 80px;
   }
 
 }
+
 .ReactModal__Overlay {
   opacity: 0;
   transition: opacity 200ms ease-in-out;
@@ -37,8 +79,16 @@
 
 .ReactModal__Overlay--after-open {
   opacity: 1;
+  z-index: 10;
 }
 
 .ReactModal__Overlay--before-close {
   opacity: 0;
+}
+
+@media screen and (max-width: 1000px) and (max-width: 600px) {
+
+  .page-modal {
+    width: 95%;
+  }
 }

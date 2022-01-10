@@ -1,17 +1,21 @@
 @import "../../style/constants";
 
-.available-sets {
+.set-wrapper.available-sets {
   margin: 0 auto;
-  width: 800px;
+  padding: 10px;
+  max-height: 500px;
+  overflow: auto;
 }
 
 .add-set {
   background-color: #242526;
-  border-radius: 10px;
   padding: 10px 30px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  &:hover {
+    background-color: $border;
+  }
 }
 
 .add-set-title {
@@ -31,5 +35,10 @@
 
   &:hover {
     color: $double;
+  }
+}
+@media screen and (max-width: 1000px) and (max-width: 400px) {
+  .add-set {
+    padding: 10px;
   }
 }

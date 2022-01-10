@@ -13,7 +13,7 @@ const FaceBookLogin = ({setUserDetails}) => {
                 fields="name,email,picture"
                 callback={responseFacebook}
                 autoLoad={false}
-                cssClass="fb-login-button"
+                cssClass='button'
             />
     )
 }

@@ -5,15 +5,17 @@ import {
     markAllAtOnce,
     removeSetNumbers
 } from "../../actions/set";
-import {useState} from "react";
+import React, {useState} from "react";
 import Modal from "react-modal";
 import './style.scss'
-import AvailableSets from "../available-sets";
-import ConditionalRender from "../../utils/conditional-render";
+import AvailableSets from "../availableSets";
+import ConditionalRender from "../../utils/conditionalRender";
 
-const SetList = ({userDetails, data, fetchData}) => {
+const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
 
     const [modalData, setModalData] = useState();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
@@ -27,7 +29,6 @@ const SetList = ({userDetails, data, fetchData}) => {
     const remaining = data.filter(sets => !sets.inCollection)
 
     const changeStatusBulk = (set, type, userId) => {
-        console.log('set', set)
         markAllAtOnce(set, type, userId).then(() => fetchData())
     }
 
@@ -48,12 +49,12 @@ const SetList = ({userDetails, data, fetchData}) => {
 
     const removeSetToCollection = (elem) => {
         removeSetNumbers(elem, userDetails.id).then(() => fetchData())
-        setModalData(null)
+        setModalOpen(false)
     }
 
     const deleteSet = (set) => {
         deleteSetAndNumbers(set).then(() => fetchData())
-        setModalData(null)
+        setModalOpen(false)
     }
 
 
@@ -67,22 +68,37 @@ const SetList = ({userDetails, data, fetchData}) => {
         addSetNumbers(elem).then(() => fetchData())
     }
 
+    const openModal = (data) => {
+        setModalData(data)
+        setModalOpen(true)
+    }
+
     return (
         <div>
-            <ConditionalRender if={!collection.length}>
-                <div className='no-set'>No set added yet. You need to add(<i className="fas fa-plus-square"/>) some set
-                    from Available Sets list
+            <ConditionalRender if={isMyPage}>
+                {editMode ? <p className='edit-sets'><a onClick={() => setEditMode(false)}>Close Edit</a></p> : <p  className='edit-sets' onClick={() => setEditMode(true)}><a onClick={() => setEditMode(false)}>Add / Edit Sets</a></p>}
+            </ConditionalRender>
+            <ConditionalRender if={!collection.length && isMyPage}>
+                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <i className="fas fa-plus-square"/> some sets
+                    from Available Sets list</p>
                 </div>
             </ConditionalRender>
 
+            <ConditionalRender if={!collection.length && !isMyPage}>
+                <div className='set-wrapper no-set'>No sets added yet.</div>
+            </ConditionalRender>
             <ConditionalRender if={collection.length}>
                 {collection.map((elem, i) =>
                     <div key={i} className='set-wrapper'>
 
-                        <i onClick={() => setModalData({...elem, remove: false, delete: true})}
-                           className="fas fa-minus-circle pointer remove-set left"/>
-                        <i onClick={() => setModalData({...elem, remove: true, delete: false})}
-                           className="fas fa-trash-alt pointer remove-set right"/>
+                        <ConditionalRender if={isAdmin && editMode}>
+                            <i onClick={() => openModal({...elem, remove: false, delete: true})}
+                               className="fas fa-minus-circle pointer remove-set left"/>
+                        </ConditionalRender>
+                        <ConditionalRender if={isMyPage && editMode}>
+                            <i onClick={() => openModal({...elem, remove: true, delete: false})}
+                               className="fas fa-trash-alt pointer remove-set right"/>
+                        </ConditionalRender>
                         <div className='set-content'>
                             <div className='set-list'>
                                 <p className='set-title'>
@@ -91,7 +107,7 @@ const SetList = ({userDetails, data, fetchData}) => {
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                     {elem?.numbers.map((item, i) => {
                                         return (
-                                            <span key={i} onClick={() => userDetails ? changeStatus(item) : {}}
+                                            <span key={i} onClick={() => userDetails && editMode ? changeStatus(item) : {}}
                                                   className={`set-number ${getClassName(item.type)}`}>{item.number}</span>
                                         )
                                     })}
@@ -103,15 +119,17 @@ const SetList = ({userDetails, data, fetchData}) => {
                             </div>
                         </div>
                         <div className='set-statistics'>
-                            <span>{`You have ${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
-                            <div className='bulk-actions'>
-                                <i title='I Have All' onClick={() => changeStatusBulk(elem, 1, userDetails.id)}
-                                   className="fas fa-check"/>
-                                <i title='I Have All Twice' onClick={() => changeStatusBulk(elem, 2, userDetails.id)}
-                                   className="fas fa-check-double"/>
-                                <i title='I Have None' onClick={() => changeStatusBulk(elem, 0, userDetails.id)}
-                                   className="fas fa-ban"/>
-                            </div>
+                            <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
+                            <ConditionalRender if={isMyPage && editMode}>
+                                <div className='bulk-actions'>
+                                    <i title='I Have All' onClick={() => changeStatusBulk(elem, 1, userDetails.id)}
+                                       className="fas fa-check"/>
+                                    <i title='I Have All Twice' onClick={() => changeStatusBulk(elem, 2, userDetails.id)}
+                                       className="fas fa-check-double"/>
+                                    <i title='I Have None' onClick={() => changeStatusBulk(elem, 0, userDetails.id)}
+                                       className="fas fa-ban"/>
+                                </div>
+                            </ConditionalRender>
                         </div>
 
                     </div>
@@ -119,30 +137,37 @@ const SetList = ({userDetails, data, fetchData}) => {
             </ConditionalRender>
 
 
-            <ConditionalRender if={remaining.length}>
+            <ConditionalRender if={isMyPage && editMode && remaining.length}>
                 <AvailableSets userDetails={userDetails} remainingSets={remaining}
                                addSetToCollection={addSetToCollection}/>
             </ConditionalRender>
+
             <Modal
-                isOpen={!!modalData}
-                onRequestClose={() => setModalData(null)}
+                isOpen={modalOpen}
+                ariaHideApp={false}
+                onRequestClose={() => setModalOpen(false)}
                 contentLabel="My dialog"
                 className="page-modal"
-                ariaHideApp={false}
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                {!modalData?.delete ?
-                    <p>{`Are you sure you want to remove ${modalData?.name} from your collection?`} </p> :
-                    <p>{`Are you sure you want to delete ${modalData?.name}?`} </p>}
-                <div className='modal-buttons'>
-                    <button onClick={() => setModalData(null)}>No</button>
-                    <button
+                <div className='modal-header'>
+                    {`${!modalData?.delete ? 'Remove Set' : 'Delete Set'}`}
+                </div>
+
+                <div className='modal-content'>
+                    {!modalData?.delete ?
+                        <p>{`Are you sure you want to remove ${modalData?.name} from your collection?`} </p> :
+                        <p>{`Are you sure you want to delete ${modalData?.name}?`} </p>}
+                </div>
+                <hr />
+                <div className='modal-footer'>
+                    <button className='button' onClick={() => setModalOpen(false)}>No</button>
+                    <button className='button'
                         onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetToCollection(modalData)}>Yes
                     </button>
                 </div>
             </Modal>
-
         </div>
 
     )

@@ -1,0 +1,39 @@
+@import "../../style/constants";
+
+.list-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .my-sets {
+    width: auto;
+    max-width: 800px;
+    margin: 0 auto;
+
+    & > div {
+      overflow: auto;
+      height: calc(100vh - 80px);
+    }
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .list-page .my-sets {
+    max-width: calc(100% - 500px);
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .list-page .my-sets {
+    max-width: calc(100% - 150px);
+    margin-right: 20px;
+  }
+}
+
+
+@media screen and (max-width:400px) {
+  .list-page .my-sets {
+    max-width: calc(100% - 50px);
+    margin: 0 auto;
+  }
+}

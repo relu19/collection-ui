@@ -22,11 +22,16 @@
 }
 
 
+.set-list {
+  width: 65%;
+  font-size: 14px;
+}
+
 .set-image {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 300px;
+  width: 30%;
   box-sizing: border-box;
 
   img {
@@ -34,7 +39,7 @@
     box-shadow: 5px 5px 15px 12px #000;
     margin: 0 10px;
     height: auto;
-    width: 220px;
+    width: 100%;
     border-radius: 10px;
   }
 }
@@ -80,10 +85,11 @@
 
 .set-statistics {
   color: $text;
+  height: 20px;
   font-size: 13px;
   display: flex;
   justify-content: space-between;
-  width: 400px;
+  width: 65%;
 
   .bulk-actions {
     i {
@@ -134,12 +140,21 @@
 
 .set-wrapper {
   margin: 0 auto 20px;
-  padding: 10px 10px 10px 30px;
+  padding: 20px 30px;
   background-color: $content;
   border-radius: 10px;
-  width: 760px;
   position: relative;
-
+  &.no-set {
+    margin: 50px auto;
+    height: 100px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    width: 500px;
+    text-align: center;
+    line-height: 32px;
+  }
 }
 
 .set-content {
@@ -147,15 +162,42 @@
   justify-content: space-between;
 }
 
-.set-list {
-  width: 400px;
-  font-size: 14px;
+
+.edit-sets {
+  text-align: left;
+  padding: 10px 5px;
+  a {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
-.no-set {
-  padding: 40px 30px;
-  background-color: $content;
-  width: 500px;
-  margin: 0 auto;
-  border-radius: 10px;
+@media screen and (max-width: 700px) {
+  .set-list, .set-statistics {
+    width: 100%;
+  }
+  .set-image {
+    display: none;
+  }
+  .set-wrapper{
+    padding: 30px 10px;
+    &.no-set {
+      width: 400px;
+    }
+  }
+}
+
+
+@media screen and (max-width: 600px) {
+  .set-wrapper{
+    padding: 30px 10px;
+    &.no-set {
+      width: 250px;
+    }
+  }
+  .edit-sets {
+    text-align: center;
+  }
 }
