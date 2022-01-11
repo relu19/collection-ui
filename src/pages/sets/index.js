@@ -2,7 +2,6 @@ import {
     getAllSetsWithNumbers,
 } from "../../actions/set";
 import React, {useEffect, useState} from "react";
-import NewSet from "../../components/newSet";
 import SetList from "../../components/setList";
 import './style.scss'
 import SetsMenu from "../../components/setsMenu";
@@ -10,7 +9,6 @@ import SetsInfo from "../../components/setsInfo";
 import {useNavigate} from 'react-router-dom';
 import {getStorageItem} from "../../storage";
 import {getURLParams} from "../../utils/getURLParams";
-import {getUserName} from "../../actions/users";
 import ConditionalRender from "../../utils/conditionalRender";
 
 

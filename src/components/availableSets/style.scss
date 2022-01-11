@@ -16,6 +16,15 @@
   &:hover {
     background-color: $border;
   }
+
+  .icon-add {
+    cursor: pointer;
+    transition: all ease .5s;
+
+    &:hover {
+      color: $double;
+    }
+  }
 }
 
 .add-set-title {
@@ -29,14 +38,6 @@
   }
 }
 
-.add-set-icon {
-  cursor: pointer;
-  transition: all ease .5s;
-
-  &:hover {
-    color: $double;
-  }
-}
 @media screen and (max-width: 1000px) and (max-width: 400px) {
   .add-set {
     padding: 10px;

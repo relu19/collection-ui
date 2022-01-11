@@ -36,7 +36,7 @@
 
   img {
     //border: 2px solid #000;
-    box-shadow: 5px 5px 15px 12px #000;
+    //box-shadow: 5px 5px 15px 12px #000;
     margin: 0 10px;
     height: auto;
     width: 100%;
@@ -92,51 +92,56 @@
   width: 65%;
 
   .bulk-actions {
-    i {
+    .icon {
       padding: 5px;
       cursor: pointer;
       transition: all ease .5s;
 
-      &.fa-check:hover {
+      &.icon-check:hover {
         color: $white;
       }
 
-      &.fa-check-double:hover {
+      &.icon-double-check:hover {
         color: $double;
       }
 
-      &.fa-ban:hover {
+      &.icon-uncheck:hover {
         color: $missing;
       }
     }
   }
 }
 
-.remove-set {
+.icon-delete {
   position: absolute;
   display: block;
   width: 15px;
   height: 15px;
   transition: all ease .5s;
-
-
-  &.left {
-    top: 5px;
-    opacity: 40%;
-    left: 5px;
-  }
-
-  &.right {
-    top: 10px;
-    opacity: 40%;
-    right: 10px;
-  }
+  top: 5px;
+  opacity: 40%;
+  left: 5px;
+  cursor: pointer;
   &:hover {
     color: $missing;
     opacity: 190%;
   }
 }
-
+.icon-remove {
+  position: absolute;
+  display: block;
+  width: 15px;
+  height: 15px;
+  transition: all ease .5s;
+  top: 5px;
+  opacity: 40%;
+  right: 5px;
+  cursor: pointer;
+  &:hover {
+    color: $missing;
+    opacity: 190%;
+  }
+}
 
 .set-wrapper {
   margin: 0 auto 20px;

@@ -14,26 +14,26 @@ export const types = [{
 export const typesIcons = [
     {
         name: 'Turbo',
-        iconClass: "fas fa-car"
+        iconClass: "turbo"
     },
     {
         name: 'Actors',
-        iconClass: "fas fa-film"
+        iconClass: "film"
     },
     {
         name: 'Cartoons',
-        iconClass: "fab fa-mailchimp"
+        iconClass: "cartoon"
     },
     {
         name: 'Love is',
-        iconClass: "fas fa-heart"
+        iconClass: "heart"
     },
     {
         name: 'Cars',
-        iconClass: "fas fa-truck-pickup"
+        iconClass: "cars"
     },
     {
         name: 'Animals',
-        iconClass: "fas fa-dog"
+        iconClass: "dog"
     },
 ]

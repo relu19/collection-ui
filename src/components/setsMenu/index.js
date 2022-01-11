@@ -6,6 +6,7 @@ import './style.scss'
 
 import logo from '../../images/avatar.jpg'
 import {getURLParams} from "../../utils/getURLParams";
+import Icon from "../icon";
 
 const SetsMenu = ({changeCategory, isAdmin, userId, fetchData, data}) => {
 
@@ -38,7 +39,9 @@ const SetsMenu = ({changeCategory, isAdmin, userId, fetchData, data}) => {
             </header>
             <ul className='sets-list'>
                 {types[0].types.map((type, i) =>
-                    <li className={params.type === type ? 'selected' : ''} key={i} onClick={() => changeCategory(type)}><i className={getIcon(type)} /> {type}</li>
+                    <li className={params.type === type ? 'selected' : ''} key={i} onClick={() => changeCategory(type)}>
+                        <Icon name={getIcon(type)} color="#cccccc" width={30} height={21} /> {type}
+                    </li>
                 )}
             </ul>
 

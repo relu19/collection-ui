@@ -1,4 +1,6 @@
 import './style.scss'
+import Icon from "../icon";
+import React from "react";
 
 const AvailableSets = ({userDetails, remainingSets, addSetToCollection}) => {
     return (
@@ -8,7 +10,8 @@ const AvailableSets = ({userDetails, remainingSets, addSetToCollection}) => {
                 {remainingSets.map((elem, i) =>
                     <div className='add-set' key={i}>
                         <a href={elem.link} rel="noreferrer" className='add-set-title' target='_blank'>{elem.name}</a>
-                        {userDetails.id && <i onClick={() => addSetToCollection(elem)} className="add-set-icon fas fa-plus-square" />}
+                        {userDetails.id &&
+                            <Icon onClick={() => addSetToCollection(elem)}  name='add' color="#cccccc" width={20} height={20} />}
                     </div>
                 )}
             </div>
