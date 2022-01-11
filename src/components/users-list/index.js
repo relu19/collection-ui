@@ -17,8 +17,8 @@ const UsersList = () => {
     return (
         <ConditionalRender if={users && users.length}>
             <div className='users-list'>
-                {users && users.map(user =>
-                    <div className='user-info'
+                {users && users.map((user,i) =>
+                    <div key={i} className='user-info'
                          onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
                         <img alt='' src={logo}/><span>{user.name}</span></div>
                 )}

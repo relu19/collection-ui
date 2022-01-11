@@ -1,6 +1,6 @@
 'use strict';
 
-const SERVER_URI = process.env.SERVER_URI
+const SERVER_URI = process.env.REACT_APP_SERVER_URI
 
 class Actions {
   /**
@@ -88,7 +88,7 @@ class Actions {
       const text = await response.text();
       return text ? JSON.parse(text) : {};
     }
-
+    
     return fetch(SERVER_URI + request.url, params)
         .then( async (res) => await _handleResponse(res))
         .then((response) => response)
