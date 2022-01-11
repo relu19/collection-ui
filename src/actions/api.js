@@ -1,6 +1,6 @@
 'use strict';
 
-const SERVER_URI = 'http://localhost:3001/'
+const SERVER_URI = process.env.SERVER_URI
 
 class Actions {
   /**
