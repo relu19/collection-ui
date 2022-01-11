@@ -6,7 +6,7 @@ const HomeScreen = () => {
 
     return (
         <div className='cl-content'>
-            <UsersList />
+            <UsersList  setUsersModal={ () => {}} />
         </div>
     )
 }

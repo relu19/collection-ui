@@ -106,7 +106,7 @@ const Header = () => {
                 </div>
 
                 <div className='modal-content'>
-                    <UsersList />
+                    <UsersList setUsersModal={setUsersModal}/>
                 </div>
                 <hr/>
                 <div className='modal-footer'>

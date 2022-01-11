@@ -7,6 +7,8 @@ import './style/modal.scss';
 import './style/button.scss';
 import Header from "./components/header";
 import React from "react";
+import Terms from "./pages/terms";
+import Privacy from "./pages/privacy";
 
 function App() {
     return (
@@ -15,6 +17,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomeScreen />} />
                 <Route path="/sets" element={<SetsScreen />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
             </Routes>
         </BrowserRouter>
     );

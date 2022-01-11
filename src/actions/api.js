@@ -88,7 +88,7 @@ class Actions {
       const text = await response.text();
       return text ? JSON.parse(text) : {};
     }
-    
+
     return fetch(SERVER_URI + request.url, params)
         .then( async (res) => await _handleResponse(res))
         .then((response) => response)

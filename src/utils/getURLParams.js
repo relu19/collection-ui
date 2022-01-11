@@ -3,7 +3,7 @@ export const getURLParams = () => {
     const urlParams = new URLSearchParams(queryString);
     const userPublicId = urlParams.get('id')
     const userId = userPublicId && userPublicId.split('-')
-    return {
+    return queryString && {
         category: urlParams.get('cat'),
         type: urlParams.get('type'),
         userId: userId[0],
