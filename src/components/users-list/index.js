@@ -15,29 +15,9 @@ const UsersList = () => {
     }, []);
 
     return (
-        <ConditionalRender if={users.length}>
+        <ConditionalRender if={users && users.length}>
             <div className='users-list'>
-                {users.map(user =>
-                    <div className='user-info'
-                         onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
-                        <img alt='' src={logo}/><span>{user.name}</span></div>
-                )}
-                {users.map(user =>
-                    <div className='user-info'
-                         onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
-                        <img alt='' src={logo}/><span>{user.name}</span></div>
-                )}
-                {users.map(user =>
-                    <div className='user-info'
-                         onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
-                        <img alt='' src={logo}/><span>{user.name}</span></div>
-                )}
-                {users.map(user =>
-                    <div className='user-info'
-                         onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
-                        <img alt='' src={logo}/><span>{user.name}</span></div>
-                )}
-                {users.map(user =>
+                {users && users.map(user =>
                     <div className='user-info'
                          onClick={() => navigate(`/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)}>
                         <img alt='' src={logo}/><span>{user.name}</span></div>

@@ -16,8 +16,8 @@ const Header = () => {
 
     const fetchUser = async (data) => {
         const userInfo = await getUser(data)
-        const userId = userInfo.length && userInfo[0].id
-        const userType = userInfo.length && userInfo[0].type
+        const userId = userInfo?.length && userInfo[0].id
+        const userType = userInfo?.length && userInfo[0].type
         const userData = {...data, id: userId, type: userType}
         setUserDetails(userData)
         setLogInModal(false)
@@ -47,6 +47,7 @@ const Header = () => {
                 onRequestClose={() => setLogOutModal(false)}
                 contentLabel="My dialog"
                 className="page-modal"
+                ariaHideApp={false}
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
@@ -69,6 +70,7 @@ const Header = () => {
                 isOpen={logInModal}
                 onRequestClose={() => setLogInModal(false)}
                 contentLabel="My dialog"
+                ariaHideApp={false}
                 className="page-modal"
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
@@ -95,6 +97,7 @@ const Header = () => {
                 onRequestClose={() => setLogInModal(false)}
                 contentLabel="My dialog"
                 className="page-modal"
+                ariaHideApp={false}
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >

@@ -15,7 +15,7 @@ export const createNewUser = async (user) => {
 
 export const getUsers = async () => {
     return Actions.get(
-        `/users`,
+        `users`,
     );
 };
 
