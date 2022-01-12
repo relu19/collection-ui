@@ -107,6 +107,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                                   color="#cccccc" width={15} height={15}/>
                         </ConditionalRender>
                         <div className='set-content'>
+
                             <div className='set-list'>
                                 <p className='set-title'>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
@@ -120,24 +121,24 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                                         )
                                     })}
                                 </div>
+                                <div className='set-statistics'>
+                                    <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
+                                    <ConditionalRender if={isMyPage && editMode}>
+                                        <div className='bulk-actions'>
+                                            <Icon onClick={() => changeStatusBulk(elem, 1, userDetails.id)} name='check'
+                                                  color="#cccccc" width={15} height={15}/>
+                                            <Icon onClick={() => changeStatusBulk(elem, 2, userDetails.id)} name='double-check'
+                                                  color="#cccccc" width={15} height={15}/>
+                                            <Icon onClick={() => changeStatusBulk(elem, 0, userDetails.id)} name='uncheck'
+                                                  color="#cccccc" width={15} height={15}/>
+                                        </div>
+                                    </ConditionalRender>
+                                </div>
                             </div>
                             <div
                                 className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
-                                <img alt='' src={NoImage}/>
+                                <img alt='' src={elem?.image || NoImage}/>
                             </div>
-                        </div>
-                        <div className='set-statistics'>
-                            <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
-                            <ConditionalRender if={isMyPage && editMode}>
-                                <div className='bulk-actions'>
-                                    <Icon onClick={() => changeStatusBulk(elem, 1, userDetails.id)} name='check'
-                                          color="#cccccc" width={15} height={15}/>
-                                    <Icon onClick={() => changeStatusBulk(elem, 2, userDetails.id)} name='double-check'
-                                          color="#cccccc" width={15} height={15}/>
-                                    <Icon onClick={() => changeStatusBulk(elem, 0, userDetails.id)} name='uncheck'
-                                          color="#cccccc" width={15} height={15}/>
-                                </div>
-                            </ConditionalRender>
                         </div>
 
                     </div>
