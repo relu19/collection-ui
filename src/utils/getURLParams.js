@@ -6,7 +6,7 @@ export const getURLParams = () => {
     return queryString && {
         category: urlParams.get('cat'),
         type: urlParams.get('type'),
-        userId: userId[0],
+        userId: userId && userId[0],
         userPublicId: userPublicId
     }
 }
