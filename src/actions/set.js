@@ -80,7 +80,14 @@ export const addSetNumbers = async (newSet) => {
 
 
 export const addSet = async (newSet) => {
+    delete newSet.id
     return Actions.post(newSet, 'sets')
+};
+
+export const editSet = async (setData) => {
+    delete setData.minNr
+    delete setData.maxNr
+    return Actions.patch(setData, `sets/${setData.id}`)
 };
 
 export const removeSetNumbers = async (set, userId) => {

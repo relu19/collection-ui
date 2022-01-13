@@ -1,4 +1,5 @@
 import {
+    editSet,
     addSetNumbers,
     changeNumberStatus,
     deleteSetAndNumbers,
@@ -12,10 +13,12 @@ import AvailableSets from "../availableSets";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import NoImage from '../../images/noImage.png'
+import AddEditSet from "../addEditSet";
 
 const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
 
     const [modalData, setModalData] = useState();
+    const [editModal, setEditModal] = useState();
     const [modalOpen, setModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
 
@@ -27,8 +30,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
         changeNumberStatus(nr).then(() => fetchData())
     }
 
-    const collection = data.filter(sets => sets.inCollection)
-    const remaining = data.filter(sets => !sets.inCollection)
+    const collection = data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
+    const remaining = data.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
     const changeStatusBulk = (set, type, userId) => {
         markAllAtOnce(set, type, userId).then(() => fetchData())
@@ -78,10 +81,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
     return (
         <div>
             <ConditionalRender if={isMyPage}>
-                {editMode ? <p className='edit-sets'><a onClick={() => setEditMode(false)}>Close Edit</a></p> :
-                    <p className='edit-sets' onClick={() => setEditMode(true)}><a onClick={() => setEditMode(false)}>Add
-                        / Edit Sets</a></p>}
+                {editMode ?
+                    <p className='edit-sets'><a onClick={() => setEditMode(false)}>Close Edit</a></p> :
+                    <p className='edit-sets' onClick={() => setEditMode(true)}>
+                        <a onClick={() => setEditMode(false)}>Add / Edit Sets</a></p>}
             </ConditionalRender>
+
             <ConditionalRender if={!collection.length && isMyPage}>
                 <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add'
                                                                                                 color="#cccccc"
@@ -94,6 +99,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
             <ConditionalRender if={!collection.length && !isMyPage}>
                 <div className='set-wrapper no-set'>No sets added yet.</div>
             </ConditionalRender>
+
             <ConditionalRender if={collection.length}>
                 {collection.map((elem, i) =>
                     <div key={i} className='set-wrapper'>
@@ -102,6 +108,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                             <Icon onClick={() => openModal({...elem, remove: false, delete: true})} name='delete'
                                   color="#cccccc" width={15} height={15}/>
                         </ConditionalRender>
+
+                        <ConditionalRender if={isAdmin && editMode}>
+                            <Icon onClick={() => setEditModal(elem)} name='edit'
+                                  color="#cccccc" width={15} height={15}/>
+                        </ConditionalRender>
+
                         <ConditionalRender if={isMyPage && editMode}>
                             <Icon onClick={() => openModal({...elem, remove: true, delete: false})} name='remove'
                                   color="#cccccc" width={15} height={15}/>
@@ -127,9 +139,11 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                                         <div className='bulk-actions'>
                                             <Icon onClick={() => changeStatusBulk(elem, 1, userDetails.id)} name='check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => changeStatusBulk(elem, 2, userDetails.id)} name='double-check'
+                                            <Icon onClick={() => changeStatusBulk(elem, 2, userDetails.id)}
+                                                  name='double-check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => changeStatusBulk(elem, 0, userDetails.id)} name='uncheck'
+                                            <Icon onClick={() => changeStatusBulk(elem, 0, userDetails.id)}
+                                                  name='uncheck'
                                                   color="#cccccc" width={15} height={15}/>
                                         </div>
                                     </ConditionalRender>
@@ -155,7 +169,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                 isOpen={modalOpen}
                 ariaHideApp={false}
                 onRequestClose={() => setModalOpen(false)}
-                contentLabel="My dialog"
+                contentLabel="Confirm Modal"
                 className="page-modal"
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
@@ -177,6 +191,26 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                     </button>
                 </div>
             </Modal>
+
+
+            <Modal
+                isOpen={!!editModal}
+                ariaHideApp={false}
+                onRequestClose={() => setEditModal(false)}
+                contentLabel="Edit Set"
+                className="page-modal"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                <AddEditSet
+                    data={editModal}
+                    fetchData={fetchData}
+                    setModal={(val) => setEditModal(val)}
+                    onSave={(data) => editSet(data).then(() => fetchData())}
+                />
+
+            </Modal>
+
         </div>
 
     )

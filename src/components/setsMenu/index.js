@@ -48,7 +48,7 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
                 )}
             </ul>
 
-            {isAdmin && <NewSet data={data} fetchData={fetchData}/>}
+            {isAdmin && <NewSet data={data}  fetchData={fetchData}/>}
         </nav>
     )
 }
