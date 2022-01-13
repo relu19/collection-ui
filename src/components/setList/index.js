@@ -14,6 +14,7 @@ import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import NoImage from '../../images/noImage.png'
 import AddEditSet from "../addEditSet";
+import Footer from "../footer";
 
 const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
 
@@ -210,7 +211,6 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                 />
 
             </Modal>
-
         </div>
 
     )

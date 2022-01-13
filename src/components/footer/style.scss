@@ -1,0 +1,27 @@
+@import "../../style/constants";
+
+.cl-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  padding-top: 30px;
+  a {
+    color: $border;
+    margin-right: 20px;
+    text-decoration: none;
+    &:hover  {
+      color: $text;
+    }
+  }
+  p {
+    color: $border;
+  }
+}
+
+
+
+@media screen and (max-width: 1000px) {
+  .cl-footer {
+    flex-direction: column;
+}
+}

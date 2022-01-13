@@ -11,6 +11,7 @@ import {getStorageItem} from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
 import {useSelector} from "react-redux";
 import {types} from "../../config";
+import Footer from "../../components/footer";
 
 
 const SetsPage = () => {
@@ -58,6 +59,7 @@ const SetsPage = () => {
                     <ConditionalRender if={!data.length}>
                         <div className='set-wrapper no-set'>No sets added yet.</div>
                     </ConditionalRender>
+                    <Footer />
                 </div>
 
                 <SetsInfo/>

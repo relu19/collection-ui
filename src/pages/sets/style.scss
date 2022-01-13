@@ -9,11 +9,10 @@
     width: auto;
     max-width: 800px;
     margin: 0 auto;
-
-    & > div {
-      overflow: auto;
-      height: calc(100vh - 80px);
-    }
+    height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }
 

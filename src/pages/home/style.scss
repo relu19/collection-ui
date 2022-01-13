@@ -2,8 +2,6 @@
 
 .cl-content {
   padding-top: 50px;
-  position: fixed;
   width: 100%;
-  height: calc(100vh - 50px);
-  overflow: hidden;
+  overflow: auto;
 }
