@@ -1,15 +1,17 @@
 import ConditionalRender from "../../utils/conditionalRender";
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {getUsers} from "../../actions/users";
+import {changeFilters, getUsers} from "../../actions/users";
 import logo from "../../images/avatar.jpg";
 import './style.scss'
 import {getURLParams} from "../../utils/getURLParams";
+import {useDispatch,} from "react-redux";
 
 const UsersList = ({setUsersModal}) => {
 
     const [users, setUsers] = useState([])
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const params = getURLParams()
 
@@ -17,8 +19,17 @@ const UsersList = ({setUsersModal}) => {
         getUsers().then(setUsers)
     }, []);
 
+
     const goToUserPage = (user) => {
-        navigate(params ? `/sets?cat=${params.category}&type=${params.type}&id=${user.id}-${user.publicId}` : `/sets?cat=wrappers&type=Turbo&id=${user.id}-${user.publicId}`)
+        const filters = {
+            category: params.category || 'wrappers',
+            type: params.type || 'Turbo',
+            userId: user.id,
+            userPublicId: user.publicId,
+        }
+        changeFilters(dispatch, filters)
+        const url = `/sets?cat=${filters.category}&type=${filters.type}&id=${filters.userId}-${filters.userPublicId}`
+        navigate(url)
         setUsersModal(false)
     }
 

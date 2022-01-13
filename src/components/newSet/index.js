@@ -6,9 +6,12 @@ import './style.scss';
 
 
 const NewSet = ({data, fetchData}) => {
-    const [newSet, setNewSet] = useState({
+
+
+    const defaultState = {
         name: '', minNr: 1, maxNr: 70, link: '', image: '', category: '', type: '', order: data.length
-    });
+    }
+    const [newSet, setNewSet] = useState(defaultState);
     const [modal, setModal] = useState(false);
     const [error, setError] = useState('');
 
@@ -30,6 +33,8 @@ const NewSet = ({data, fetchData}) => {
         } else {
             setError('')
             addSet(newSet).then(() => fetchData())
+            setModal(false)
+            setNewSet(defaultState)
         }
     }
 

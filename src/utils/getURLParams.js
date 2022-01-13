@@ -7,6 +7,6 @@ export const getURLParams = () => {
         category: urlParams.get('cat'),
         type: urlParams.get('type'),
         userId: userId && userId[0],
-        userPublicId: userPublicId
+        userPublicId: userId && `${userId[1]}-${userId[2]}-${userId[3]}-${userId[4]}-${userId[5]}`
     }
 }

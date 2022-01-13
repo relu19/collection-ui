@@ -37,3 +37,8 @@ export const typesIcons = [
         iconClass: "dog"
     },
 ]
+export const ACTIONS = {
+    CHANGE_FILTERS: 'CHANGE_FILTERS',
+    CHANGE_USER: 'CHANGE_USER',
+    CHANGE_CATEGORY: 'CHANGE_CATEGORY',
+};
