@@ -15,7 +15,9 @@ export const createNewUser = async (user) => {
 
 export const getUsers = async () => {
     return Actions.get(
-        `users`,
+        `/users?filter=${JSON.stringify({
+            fields: { id: true, fbId: true, name: true, publicId: true },
+        })}`,
     );
 };
 

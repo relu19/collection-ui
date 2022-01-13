@@ -17,13 +17,14 @@ const Header = () => {
     const fetchUser = async (data) => {
         const userInfo = await getUser(data)
         const userId = userInfo?.length && userInfo[0].id
-        const userType = userInfo?.length && userInfo[0].type === process.env.REACT_APP_FACEBOOK_ADMIN_TYPE
+        const userType = userInfo?.length && userInfo[0].type
         const userData = {...data, id: userId, type: userType}
-
         setUserDetails(userData)
         setLogInModal(false)
         setStorageItem('collector-data', userData)
+        window.location.reload();
     }
+
 
     const logOutUser = () => {
         deleteStorageItem('collector-data')
