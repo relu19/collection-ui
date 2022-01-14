@@ -9,22 +9,17 @@ import SetsInfo from "../../components/setsInfo";
 import {useNavigate} from 'react-router-dom';
 import {getStorageItem} from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {types} from "../../config";
 import Footer from "../../components/footer";
 
 
 const SetsPage = () => {
-    const [data, dataSet] = useState([])
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const userDetails = getStorageItem('collector-data')
-
+    const sets = useSelector((sets) => sets.setsReducer);
     const filterParams = useSelector((filters) => filters.filterReducer);
-
-    const fetchData = async () => {
-        dataSet(await getAllSetsWithNumbers(filterParams))
-    }
 
     const checkIfValidPage = () => {
         const categoryExists = types.find(type => type.category === filterParams.category)
@@ -32,14 +27,13 @@ const SetsPage = () => {
         return !!categoryExists && !!typeExists
     }
 
-
     useEffect(() => {
         const url = `/sets?cat=${filterParams.category}&type=${filterParams.type}&id=${filterParams.userId}-${filterParams.userPublicId}`
         if (!checkIfValidPage()) {
             window.location = '/'
         } else {
             navigate(url, {replace: true})
-            fetchData()
+            getAllSetsWithNumbers(dispatch, filterParams).then(r => {})
         }
     }, [filterParams]);
 
@@ -49,14 +43,14 @@ const SetsPage = () => {
     return (
         <div className='cl-content'>
             <div className='list-page'>
-                <SetsMenu data={data} fetchData={fetchData} isAdmin={isAdmin}/>
+                <SetsMenu data={sets} fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)} isAdmin={isAdmin}/>
 
                 <div className='my-sets'>
-                    <ConditionalRender if={data.length}>
-                        <SetList userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={data}
-                                 fetchData={fetchData}/>
+                    <ConditionalRender if={sets.length}>
+                        <SetList userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets}
+                                 fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)}/>
                     </ConditionalRender>
-                    <ConditionalRender if={!data.length}>
+                    <ConditionalRender if={!sets.length}>
                         <div className='set-wrapper no-set'>No sets added yet.</div>
                     </ConditionalRender>
                     <Footer />

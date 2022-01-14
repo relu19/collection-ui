@@ -1,18 +1,28 @@
 import Actions from "./api";
+import {ACTIONS} from "../config";
 
 
-export const getAllSetsWithNumbers = async (params) => {
+export const getAllSetsWithNumbers = async (dispatch, params) => {
     const allSets = await getSets(params);
-    return _getNumbersForSet(allSets, params.userId);
+    return _getNumbersForSet(allSets, params.userId).then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.GET_SETS, data: res});
+        }
+    })
+        .catch((err) => {
+            console.log(err)
+        })
 };
 
 
 export const getSets = async (params) => {
-    const filter = { where: {
+    const filter = {
+        where: {
             type: params.type,
             category: params.category,
             userId: params.userId
-        }}
+        }
+    }
     return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
         .then((res) => {
             return res;

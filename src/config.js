@@ -46,6 +46,7 @@ export const types = [{
 ]
 
 export const ACTIONS = {
+    GET_SETS: 'GET_SETS',
     CHANGE_FILTERS: 'CHANGE_FILTERS',
     CHANGE_USER: 'CHANGE_USER',
     CHANGE_CATEGORY: 'CHANGE_CATEGORY',

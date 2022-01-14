@@ -24,7 +24,7 @@ const NewSet = ({data, fetchData, setModal, onSave}) => {
     const isEdit = !!data?.name
     const getCategoryOptions = () => {
         const options = types.find(cat => cat.category === newSet.category)
-        return options.types.map((type, i) => <option key={i} value={type}>{type}</option>)
+        return options.types.map((type, i) => <option key={i} value={type.name}>{type.name}</option>)
     }
 
     const closeModal = () => {
