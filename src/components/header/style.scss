@@ -10,7 +10,12 @@
 .pure-modal-backdrop {
   margin-top: -10%;
 }
-
+.collector-select {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
 .cl-header {
   z-index: 9;
   width: 100%;

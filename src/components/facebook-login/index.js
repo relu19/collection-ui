@@ -12,6 +12,7 @@ const FaceBookLogin = ({setUserDetails}) => {
                 appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                 fields="name,email,picture"
                 callback={responseFacebook}
+                isMobile={false}
                 autoLoad={false}
                 cssClass='button'
             />
