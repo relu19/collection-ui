@@ -28,7 +28,7 @@ const SetsPage = () => {
 
     const checkIfValidPage = () => {
         const categoryExists = types.find(type => type.category === filterParams.category)
-        const typeExists = categoryExists && categoryExists.types.find(type => type === filterParams.type)
+        const typeExists = categoryExists && categoryExists.types.find(type => type.name === filterParams.type)
         return !!categoryExists && !!typeExists
     }
 

@@ -1,4 +1,4 @@
-import {types, typesIcons} from "../../config";
+import {types} from "../../config";
 import NewSet from "../newSet";
 import {changeCategory, getUserById} from "../../actions/users";
 import {useEffect, useState} from "react";
@@ -28,7 +28,7 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
     }, [filterParams.userId]);
 
     const getIcon = (name) => {
-        const iconFound = typesIcons.find(icon => icon.name === name)
+        const iconFound = types[0].types.find(icon => icon.name === name)
         return iconFound && iconFound.iconClass
     }
 
@@ -41,9 +41,9 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
             </header>
             <ul className='sets-list'>
                 {types[0].types.map((type, i) =>
-                    <li className={filterParams.type === type ? 'selected' : ''} key={i}
-                        onClick={() => changeCategory(dispatch, type)}>
-                        <Icon name={getIcon(type)} color="#cccccc" width={30} height={21}/> {type}
+                    <li className={filterParams.type === type.name ? 'selected' : ''} key={i}
+                        onClick={() => changeCategory(dispatch, type.name)}>
+                        <Icon name={getIcon(type.name)} color="#cccccc" width={30} height={21}/> {type.displayName || type.name}
                     </li>
                 )}
             </ul>
