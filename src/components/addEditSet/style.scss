@@ -50,12 +50,35 @@
       box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
     }
   }
-  span {
+  label {
     box-sizing: border-box;
     width: 30%;
     text-align: right;
     padding: 10px 5px;
     margin: 10px 0;
+    &.no-value {
+      padding: 0;
+      margin: 0;
+    }
+  }
+  p.no-value {
+    width: 59%;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+    span {
+      padding: 0;
+      color: $double;
+      margin: 0;
+      &:hover {
+        text-decoration: underline;
+      }
+      &:first-child {
+        text-align: left;
+      }
+    }
   }
 }
 .modal-error {

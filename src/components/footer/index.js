@@ -10,7 +10,7 @@ const Footer = () => {
                 <a href='/terms'>Terms and Conditions</a>
                 <a href='/privacy'>Privacy Policy</a>
             </div>
-            <p>Copyright © 2022 Relu Plesciuc.</p>
+            <p>Copyright © 2022 Relu Plesciuc</p>
         </div>
     )
 }

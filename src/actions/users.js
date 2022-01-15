@@ -52,18 +52,6 @@ export const getUserById = (user) => {
     );
 };
 
-export const getUserName = async (user) => {
-    const userData = await Actions.get(
-        `/users?filter=${JSON.stringify({
-            where: {
-                publicId: user?.userId,
-            },
-            fields: ['name']
-        })}`,
-    );
-    return userData ? userData[0].name : {}
-};
-
 export const changeCategory = (dispatch, setType) => {
     dispatch({ type: ACTIONS.CHANGE_CATEGORY, setType });
 };

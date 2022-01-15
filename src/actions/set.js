@@ -18,8 +18,8 @@ export const getAllSetsWithNumbers = async (dispatch, params) => {
 export const getSets = async (params) => {
     const filter = {
         where: {
-            type: params.type,
-            category: params.category,
+            setTypeId: parseInt(params.type),
+            categoryId: parseInt(params.category),
             userId: params.userId
         }
     }
@@ -113,8 +113,7 @@ export const deleteSetAndNumbers = async (set) => {
         'name': set.name,
         'minNr': set.minNr,
         'maxNr': set.maxNr,
-        'type': set.type,
-        'category': set.category,
+        'setTypeId': set.type,
+        'categoryId': set.category,
     }, 'remove-set')
 }
-

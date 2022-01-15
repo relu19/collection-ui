@@ -1,4 +1,3 @@
-import {types} from "../../config";
 import NewSet from "../newSet";
 import {changeCategory, getUserById} from "../../actions/users";
 import {useEffect, useState} from "react";
@@ -9,10 +8,14 @@ import Icon from "../icon";
 import {useDispatch, useSelector} from "react-redux";
 import objectAssign from "object-assign";
 import {getURLParams} from "../../utils/getURLParams";
+import {getCategoriesWithSetTypes} from "../../actions/type";
 
 const SetsMenu = ({isAdmin, fetchData, data}) => {
     const [userInfo, setUserInfo] = useState({})
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
+
+    const [menu, setMenu] = useState([])
+
     const dispatch = useDispatch();
 
     const fetchUser = async () => {
@@ -24,13 +27,13 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
     }
 
     useEffect(() => {
-        fetchUser()
-    }, [filterParams.userId]);
+        getCategoriesWithSetTypes().then(setMenu)
+    }, []);
 
-    const getIcon = (name) => {
-        const iconFound = types[0].types.find(icon => icon.name === name)
-        return iconFound && iconFound.iconClass
-    }
+
+    useEffect(() => {
+        fetchUser().then(() => {})
+    }, [filterParams.userId]);
 
     return (
         <nav className="menu" tabIndex="0">
@@ -40,10 +43,10 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
                 <h2>{userInfo?.name}</h2>
             </header>
             <ul className='sets-list'>
-                {types[0].types.map((type, i) =>
-                    <li className={filterParams.type === type.name ? 'selected' : ''} key={i}
-                        onClick={() => changeCategory(dispatch, type.name)}>
-                        <Icon name={getIcon(type.name)} color="#cccccc" width={30} height={21}/> {type.displayName || type.name}
+                {menu.map((type, i) =>
+                    <li className={parseInt(filterParams.type) === type.id ? 'selected' : ''} key={i}
+                        onClick={() => changeCategory(dispatch, type.id)}>
+                        <Icon name={type.icon} color="#cccccc" width={30} height={21}/> {type.displayName || type.name}
                     </li>
                 )}
             </ul>

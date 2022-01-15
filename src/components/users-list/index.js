@@ -5,7 +5,7 @@ import {changeFilters, deleteUserAndNumbers, getUsers} from "../../actions/users
 import logo from "../../images/avatar.jpg";
 import './style.scss'
 import {getURLParams} from "../../utils/getURLParams";
-import {useDispatch,} from "react-redux";
+import {useDispatch} from "react-redux";
 import Modal from "react-modal";
 import Icon from "../icon";
 import {getStorageItem} from "../../storage";
@@ -34,8 +34,8 @@ const UsersList = ({setUsersModal}) => {
 
     const goToUserPage = (user) => {
         const filters = {
-            category: params.category || 'wrappers',
-            type: params.type || 'Turbo',
+            category: params.category || 1,
+            type: params.type || 1,
             userId: user.id,
             userPublicId: user.publicId,
         }
@@ -44,8 +44,6 @@ const UsersList = ({setUsersModal}) => {
         navigate(url)
         setUsersModal(false)
     }
-
-    console.log('modalData', modalData)
 
     return (
         <ConditionalRender if={users && users.length}>

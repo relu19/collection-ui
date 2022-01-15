@@ -1,31 +1,27 @@
-import {types} from "../../config";
 import React, {useState} from "react";
 import './style.scss';
+import AddEditCategory from "./addEditCategory";
+import AddEditType from "./addEditType";
 
 
-const NewSet = ({data, fetchData, setModal, onSave}) => {
-
-
+const AddEditSet = ({data, fetchData, setModal, onSave}) => {
     const defaultState = {
-        id:data?.id,
+        id: data?.id,
         name: data?.name || '',
         minNr: data?.minNr || 1,
         maxNr: data?.maxNr || 70,
         link: data?.link || '',
         image: data?.image || '',
-        category: data?.category || '',
-        type: data?.type || '',
+        categoryId: data?.categoryId || '',
+        setTypeId: data?.setTypeId || '',
         order: data?.order || data?.length
     }
 
     const [newSet, setNewSet] = useState(defaultState);
-    const [error, setError] = useState('');
+    const [error, setError] = useState('')
 
     const isEdit = !!data?.name
-    const getCategoryOptions = () => {
-        const options = types.find(cat => cat.category === newSet.category)
-        return options.types.map((type, i) => <option key={i} value={type.name}>{type.name}</option>)
-    }
+
 
     const closeModal = () => {
         setModal(false)
@@ -33,7 +29,7 @@ const NewSet = ({data, fetchData, setModal, onSave}) => {
     }
 
     const onSaveClick = () => {
-        if (!newSet.name || !newSet.minNr || !newSet.maxNr || !newSet.category || !newSet.type || !newSet.order || !newSet.link || !newSet.image) {
+        if (!newSet.name || !newSet.minNr || !newSet.maxNr || !newSet.categoryId || !newSet.setTypeId || !newSet.order || !newSet.link || !newSet.image) {
             setError('All Fields are Required')
         } else {
             setError('')
@@ -49,55 +45,30 @@ const NewSet = ({data, fetchData, setModal, onSave}) => {
             </div>
             <div className='modal-content'>
                 <div className='modal-form'>
-                        <span>
-                            Set Name
-                        </span>
+                    <label>Set Name</label>
                     <input type='text' value={newSet.name}
                            onChange={(e) => setNewSet({...newSet, name: e.target.value})}/>
-                    <span>
-                            First Number
-                        </span>
+
+                    <label>First Number</label>
                     <input disabled={isEdit} type='number' value={newSet.minNr}
                            onChange={(e) => setNewSet({...newSet, minNr: parseInt(e.target.value)})}/>
-                    <span>
-                            Last Number
-                        </span>
+
+                    <label>Last Number</label>
                     <input disabled={isEdit} type='number' value={newSet.maxNr}
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
+                    <AddEditCategory newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} />
+                    <AddEditType newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} />
 
-                    <span>
-                            Category
-                        </span>
-                    <select defaultValue={newSet.category} onChange={(e) => setNewSet({...newSet, category: e.target.value, type: ''})}>
-                        <option value=''>Select Category</option>
-                        {types.map((type, i) => <option key={i} value={type.category}>{type.category}</option>)}
-                    </select>
-
-                    <span>
-                            Type
-                        </span>
-                    <select  defaultValue={newSet.type} disabled={!newSet.category}
-                            onChange={(e) => setNewSet({...newSet, type: e.target.value})}>
-                        <option value=''>Select Type</option>
-                        {newSet.category && getCategoryOptions()}
-                    </select>
-
-                    <span>
-                            Set Link
-                        </span>
+                    <label>Set Link</label>
                     <input type='text' value={newSet.link}
                            onChange={(e) => setNewSet({...newSet, link: e.target.value})}/>
 
-                    <span>
-                            Set Image Link
-                        </span>
+                    <label>Set Image</label>
                     <input type='text' value={newSet.image}
                            onChange={(e) => setNewSet({...newSet, image: e.target.value})}/>
 
-                    <span>
-                            Set Order
-                        </span>
+                    <label>Set Order</label>
                     <input type='number' value={newSet.order}
                            onChange={(e) => setNewSet({...newSet, order: parseInt(e.target.value)})}/>
 
@@ -111,11 +82,10 @@ const NewSet = ({data, fetchData, setModal, onSave}) => {
                 <input className='button' type='button' value='Save'
                        onClick={() => onSaveClick()}/>
             </div>
-
         </div>
 
     )
 }
 
 
-export default NewSet
+export default AddEditSet
