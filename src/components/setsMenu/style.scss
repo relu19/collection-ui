@@ -94,19 +94,19 @@
                 fill: white;
               }
             }
+
+            &.selected {
+              background-color: rgba(104, 255, 118, 0.2);
+
+              &:hover {
+                background-color: rgba(104, 255, 118, 0.3);
+                color: $white;
+              }
+            }
           }
         }
       }
 
-
-      &.selected {
-        background-color: rgba(104, 255, 118, 0.2);
-
-        &:hover {
-          background-color: rgba(104, 255, 118, 0.3);
-          color: $white;
-        }
-      }
 
       i {
         margin-right: 5px;

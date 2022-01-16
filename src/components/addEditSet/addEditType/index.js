@@ -101,7 +101,7 @@ const AddEditType = ({newSet, setNewSet, categories, update, setError}) => {
                 <div className='modal-content'>
                     <div className='modal-form'>
                         <label>Category</label>
-                        <input type='text' disabled value={categories?.find(cat => cat.id === newSet.categoryId).name}/>
+                        <input type='text' disabled value={categories?.find(cat => cat.id === newSet.categoryId)?.name}/>
                         <label>Name</label>
                         <input type='text' value={newType.name}
                                onChange={(e) => setNewType({...newType, name: e.target.value})}/>
@@ -143,7 +143,7 @@ const AddEditType = ({newSet, setNewSet, categories, update, setError}) => {
 
                     <div className='modal-form'>
                         <label>Category</label>
-                        <input type='text' disabled value={categories?.find(cat => cat.id === newSet.categoryId).name}/>
+                        <input type='text' disabled value={categories?.find(cat => cat.id === newSet.categoryId)?.name}/>
                         <label>Name</label>
                         <input type='text' value={newType?.name}
                                onChange={(e) => setNewType({...newType, name: e.target.value})}/>
