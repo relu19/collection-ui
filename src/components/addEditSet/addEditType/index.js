@@ -59,10 +59,10 @@ const AddEditType = ({newSet, setNewSet, setTypes, update, setError}) => {
 
             <label className='no-value'/>
             <p className='no-value'>
-                <span onClick={() => {
+                {newSet.categoryId && <span onClick={() => {
                     setAddTypeModal(true);
                     setActionError('')
-                }}>Add</span>
+                }}>Add</span>}
                 {newSet.setTypeId ? <span className='edit' onClick={() => {
                     getEditedType(newSet.setTypeId);
                     setActionError('')
