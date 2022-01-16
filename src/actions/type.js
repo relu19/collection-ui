@@ -34,7 +34,8 @@ export const updateSetType = async (setType) => {
 
 export const getCategoriesWithSetTypes = async (dispatch) => {
     const allCategories = await _getCategories();
-    return _getCategoryTypes(allCategories).then((res) => {
+    const sortedCategories = allCategories.sort((a, b) => a?.order - b?.order)
+    return _getCategoryTypes(sortedCategories).then((res) => {
         if (res && !res.error) {
             dispatch({type: ACTIONS.GET_CATEGORIES_WITH_TYPES, data: res});
         }
@@ -55,9 +56,10 @@ const _getCategoryTypes = async (cat) => {
 
 const _addNumbersToSet = async (set) => {
     const numbers = await _getTypesForCategory(set.id)
+    const sortedNumbers = numbers.sort((a, b) => a?.order - b?.order)
     return {
         ...set,
-        categoryTypes: numbers,
+        categoryTypes: sortedNumbers,
     };
 }
 
