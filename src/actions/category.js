@@ -1,6 +1,4 @@
 import Actions from "./api";
-import {ACTIONS} from "../config";
-
 
 export const addNewCategory = async (category) => {
     const data = {
@@ -8,6 +6,15 @@ export const addNewCategory = async (category) => {
         order: parseInt(category.order)
     }
     return Actions.post(data, `categories`)
+};
+
+export const removeCategory = async (category) => {
+    const data = {
+        id: parseInt(category.id),
+        name: category.name,
+        order: parseInt(category.order) || 1
+    }
+    return Actions.post(data, `remove-category`)
 };
 
 export const updateCategory = async (category) => {
@@ -18,13 +25,3 @@ export const updateCategory = async (category) => {
     return Actions.patch(data, `categories/${category.id}`)
 };
 
-export const getCategories = async (dispatch) => {
-    return Actions.get(`categories`).then((res) => {
-        if (res && !res.error) {
-            dispatch({type: ACTIONS.GET_CATEGORIES, data: res});
-        }
-    })
-        .catch((err) => {
-            console.log(err)
-        })
-};

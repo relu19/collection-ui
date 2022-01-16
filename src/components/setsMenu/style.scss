@@ -9,8 +9,8 @@
   left: 0;
   z-index: 5;
   outline: none;
-  display: flex;
-  flex-direction: column;
+  //display: flex;
+  //flex-direction: column;
   justify-content: space-between;
   padding-top: 50px;
   box-sizing: border-box;
@@ -38,32 +38,66 @@
 
   ul {
     list-style: none;
-    padding: 0.5em 0;
     margin: 0;
     overflow: auto;
+    width: 100%;
+    .menu-header {
+      width: 100%;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      &:after {
+        content: '+';
+      }
+    }
 
     li {
-      padding: 1em 1em 1em 2em;
-      font-size: 1.12em;
-      font-weight: normal;
-      background-repeat: no-repeat;
-      background-position: left 15px center;
-      background-size: auto 20px;
       transition: all 0.15s linear;
       cursor: pointer;
       display: flex;
+      flex-direction: column;
       align-items: center;
       svg {
         margin-right: 5px;
       }
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-        color: $white;
-        svg {
-          fill: white;
+      .sets-list {
+        max-height: 0;
+        transition: max-height ease 0.2s;
+        width: 100%;
+        li {
+          padding: 1em 1em 1em 2em;
+          font-weight: normal;
+          flex-direction: row;
+          background-repeat: no-repeat;
+          background-position: left 15px center;
+          background-size: auto 20px;
         }
       }
+      &.active {
+        .menu-header {
+          &:after {
+            content: '-';
+          }
+        }
+        .sets-list {
+          transition: max-height ease 0.3s;
+          max-height: 1600px;
+          height: auto;
+          overflow: hidden;
+          li {
+            &:hover {
+              background-color: rgba(0, 0, 0, 0.1);
+              color: $white;
+              svg {
+                fill: white;
+              }
+            }
+          }
+        }
+      }
+
 
       &.selected {
         background-color: rgba(104, 255, 118, 0.2);
@@ -85,6 +119,7 @@
     }
   }
 }
+
 
 @media screen and (max-width: 1000px) and (min-width: 400px) {
   body {
@@ -152,7 +187,7 @@
     width: $menu-width-smartphone;
     box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
     transform: translate3d(-$menu-width-smartphone, 0, 0);
-    transition: all 0.3s ease-in-out;
+    //transition: all 0.3s ease-in-out;
 
     .smartphone-menu-trigger {
       width: 40px;

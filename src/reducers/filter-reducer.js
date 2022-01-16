@@ -16,7 +16,7 @@ export default function filterReducer(state = defaultState, action) {
         case ACTIONS.CHANGE_USER:
             return objectAssign({}, state, { user: action });
         case ACTIONS.CHANGE_CATEGORY:
-            return objectAssign({}, state, { type: action.setType });
+            return objectAssign({}, state, { categoryId: action.categoryId, setTypeId: action.setTypeId });
         default:
             return state;
     }

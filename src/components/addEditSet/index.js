@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './style.scss';
 import AddEditCategory from "./addEditCategory";
 import AddEditType from "./addEditType";
+import {getCategoriesWithSetTypes} from "../../actions/type";
+import {useDispatch, useSelector} from "react-redux";
 
 
 const AddEditSet = ({data, fetchData, setModal, onSave}) => {
@@ -18,9 +20,20 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
     }
 
     const [newSet, setNewSet] = useState(defaultState);
+    const categories = useSelector((cat) => cat.categoriesReducer);
     const [error, setError] = useState('')
+    const dispatch = useDispatch();
 
     const isEdit = !!data?.name
+
+    const updateCategories = () => {
+        getCategoriesWithSetTypes(dispatch)
+    }
+
+
+    useEffect(() => {
+        updateCategories()
+    }, []);
 
 
     const closeModal = () => {
@@ -38,6 +51,7 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
             setNewSet(defaultState)
         }
     }
+
 
     return (<div>
             <div className='modal-header'>
@@ -57,8 +71,9 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
                     <input disabled={isEdit} type='number' value={newSet.maxNr}
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
-                    <AddEditCategory newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} />
-                    <AddEditType newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} />
+                    <AddEditCategory update={updateCategories} categories={categories} newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
+                    <AddEditType update={updateCategories} setTypes={categories?.find(cat => cat.id === newSet.categoryId)} newSet={newSet}
+                                 setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
 
                     <label>Set Link</label>
                     <input type='text' value={newSet.link}

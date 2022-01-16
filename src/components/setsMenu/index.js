@@ -13,10 +13,15 @@ import {getCategoriesWithSetTypes} from "../../actions/type";
 const SetsMenu = ({isAdmin, fetchData, data}) => {
     const [userInfo, setUserInfo] = useState({})
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
-
-    const [menu, setMenu] = useState([])
-
+    const [clicked, setClicked] = useState(0);
     const dispatch = useDispatch();
+
+    const menu = useSelector((categories) => categories.categoriesReducer);
+
+
+    const handleToggle = (index) => {
+        setClicked(index)
+    };
 
     const fetchUser = async () => {
         const data = await getUserById(filterParams)
@@ -27,7 +32,7 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
     }
 
     useEffect(() => {
-        getCategoriesWithSetTypes().then(setMenu)
+        getCategoriesWithSetTypes(dispatch)
     }, []);
 
 
@@ -42,16 +47,23 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
                 <img alt='' src={logo}/>
                 <h2>{userInfo?.name}</h2>
             </header>
-            <ul className='sets-list'>
-                {menu.map((type, i) =>
-                    <li className={parseInt(filterParams.type) === type.id ? 'selected' : ''} key={i}
-                        onClick={() => changeCategory(dispatch, type.id)}>
-                        <Icon name={type.icon} color="#cccccc" width={30} height={21}/> {type.displayName || type.name}
+            <ul>
+                {menu && menu.map((category, i) =>
+                    <li key={i} onClick={() => handleToggle(i)}  className={`${clicked === i ? 'active' : ''}`}>
+                        <div className='menu-header'>{category.name}</div>
+                        <ul className={`sets-list`}>
+                            {category.categoryTypes.map((type, j) =>
+                                <li className={parseInt(filterParams.setTypeId) === type.id ? 'selected' : ''} key={j}
+                                    onClick={() => {changeCategory(dispatch, category.id, type.id); handleToggle(i)}}>
+                                    <Icon name={type.icon} color="#cccccc" width={30} height={21}/> {type.name}
+                                </li>
+                            )}
+                        </ul>
                     </li>
                 )}
             </ul>
 
-            {isAdmin && <NewSet data={data}  fetchData={fetchData}/>}
+            {isAdmin ? <NewSet data={data}  fetchData={fetchData}/> : <div />}
         </nav>
     )
 }

@@ -52,8 +52,8 @@ export const getUserById = (user) => {
     );
 };
 
-export const changeCategory = (dispatch, setType) => {
-    dispatch({ type: ACTIONS.CHANGE_CATEGORY, setType });
+export const changeCategory = (dispatch, categoryId, setTypeId) => {
+    dispatch({ type: ACTIONS.CHANGE_CATEGORY, categoryId, setTypeId });
 };
 
 export const changeFilters = (dispatch, filters) => {

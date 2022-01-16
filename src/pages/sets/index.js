@@ -1,7 +1,6 @@
 import {
     getAllSetsWithNumbers,
 } from "../../actions/set";
-import {getCategories} from "../../actions/category";
 import React, {useEffect} from "react";
 import SetList from "../../components/setList";
 import './style.scss'
@@ -12,7 +11,6 @@ import {getStorageItem} from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
 import {useDispatch, useSelector} from "react-redux";
 import Footer from "../../components/footer";
-import {getSetTypes} from "../../actions/type";
 
 
 const SetsPage = () => {
@@ -31,12 +29,7 @@ const SetsPage = () => {
     // }
 
     useEffect(() => {
-        getSetTypes(dispatch).then(() => {})
-        getCategories(dispatch).then(() => {})
-    }, []);
-
-    useEffect(() => {
-        const url = `/sets?cat=${filterParams.category}&type=${filterParams.type}&id=${filterParams.userId}-${filterParams.userPublicId}`
+        const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}-${filterParams.userPublicId}`
         navigate(url, {replace: true})
         getAllSetsWithNumbers(dispatch, filterParams).then(r => {})
         // const validPage = checkIfValidPage();

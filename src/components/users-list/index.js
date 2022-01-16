@@ -34,13 +34,13 @@ const UsersList = ({setUsersModal}) => {
 
     const goToUserPage = (user) => {
         const filters = {
-            category: params.category || 1,
-            type: params.type || 1,
+            categoryId: params.category || 1,
+            setTypeId: params.type || 1,
             userId: user.id,
             userPublicId: user.publicId,
         }
         changeFilters(dispatch, filters)
-        const url = `/sets?cat=${filters.category}&type=${filters.type}&id=${filters.userId}-${filters.userPublicId}`
+        const url = `/sets?cat=${filters.categoryId}&type=${filters.setTypeId}&id=${filters.userId}-${filters.userPublicId}`
         navigate(url)
         setUsersModal(false)
     }

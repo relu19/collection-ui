@@ -2,12 +2,25 @@ import Actions from "./api";
 import {ACTIONS} from "../config";
 
 
-export const addNewType = async (name, categoryId) => {
+export const addNewType = async (newType, id) => {
     const data = {
-        name: name,
-        categoryId: categoryId
+        name: newType.name,
+        categoryId: id,
+        icon: newType.icon
     }
     return Actions.post(data, 'set-types')
+};
+
+
+export const removeSetType = async (setType) => {
+    const data = {
+        id: parseInt(setType.id),
+        name: setType.name,
+        icon: setType.icon,
+        order: parseInt(setType.order) || 1
+    }
+
+    return Actions.post(data, `remove-set-type`)
 };
 
 export const updateSetType = async (setType) => {
@@ -19,15 +32,11 @@ export const updateSetType = async (setType) => {
     return Actions.patch(data, `set-types/${setType.id}`)
 };
 
-export const getSetTypes = async (dispatch, categoryId) => {
-    const filter = {
-        where: {
-            categoryId: categoryId
-        },
-    }
-    return Actions.get(`set-types?filter=${JSON.stringify(filter)}`).then((res) => {
+export const getCategoriesWithSetTypes = async (dispatch) => {
+    const allCategories = await _getCategories();
+    return _getCategoryTypes(allCategories).then((res) => {
         if (res && !res.error) {
-            dispatch({type: ACTIONS.GET_TYPES, data: res});
+            dispatch({type: ACTIONS.GET_CATEGORIES_WITH_TYPES, data: res});
         }
     })
         .catch((err) => {
@@ -35,19 +44,32 @@ export const getSetTypes = async (dispatch, categoryId) => {
         })
 };
 
-export const getCategoriesWithSetTypes = async () => {
+const _getCategoryTypes = async (cat) => {
+    const promiseArray = [];
+    cat && cat.length && cat.forEach((set) => {
+        promiseArray.push(_addNumbersToSet(set));
+    });
+    return await Promise.all(promiseArray);
+};
+
+
+const _addNumbersToSet = async (set) => {
+    const numbers = await _getTypesForCategory(set.id)
+    return {
+        ...set,
+        categoryTypes: numbers,
+    };
+}
+
+export const _getCategories = async () => {
+    return Actions.get(`categories`)
+};
+
+export const _getTypesForCategory = async (setId) => {
     const filter = {
-        fields: {
-            id: true,
-            name: true,
-            icon: true,
-            categoryId: true
+        where: {
+            categoryId: setId
         },
-        include: [
-            {
-                relation: "category",
-            },
-        ]
     }
     return Actions.get(`set-types?filter=${JSON.stringify(filter)}`)
 };

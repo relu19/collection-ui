@@ -18,8 +18,8 @@ export const getAllSetsWithNumbers = async (dispatch, params) => {
 export const getSets = async (params) => {
     const filter = {
         where: {
-            setTypeId: parseInt(params.type),
-            categoryId: parseInt(params.category),
+            setTypeId: parseInt(params.setTypeId),
+            categoryId: parseInt(params.categoryId),
             userId: params.userId
         }
     }
@@ -29,6 +29,15 @@ export const getSets = async (params) => {
         }).catch((err) => {
             console.log(err);
         });
+};
+
+export const getSetsFotThisType = async (typeId) => {
+    const filter = {
+        where: {
+            setTypeId: parseInt(typeId),
+        }
+    }
+    return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
 };
 
 const _getNumbersForSet = async (sets, userId) => {

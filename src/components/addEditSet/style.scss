@@ -71,9 +71,19 @@
     span {
       padding: 0;
       color: $double;
+      text-align: center;
       margin: 0;
+      &.delete {
+        color: $missing
+      }
+      &.edit {
+        color: $blue
+      }
       &:hover {
         text-decoration: underline;
+      }
+      &:last-child {
+        text-align: right;
       }
       &:first-child {
         text-align: left;
