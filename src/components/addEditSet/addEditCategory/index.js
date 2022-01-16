@@ -2,11 +2,13 @@ import React, {useState} from "react";
 import Modal from "react-modal";
 import {addNewCategory, removeCategory, updateCategory} from "../../../actions/category";
 
+const DEFAULT_STATE = {id: '', name: '', order: ''}
+
 const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
     const [addCategoryModal, setAddCategoryModal] = useState(false);
     const [editCategoryModal, setEditCategoryModal] = useState(false);
     const [deleteCategoryModal, setDeleteCategoryModal] = useState(null);
-    const [newCategory, setNewCategory] = useState({id: '', name: '', order: ''});
+    const [newCategory, setNewCategory] = useState(DEFAULT_STATE);
     const [actionError, setActionError] = useState('')
 
     const addUpdateCategory = (isUpdate) => {
@@ -17,7 +19,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
             setActionError('')
             setAddCategoryModal(false)
             setEditCategoryModal(false)
-            setNewCategory({id: '', name: '', order: ''})
+            setNewCategory(DEFAULT_STATE)
         }
     }
 
@@ -70,7 +72,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
             <Modal
                 isOpen={addCategoryModal}
                 ariaHideApp={false}
-                onRequestClose={() => setAddCategoryModal(false)}
+                onRequestClose={() => {setAddCategoryModal(false); setNewCategory(DEFAULT_STATE)}}
                 contentLabel="Confirm Modal"
                 className="page-modal"
                 overlayClassName="modal-overlay"
@@ -95,6 +97,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
                 <div className='modal-footer'>
                     <button className='button' onClick={() => {
                         setAddCategoryModal(false)
+                        setNewCategory(DEFAULT_STATE)
                     }}>Cancel
                     </button>
                     <button className='button' onClick={() => addUpdateCategory(false)}>Add</button>
@@ -105,7 +108,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
             <Modal
                 isOpen={editCategoryModal}
                 ariaHideApp={false}
-                onRequestClose={() => setEditCategoryModal(false)}
+                onRequestClose={() => {setEditCategoryModal(false); setNewCategory(DEFAULT_STATE)}}
                 contentLabel="Confirm Modal"
                 className="page-modal"
                 overlayClassName="modal-overlay"
@@ -131,6 +134,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
                 <div className='modal-footer'>
                     <button className='button' onClick={() => {
                         setEditCategoryModal(false)
+                        setNewCategory(DEFAULT_STATE)
                     }}>Cancel
                     </button>
                     <button className='button' onClick={() => addUpdateCategory(true)}>Save</button>

@@ -72,7 +72,7 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
                     <AddEditCategory update={updateCategories} categories={categories} newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
-                    <AddEditType update={updateCategories} setTypes={categories?.find(cat => cat.id === newSet.categoryId)} newSet={newSet}
+                    <AddEditType update={updateCategories} categories={categories} newSet={newSet}
                                  setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
 
                     <label>Set Link</label>
