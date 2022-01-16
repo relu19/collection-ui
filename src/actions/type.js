@@ -6,7 +6,8 @@ export const addNewType = async (newType, id) => {
     const data = {
         name: newType.name,
         categoryId: id,
-        icon: newType.icon
+        icon: newType.icon,
+        order: parseInt(newType.order) || 1
     }
     return Actions.post(data, 'set-types')
 };
@@ -19,7 +20,6 @@ export const removeSetType = async (setType) => {
         icon: setType.icon,
         order: parseInt(setType.order) || 1
     }
-
     return Actions.post(data, `remove-set-type`)
 };
 
