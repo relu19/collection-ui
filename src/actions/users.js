@@ -43,7 +43,7 @@ export const deleteUserAndNumbers = async (user) => {
 };
 export const getUserById = (user) => {
     return Actions.get(
-        `/users?filter=${JSON.stringify({
+        `users?filter=${JSON.stringify({
             where: {
                 id: user.userId,
                 publicId: user.userPublicId

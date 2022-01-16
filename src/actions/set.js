@@ -60,7 +60,7 @@ const _addNumbersToSet = async (set, setId, userId) => {
 
 const getNumbersForSet = async (setId, userId) => {
     return Actions.get(
-        `/numbers?filter=${JSON.stringify({
+        `numbers?filter=${JSON.stringify({
             where: {
                 setId: setId,
                 userId: userId,
@@ -71,7 +71,7 @@ const getNumbersForSet = async (setId, userId) => {
 
 export const changeNumberStatus = async (nr) => {
     const newValue = nr.type > 2 ? 0 : nr.type + 1;
-    return Actions.patch({type: newValue}, `/numbers/${nr.id}`);
+    return Actions.patch({type: newValue}, `numbers/${nr.id}`);
 }
 
 export const markAllAtOnce = async (set, type, userId) => {
