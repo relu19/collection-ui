@@ -84,7 +84,7 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
                            onChange={(e) => setNewSet({...newSet, image: e.target.value})}/>
 
                     <label>Set Order</label>
-                    <input type='number' value={newSet.order}
+                    <input type='number' value={newSet.order + 1}
                            onChange={(e) => setNewSet({...newSet, order: parseInt(e.target.value)})}/>
 
                 </div>
