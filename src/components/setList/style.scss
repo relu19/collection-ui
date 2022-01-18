@@ -1,7 +1,6 @@
 @import "../../style/constants";
 
 .set-title {
-  cursor: pointer;
   width: 100%;
   padding: 5px 10px;
   box-sizing: border-box;
@@ -9,6 +8,8 @@
   color: $text;
   font-weight: bold;
   border-radius: 5px 5px 0 0;
+  display: flex;
+  justify-content: space-between;
 
   a {
     color: $text;
@@ -16,6 +17,15 @@
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+  span {
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 13px;
+    transition: all ease 0.1s;
+    &.view-alert {
+      color: $double;
     }
   }
 }
@@ -63,6 +73,11 @@
     font-size: 13px;
     user-select: none;
     color: $content;
+    &.active {
+      &:hover {
+        font-weight: bold;
+      }
+    }
 
 
     &.missing {
@@ -71,9 +86,6 @@
 
     &.default {
       background-color: $have;
-      &:hover {
-        font-weight: bold;
-      }
     }
 
     &.double {
@@ -192,7 +204,7 @@
 .edit-sets {
   text-align: left;
   padding: 10px 5px;
-  a {
+  span {
     cursor: pointer;
     &:hover {
       text-decoration: underline;

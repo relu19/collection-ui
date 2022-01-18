@@ -79,7 +79,7 @@
     background: $color-2nd;
     width: $menu-width-smartphone;
     box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
-    transform: translate3d($menu-width-smartphone, 0, 0);;
+    transform: translate3d($menu-width-smartphone, 0, 0);
     transition: all 0.3s ease-in-out;
 
     .smartphone-menu-trigger {

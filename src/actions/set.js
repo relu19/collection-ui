@@ -3,8 +3,10 @@ import {ACTIONS} from "../config";
 
 
 export const getAllSetsWithNumbers = async (dispatch, params) => {
-    const allSets = await getSets(params);
-    return _getNumbersForSet(allSets, params.userId).then((res) => {
+    // get all sets
+    const allSets = await _getAllSetsInCategory(params);
+    // for each set create an array with all numbers from minNr to MaxNr
+    return _createSetNumbersArray(allSets, params.userId).then((res) => {
         if (res && !res.error) {
             dispatch({type: ACTIONS.GET_SETS, data: res});
         }
@@ -14,13 +16,11 @@ export const getAllSetsWithNumbers = async (dispatch, params) => {
         })
 };
 
-
-export const getSets = async (params) => {
+export const _getAllSetsInCategory = async (params) => {
     const filter = {
         where: {
             setTypeId: parseInt(params.setTypeId),
             categoryId: parseInt(params.categoryId),
-            userId: params.userId
         }
     }
     return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
@@ -31,31 +31,56 @@ export const getSets = async (params) => {
         });
 };
 
-export const getSetsFotThisType = async (typeId) => {
-    const filter = {
-        where: {
-            setTypeId: parseInt(typeId),
-        }
-    }
-    return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
-};
-
-const _getNumbersForSet = async (sets, userId) => {
+const _createSetNumbersArray = async (sets, userId) => {
     const promiseArray = [];
     sets && sets.length && sets.forEach((set) => {
-        promiseArray.push(_addNumbersToSet(set, set.id, userId));
+        promiseArray.push(_addNumbersToSet(set, userId));
     });
     return await Promise.all(promiseArray);
 };
 
 
-const _addNumbersToSet = async (set, setId, userId) => {
-    const numbers = await getNumbersForSet(setId, userId)
+const _addNumbersToSet = async (set, userId) => {
+    // create all numbers as 'missing'
+    const numbersArray = []
+    for (let i = set.minNr; i <= set.maxNr; i++) {
+        numbersArray.push({
+            number: i,
+            setId: set.id,
+            userId: parseInt(userId),
+            type: 0,
+        })
+    }
+    // get existing numbers and replace therm in 'missing' array
+    const numbers = await getNumbersForSet(set.id, userId) || []
+    const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
+    const setsInCollection = await _getSetsInCollection(set, parseInt(userId))
+    const isInCollection = setsInCollection.find(i => i.setId === set.id)
     return {
         ...set,
-        numbers: numbers,
-        inCollection: numbers.length > 0
+        numbers: mergedNumbers.sort((a, b) => a.number - b.number),
+        inCollection: isInCollection
     };
+}
+
+export const _getSetsInCollection = async (set, userId) => {
+    const filter = {
+        where: {
+            categoryId: parseInt(set.categoryId),
+            setTypeId: parseInt(set.setTypeId),
+            userId: userId
+        }
+    }
+    return Actions.get(`set-users?filter=${JSON.stringify(filter)}`)
+        .then((res) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+};
+
+const _mergeArrays = (a, b, p) => {
+    return a.filter(aa => !b.find(bb => aa[p] === bb[p])).concat(b);
 }
 
 const getNumbersForSet = async (setId, userId) => {
@@ -69,9 +94,45 @@ const getNumbersForSet = async (setId, userId) => {
     );
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const getSetsFotThisType = async (typeId) => {
+    const filter = {
+        where: {
+            setTypeId: parseInt(typeId),
+        }
+    }
+    return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
+};
+
+
 export const changeNumberStatus = async (nr) => {
-    const newValue = nr.type > 2 ? 0 : nr.type + 1;
-    return Actions.patch({type: newValue}, `numbers/${nr.id}`);
+    const newType = nr.type > 2 ? 0 : nr.type + 1;
+    if (newType === 1 && !nr.id) {
+        const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
+        // add numbers to user collection
+        return Actions.post(newNumber, `number`);
+    }
+    if (newType === 0 && nr.id) {
+        // remove number from user collection
+        const removeNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
+        return Actions.post(removeNumber, `remove-number`);
+    }
+    // update number status
+    return Actions.patch({type: newType}, `number/${nr.id}`);
 }
 
 export const markAllAtOnce = async (set, type, userId) => {
@@ -81,20 +142,17 @@ export const markAllAtOnce = async (set, type, userId) => {
         setId: set.id,
         userId: userId
     };
-    return Actions.patch(numbersData, `numbers`);
+    if (type === 0 ) {
+        return Actions.post(numbersData, `remove-all-numbers`);
+    }
+    numbersData.minNr = set.minNr;
+    numbersData.maxNr = set.maxNr;
+    return Actions.post(numbersData, `add-all-numbers`);
 }
 
 
-export const addSetNumbers = async (newSet) => {
-    const numbersData = {
-        number: 0,
-        type: 0,
-        setId: newSet.setId,
-        userId: newSet.userId
-    };
-    const minNr = newSet.minNr
-    const maxNr = newSet.maxNr
-    return Actions.post({numbersData, minNr, maxNr}, 'numbers')
+export const addSetToCollection = async (elem) => {
+    return Actions.post(elem, 'set-users')
 };
 
 
@@ -113,7 +171,7 @@ export const removeSetNumbers = async (set, userId) => {
     return Actions.post({
         'setId': set.id,
         'userId': userId,
-    }, 'remove-numbers')
+    }, 'remove-numbers-from-collection')
 }
 
 export const deleteSetAndNumbers = async (set) => {
@@ -124,5 +182,5 @@ export const deleteSetAndNumbers = async (set) => {
         'maxNr': set.maxNr,
         'setTypeId': set.type,
         'categoryId': set.category,
-    }, 'remove-set')
+    }, 'delete-set')
 }

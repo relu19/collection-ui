@@ -1,7 +1,7 @@
 import {
     getAllSetsWithNumbers,
 } from "../../actions/set";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import SetList from "../../components/setList";
 import './style.scss'
 import SetsMenu from "../../components/setsMenu";
@@ -19,6 +19,7 @@ const SetsPage = () => {
     const userDetails = getStorageItem('collector-data')
     const sets = useSelector((sets) => sets.setsReducer);
     const filterParams = useSelector((filters) => filters.filterReducer);
+    const [editMode, setEditMode] = useState(false);
 
     // const checkIfValidPage = async () => {
     //     const categoryExists = await categories.find(cat => cat.id === parseInt(filterParams.category))
@@ -31,7 +32,7 @@ const SetsPage = () => {
     useEffect(() => {
         const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}-${filterParams.userPublicId}`
         navigate(url, {replace: true})
-        getAllSetsWithNumbers(dispatch, filterParams).then(r => {})
+        getAllSetsWithNumbers(dispatch, filterParams).then(() => {})
         // const validPage = checkIfValidPage();
         // if (!checkIfValidPage()) {
         //     // window.location = '/'
@@ -51,7 +52,7 @@ const SetsPage = () => {
 
                 <div className='my-sets'>
                     <ConditionalRender if={sets.length}>
-                        <SetList userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets}
+                        <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets}
                                  fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)}/>
                     </ConditionalRender>
                     <ConditionalRender if={!sets.length}>
@@ -60,7 +61,7 @@ const SetsPage = () => {
                     <Footer />
                 </div>
 
-                <SetsInfo/>
+                <SetsInfo editMode={editMode}/>
             </div>
 
         </div>

@@ -1,10 +1,9 @@
 import {
     editSet,
-    addSetNumbers,
     changeNumberStatus,
     deleteSetAndNumbers,
     markAllAtOnce,
-    removeSetNumbers
+    removeSetNumbers, addSetToCollection
 } from "../../actions/set";
 import React, {useState} from "react";
 import Modal from "react-modal";
@@ -15,12 +14,12 @@ import Icon from "../icon";
 import NoImage from '../../images/noImage.png'
 import AddEditSet from "../addEditSet";
 
-const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
+const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, setEditMode}) => {
 
     const [modalData, setModalData] = useState();
     const [editModal, setEditModal] = useState();
     const [modalOpen, setModalOpen] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+    const [viewModeAlert, setViewModeAlert] = useState(false);
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
@@ -62,14 +61,19 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
         setModalOpen(false)
     }
 
-    const addSetToCollection = (set) => {
+    const addToCollection = (set, userId) => {
         const elem = {
+            categoryId: set.categoryId,
+            usersId: userId,
+            setTypeId: set.setTypeId,
             setId: set.id,
-            userId: userDetails.id,
-            maxNr: set.maxNr,
-            minNr: set.minNr,
         }
-        addSetNumbers(elem).then(() => fetchData())
+        addSetToCollection(elem).then(() => fetchData())
+    }
+
+    const setAlert = () => {
+        setViewModeAlert(true)
+        setTimeout(() => {setViewModeAlert(false)}, 200);
     }
 
     const openModal = (data) => {
@@ -81,17 +85,14 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
         <div>
             <ConditionalRender if={isMyPage}>
                 {editMode ?
-                    <p className='edit-sets'><a onClick={() => setEditMode(false)}>Close Edit</a></p> :
+                    <p className='edit-sets'><span onClick={() => setEditMode(false)}>Close Edit</span></p> :
                     <p className='edit-sets' onClick={() => setEditMode(true)}>
-                        <a onClick={() => setEditMode(false)}>Add / Edit Sets</a></p>}
+                        <span onClick={() => setEditMode(false)}>Add / Edit Sets</span></p>}
             </ConditionalRender>
 
             <ConditionalRender if={!collection.length && isMyPage}>
-                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add'
-                                                                                                color="#cccccc"
-                                                                                                width={15}
-                                                                                                height={15}/> some sets
-                    from Available Sets list</p>
+                <div className='set-wrapper no-set'><p>No sets added yet. You need to add
+                    <Icon name='add' color="#cccccc" width={15} height={15}/> some sets from Available Sets list</p>
                 </div>
             </ConditionalRender>
 
@@ -122,13 +123,16 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
                             <div className='set-list'>
                                 <p className='set-title'>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
+                                    <ConditionalRender if={isMyPage}>
+                                        {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> : <span className={viewModeAlert ? 'view-alert' : ''} onClick={() => setEditMode(true)}>View Mode</span>}
+                                    </ConditionalRender>
                                 </p>
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                     {elem?.numbers.map((item, i) => {
                                         return (
                                             <span key={i}
-                                                  onClick={() => userDetails && editMode ? changeStatus(item) : {}}
-                                                  className={`set-number ${getClassName(item.type)}`}>{item.number}</span>
+                                                  onClick={() => userDetails && editMode ? changeStatus(item) : setAlert()}
+                                                  className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''}`}>{item.number}</span>
                                         )
                                     })}
                                 </div>
@@ -161,7 +165,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage}) => {
 
             <ConditionalRender if={isMyPage && editMode && remaining.length}>
                 <AvailableSets userDetails={userDetails} remainingSets={remaining}
-                               addSetToCollection={addSetToCollection}/>
+                               addToCollection={addToCollection}/>
             </ConditionalRender>
 
             <Modal
