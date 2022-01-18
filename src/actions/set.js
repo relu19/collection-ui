@@ -3,8 +3,10 @@ import {ACTIONS} from "../config";
 
 
 export const getAllSetsWithNumbers = async (dispatch, params) => {
+    // get all sets is from user collection
+    const allSetsInCollection = await _getSetsInCollection(params);
     // get all sets
-    const allSets = await _getAllSetsInCategory(params);
+    const allSets = await _getAllSetsInCategory(params, allSetsInCollection);
     // for each set create an array with all numbers from minNr to MaxNr
     return _createSetNumbersArray(allSets, params.userId).then((res) => {
         if (res && !res.error) {
@@ -16,19 +18,27 @@ export const getAllSetsWithNumbers = async (dispatch, params) => {
         })
 };
 
-export const _getAllSetsInCategory = async (params) => {
+export const _getAllSetsInCategory = async (params, allSetsInCollection) => {
     const filter = {
         where: {
             setTypeId: parseInt(params.setTypeId),
             categoryId: parseInt(params.categoryId),
         }
     }
-    return Actions.get(`sets?filter=${JSON.stringify(filter)}`)
+
+    const collectionSetIs = []
+    allSetsInCollection.length && allSetsInCollection.map(c => collectionSetIs.push(c.setId))
+    const allSets = await Actions.get(`sets?filter=${JSON.stringify(filter)}`)
         .then((res) => {
             return res;
         }).catch((err) => {
             console.log(err);
         });
+
+    // add 'inCollection' true if set it's in user collection'
+    const sortedSets = []
+    allSets.map(st => sortedSets.push({...st, inCollection: collectionSetIs.indexOf(st.id) > -1}))
+    return sortedSets
 };
 
 const _createSetNumbersArray = async (sets, userId) => {
@@ -54,22 +64,20 @@ const _addNumbersToSet = async (set, userId) => {
     // get existing numbers and replace therm in 'missing' array
     const numbers = await getNumbersForSet(set.id, userId) || []
     const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
-    const setsInCollection = await _getSetsInCollection(set, parseInt(userId))
-    const isInCollection = setsInCollection.find(i => i.setId === set.id)
     return {
         ...set,
-        numbers: mergedNumbers.sort((a, b) => a.number - b.number),
-        inCollection: isInCollection
+        numbers: mergedNumbers.sort((a, b) => a.number - b.number)
     };
 }
 
-export const _getSetsInCollection = async (set, userId) => {
+export const _getSetsInCollection = async (set) => {
     const filter = {
         where: {
             categoryId: parseInt(set.categoryId),
             setTypeId: parseInt(set.setTypeId),
-            userId: userId
-        }
+            userId: parseInt(set.userId)
+        },
+        fields: {setId: true}
     }
     return Actions.get(`set-users?filter=${JSON.stringify(filter)}`)
         .then((res) => {
@@ -93,20 +101,6 @@ const getNumbersForSet = async (setId, userId) => {
         })}`,
     );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 export const getSetsFotThisType = async (typeId) => {
@@ -142,7 +136,7 @@ export const markAllAtOnce = async (set, type, userId) => {
         setId: set.id,
         userId: userId
     };
-    if (type === 0 ) {
+    if (type === 0) {
         return Actions.post(numbersData, `remove-all-numbers`);
     }
     numbersData.minNr = set.minNr;
