@@ -30,8 +30,7 @@ const UsersList = ({setUsersModal}) => {
 
 
     const deleteUser = (set) => {
-        deleteUserAndNumbers(set)
-        // deleteUserAndNumbers(set).then(() => window.location = '/')
+        deleteUserAndNumbers(set, userDetails).then(() => window.location = '/')
         setModalData(false)
     }
 
@@ -51,10 +50,6 @@ const UsersList = ({setUsersModal}) => {
     return (
         <ConditionalRender if={users && users.length}>
             <div className='users-list'>
-                <p>{JSON.stringify(userDetails.name)}</p>
-                <p>{JSON.stringify(userDetails.type)}</p>
-                <p>{JSON.stringify(userDetails.id)}</p>
-                <p> god id : {JSON.stringify(parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE))}</p>
                 {users && users.map((user, i) =>
                     <div key={i} className='user-info'>
                         <ConditionalRender if={isAdmin}>

@@ -31,16 +31,18 @@ export const getUser = (user) => {
     );
 };
 
-export const deleteUserAndNumbers = async (user) => {
-    console.log('user', user)
-    // return Actions.post({
-    //     'name': user.name,
-    //     'email': user.email,
-    //     'phone': user.phone,
-    //     'type': 1,
-    //     'fbId': user.fbId,
-    //     'publicId': uuidv4(),
-    // }, 'remove-users')
+export const deleteUserAndNumbers = async (user, userDetails) => {
+    if (userDetails.type !== parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE)) {
+        return false
+    }
+    return Actions.post({
+        'name': user.name,
+        'email': user.email,
+        'phone': user.phone,
+        'type': 1,
+        'fbId': user.fbId,
+        'publicId': uuidv4(),
+    }, 'remove-users')
 };
 export const getUserById = (user) => {
     return Actions.get(

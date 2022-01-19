@@ -1,7 +1,7 @@
 import FaceBookLogin from "../facebook-login";
 import {deleteStorageItem, getStorageItem, setStorageItem} from "../../storage";
 import {getUser} from "../../actions/users";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import './style.scss';
 import UsersList from "../users-list";
@@ -18,13 +18,12 @@ const Header = () => {
         const userInfo = await getUser(data)
         const userId = userInfo?.length && userInfo[0].id
         const userType = userInfo?.length && userInfo[0].type
-        const userData = {...data, id: userId, type: userType}
+        const userData = {...data, id: userId, type: userType || 1}
         setUserDetails(userData)
         setLogInModal(false)
-        setStorageItem('collector-data', userData)
+        userInfo ? setStorageItem('collector-data', userData) : deleteStorageItem('collector-data')
         window.location.reload();
     }
-
 
     const logOutUser = () => {
         deleteStorageItem('collector-data')
@@ -35,14 +34,12 @@ const Header = () => {
         <div className='cl-header'>
             <div className='header-data'>
                 <span className='collector-select' onClick={() => setUsersModal(true)}>Select Collector</span>
-                {!userDetails && <span className='pointer' onClick={() => setLogInModal(true)}>Log In</span>}
+                {!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Log In</span>}
                 {userDetails && <div className='user-info' onClick={() => setLogOutModal(true)}>
                     <img alt={''} src={userDetails?.picture?.data?.url}/>
                     <p>{userDetails?.name}</p>
                 </div>}
-
             </div>
-
 
             <Modal
                 isOpen={logOutModal}
