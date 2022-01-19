@@ -48,14 +48,14 @@ const SetsPage = () => {
     return (
         <div className='cl-content'>
             <div className='list-page'>
-                <SetsMenu data={sets} fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)} isAdmin={isAdmin}/>
+                <SetsMenu data={sets.list} fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)} isAdmin={isAdmin}/>
 
                 <div className='my-sets'>
-                    <ConditionalRender if={sets.length}>
-                        <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets}
+                    <ConditionalRender if={sets.list.length}>
+                        <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets.list}
                                  fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)}/>
                     </ConditionalRender>
-                    <ConditionalRender if={!sets.length}>
+                    <ConditionalRender if={!sets.list.length}>
                         <div className='set-wrapper no-set'>No sets added yet.</div>
                     </ConditionalRender>
                     <Footer />

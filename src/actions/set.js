@@ -1,5 +1,6 @@
 import Actions from "./api";
 import {ACTIONS} from "../config";
+import {createNumber, createNumbersArray} from "../utils/createNumbersArray";
 
 
 export const getAllSetsWithNumbers = async (dispatch, params) => {
@@ -51,22 +52,11 @@ const _createSetNumbersArray = async (sets, userId) => {
 
 
 const _addNumbersToSet = async (set, userId) => {
-    // create all numbers as 'missing'
-    const numbersArray = []
-    for (let i = set.minNr; i <= set.maxNr; i++) {
-        numbersArray.push({
-            number: i,
-            setId: set.id,
-            userId: parseInt(userId),
-            type: 0,
-        })
-    }
     // get existing numbers and replace therm in 'missing' array
     const numbers = await getNumbersForSet(set.id, userId) || []
-    const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
     return {
         ...set,
-        numbers: mergedNumbers.sort((a, b) => a.number - b.number)
+        numbers: createNumbersArray(set, numbers, userId)
     };
 }
 
@@ -86,10 +76,6 @@ export const _getSetsInCollection = async (set) => {
             console.log(err);
         });
 };
-
-const _mergeArrays = (a, b, p) => {
-    return a.filter(aa => !b.find(bb => aa[p] === bb[p])).concat(b);
-}
 
 const getNumbersForSet = async (setId, userId) => {
     return Actions.get(
@@ -113,20 +99,38 @@ export const getSetsFotThisType = async (typeId) => {
 };
 
 
-export const changeNumberStatus = async (nr) => {
+export const changeNumberStatus = async (dispatch, nr, set) => {
     const newType = nr.type > 2 ? 0 : nr.type + 1;
     if (newType === 1 && !nr.id) {
         const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
         // add numbers to user collection
-        return Actions.post(newNumber, `number`);
+        return Actions.post(newNumber, `number`).then((res) => {
+            if (res && !res.error) {
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
     }
     if (newType === 0 && nr.id) {
         // remove number from user collection
         const removeNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
-        return Actions.post(removeNumber, `remove-number`);
+        return Actions.post(removeNumber, `remove-number`).then((res) => {
+            if (res && !res.error) {
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
     }
     // update number status
-    return Actions.patch({type: newType}, `number/${nr.id}`);
+    return Actions.patch({type: newType}, `number/${nr.id}`).then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+        }
+    }).catch((err) => {
+            console.log(err)
+        })
 }
 
 export const markAllAtOnce = async (set, type, userId) => {
@@ -176,5 +180,5 @@ export const deleteSetAndNumbers = async (set) => {
         'maxNr': set.maxNr,
         'setTypeId': set.type,
         'categoryId': set.category,
-    }, 'delete-set')
+    }, 'remove-set')
 }

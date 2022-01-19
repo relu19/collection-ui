@@ -13,20 +13,17 @@ import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import NoImage from '../../images/noImage.png'
 import AddEditSet from "../addEditSet";
+import {useDispatch} from "react-redux";
 
 const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, setEditMode}) => {
-
     const [modalData, setModalData] = useState();
     const [editModal, setEditModal] = useState();
     const [modalOpen, setModalOpen] = useState(false);
     const [viewModeAlert, setViewModeAlert] = useState(false);
+    const dispatch = useDispatch();
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
-    }
-
-    const changeStatus = (nr) => {
-        changeNumberStatus(nr).then(() => fetchData())
     }
 
     const collection = data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
@@ -51,7 +48,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         }
     }
 
-    const removeSetToCollection = (elem) => {
+    const removeSetFromCollection = (elem) => {
         removeSetNumbers(elem, userDetails.id).then(() => fetchData())
         setModalOpen(false)
     }
@@ -131,7 +128,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     {elem?.numbers.map((item, i) => {
                                         return (
                                             <span key={i}
-                                                  onClick={() => userDetails && editMode ? changeStatus(item) : setAlert()}
+                                                  onClick={() => userDetails && editMode ? changeNumberStatus(dispatch, item, elem) : setAlert()}
                                                   className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''}`}>{item.number}</span>
                                         )
                                     })}
@@ -190,7 +187,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setModalOpen(false)}>No</button>
                     <button className='button'
-                            onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetToCollection(modalData)}>Yes
+                            onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetFromCollection(modalData)}>Yes
                     </button>
                 </div>
             </Modal>
