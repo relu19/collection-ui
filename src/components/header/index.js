@@ -1,7 +1,7 @@
 import FaceBookLogin from "../facebook-login";
 import {deleteStorageItem, getStorageItem, setStorageItem} from "../../storage";
 import {getUser} from "../../actions/users";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Modal from "react-modal";
 import './style.scss';
 import UsersList from "../users-list";
