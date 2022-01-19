@@ -103,6 +103,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
     const newType = nr.type > 2 ? 0 : nr.type + 1;
     if (newType === 1 && !nr.id) {
         const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
+
         // add numbers to user collection
         return Actions.post(newNumber, `number`).then((res) => {
             if (res && !res.error) {
@@ -123,8 +124,9 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
             console.log(err)
         })
     }
+    const updateNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
     // update number status
-    return Actions.patch({type: newType}, `number/${nr.id}`).then((res) => {
+    return Actions.patch(updateNumber, `number/${nr.id}`).then((res) => {
         if (res && !res.error) {
             dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
         }
@@ -133,7 +135,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
         })
 }
 
-export const markAllAtOnce = async (set, type, userId) => {
+export const markAllAtOnce = async (dispatch, set, type, userId) => {
     const numbersData = {
         number: 0,
         type: type,
@@ -141,11 +143,23 @@ export const markAllAtOnce = async (set, type, userId) => {
         userId: userId
     };
     if (type === 0) {
-        return Actions.post(numbersData, `remove-all-numbers`);
+        return Actions.post(numbersData, `remove-all-numbers`).then((res) => {
+            if (res && !res.error) {
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: userId});
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
     }
     numbersData.minNr = set.minNr;
     numbersData.maxNr = set.maxNr;
-    return Actions.post(numbersData, `add-all-numbers`);
+    return Actions.post(numbersData, `add-all-numbers`).then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: userId});
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
 }
 
 

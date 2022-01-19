@@ -30,7 +30,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const remaining = data.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
     const changeStatusBulk = (set, type, userId) => {
-        markAllAtOnce(set, type, userId).then(() => fetchData())
+        markAllAtOnce(dispatch, set, type, userId)
     }
 
     const getClassName = (type) => {
@@ -137,12 +137,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
                                     <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
-                                            <Icon onClick={() => changeStatusBulk(elem, 1, userDetails.id)} name='check'
+                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 1, userDetails.id)} name='check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => changeStatusBulk(elem, 2, userDetails.id)}
+                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 2, userDetails.id)}
                                                   name='double-check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => changeStatusBulk(elem, 0, userDetails.id)}
+                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 0, userDetails.id)}
                                                   name='uncheck'
                                                   color="#cccccc" width={15} height={15}/>
                                         </div>
