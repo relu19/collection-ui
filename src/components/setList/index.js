@@ -3,7 +3,7 @@ import {
     changeNumberStatus,
     deleteSetAndNumbers,
     markAllAtOnce,
-    removeSetNumbers, addSetToCollection
+    addSetToCollection, removeFromCollection
 } from "../../actions/set";
 import React, {useState} from "react";
 import Modal from "react-modal";
@@ -29,10 +29,6 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const collection = data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
     const remaining = data.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
-    const changeStatusBulk = (set, type, userId) => {
-        markAllAtOnce(dispatch, set, type, userId)
-    }
-
     const getClassName = (type) => {
         switch (type) {
             case 0:
@@ -49,7 +45,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const removeSetFromCollection = (elem) => {
-        removeSetNumbers(elem, userDetails.id).then(() => fetchData())
+        removeFromCollection(dispatch, elem, userDetails.id)
         setModalOpen(false)
     }
 
@@ -65,12 +61,14 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             setTypeId: set.setTypeId,
             setId: set.id,
         }
-        addSetToCollection(elem).then(() => fetchData())
+        addSetToCollection(dispatch, elem)
     }
 
     const setAlert = () => {
         setViewModeAlert(true)
-        setTimeout(() => {setViewModeAlert(false)}, 200);
+        setTimeout(() => {
+            setViewModeAlert(false)
+        }, 200);
     }
 
     const openModal = (data) => {
@@ -121,7 +119,9 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                 <p className='set-title'>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
                                     <ConditionalRender if={isMyPage}>
-                                        {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> : <span className={viewModeAlert ? 'view-alert' : ''} onClick={() => setEditMode(true)}>View Mode</span>}
+                                        {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> :
+                                            <span className={viewModeAlert ? 'view-alert' : ''}
+                                                  onClick={() => setEditMode(true)}>View Mode</span>}
                                     </ConditionalRender>
                                 </p>
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
@@ -137,12 +137,13 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
                                     <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
-                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 1, userDetails.id)} name='check'
+                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 1, userDetails.id)}
+                                                  name='check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 2, userDetails.id)}
+                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 2, userDetails.id)}
                                                   name='double-check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => markAllAtOnce(dispatch,elem, 0, userDetails.id)}
+                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 0, userDetails.id)}
                                                   name='uncheck'
                                                   color="#cccccc" width={15} height={15}/>
                                         </div>

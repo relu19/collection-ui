@@ -5,6 +5,7 @@ import 'reset-css';
 import './style/style.scss';
 import './style/modal.scss';
 import './style/button.scss';
+import './style/spinner.scss';
 import Header from "./components/header";
 import React from "react";
 import Terms from "./pages/terms";

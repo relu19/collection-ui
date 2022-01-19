@@ -20,6 +20,8 @@ const SetsPage = () => {
     const sets = useSelector((sets) => sets.setsReducer);
     const filterParams = useSelector((filters) => filters.filterReducer);
     const [editMode, setEditMode] = useState(false);
+    const [loading, setLoading] = useState(true);
+
 
     // const checkIfValidPage = async () => {
     //     const categoryExists = await categories.find(cat => cat.id === parseInt(filterParams.category))
@@ -32,7 +34,11 @@ const SetsPage = () => {
     useEffect(() => {
         const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}-${filterParams.userPublicId}`
         navigate(url, {replace: true})
-        getAllSetsWithNumbers(dispatch, filterParams).then(() => {})
+        setLoading(true)
+
+
+        getAllSetsWithNumbers(dispatch, filterParams).then(() => setLoading(false))
+
         // const validPage = checkIfValidPage();
         // if (!checkIfValidPage()) {
         //     // window.location = '/'
@@ -42,8 +48,8 @@ const SetsPage = () => {
         // }
     }, [filterParams]);
 
-    const isAdmin = userDetails ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
-    const isMyPage = userDetails ? parseInt(userDetails.id) === parseInt(filterParams.userId) : false
+    const isAdmin = userDetails?.type ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
+    const isMyPage = userDetails?.type ? parseInt(userDetails.id) === parseInt(filterParams.userId) : false
 
     return (
         <div className='cl-content'>
@@ -51,11 +57,22 @@ const SetsPage = () => {
                 <SetsMenu data={sets.list} fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)} isAdmin={isAdmin}/>
 
                 <div className='my-sets'>
-                    <ConditionalRender if={sets.list.length}>
+
+                    <ConditionalRender if={loading}>
+                        <div className="spinner">
+                            <div className="spinner-item"/>
+                            <div className="spinner-item"/>
+                            <div className="spinner-item"/>
+                            <div className="spinner-item"/>
+                            <div className="spinner-item"/>
+                        </div>
+                    </ConditionalRender>
+
+                    <ConditionalRender if={sets.list.length && !loading}>
                         <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets.list}
                                  fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)}/>
                     </ConditionalRender>
-                    <ConditionalRender if={!sets.list.length}>
+                    <ConditionalRender if={!sets.list.length && !loading}>
                         <div className='set-wrapper no-set'>No sets added yet.</div>
                     </ConditionalRender>
                     <Footer />

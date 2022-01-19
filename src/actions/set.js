@@ -1,6 +1,6 @@
 import Actions from "./api";
 import {ACTIONS} from "../config";
-import {createNumber, createNumbersArray} from "../utils/createNumbersArray";
+import {createNumbersArray} from "../utils/createNumbersArray";
 
 
 export const getAllSetsWithNumbers = async (dispatch, params) => {
@@ -163,8 +163,14 @@ export const markAllAtOnce = async (dispatch, set, type, userId) => {
 }
 
 
-export const addSetToCollection = async (elem) => {
-    return Actions.post(elem, 'set-users')
+export const addSetToCollection = async (dispatch,  elem) => {
+    return Actions.post(elem, 'set-users').then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.ADD_TO_COLLECTION, res});
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
 };
 
 
@@ -179,11 +185,17 @@ export const editSet = async (setData) => {
     return Actions.patch(setData, `sets/${setData.id}`)
 };
 
-export const removeSetNumbers = async (set, userId) => {
+export const removeFromCollection = async (dispatch, set, userId) => {
     return Actions.post({
         'setId': set.id,
         'userId': userId,
-    }, 'remove-numbers-from-collection')
+    }, 'remove-set-from-collection').then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.REMOVE_FROM_COLLECTION, set});
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
 }
 
 export const deleteSetAndNumbers = async (set) => {
