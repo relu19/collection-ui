@@ -86,8 +86,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={!collection.length && isMyPage}>
-                <div className='set-wrapper no-set'><p>No sets added yet. You need to add
-                    <Icon name='add' color="#cccccc" width={15} height={15}/> some sets from Available Sets list</p>
+                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add' color="#cccccc" width={15} height={15}/> some sets from Available Sets list</p>
                 </div>
             </ConditionalRender>
 

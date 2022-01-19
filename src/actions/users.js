@@ -32,14 +32,15 @@ export const getUser = (user) => {
 };
 
 export const deleteUserAndNumbers = async (user) => {
-    return Actions.post({
-        'name': user.name,
-        'email': user.email,
-        'phone': user.phone,
-        'type': 1,
-        'fbId': user.fbId,
-        'publicId': uuidv4(),
-    }, 'remove-users')
+    console.log('user', user)
+    // return Actions.post({
+    //     'name': user.name,
+    //     'email': user.email,
+    //     'phone': user.phone,
+    //     'type': 1,
+    //     'fbId': user.fbId,
+    //     'publicId': uuidv4(),
+    // }, 'remove-users')
 };
 export const getUserById = (user) => {
     return Actions.get(
