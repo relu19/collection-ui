@@ -181,8 +181,6 @@ export const addSet = async (newSet) => {
 };
 
 export const editSet = async (setData) => {
-    delete setData.minNr
-    delete setData.maxNr
     return Actions.patch(setData, `sets/${setData.id}`)
 };
 
