@@ -6,6 +6,7 @@ import {createNumbersArray} from "../utils/createNumbersArray";
 export const getAllSetsWithNumbers = async (dispatch, params) => {
     // get all sets is from user collection
     const allSetsInCollection = await _getSetsInCollection(params);
+
     // get all sets
     const allSets = await _getAllSetsInCategory(params, allSetsInCollection);
     // for each set create an array with all numbers from minNr to MaxNr
@@ -65,7 +66,7 @@ export const _getSetsInCollection = async (set) => {
         where: {
             categoryId: parseInt(set.categoryId),
             setTypeId: parseInt(set.setTypeId),
-            userId: parseInt(set.userId)
+            usersId: parseInt(set.userId)
         },
         fields: {setId: true}
     }
