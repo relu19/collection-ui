@@ -3,11 +3,12 @@ import React, {useState} from "react";
 import Modal from "react-modal";
 import './style.scss';
 import AddEditSet from "../addEditSet";
+import {useDispatch} from "react-redux";
 
 
-const NewSet = ({data, fetchData}) => {
-
+const NewSet = ({data, userId}) => {
     const [modal, setModal] = useState(false);
+    const dispatch = useDispatch();
 
     return (<div>
             <button className='button-new-set' onClick={() => setModal(true)}>Add new Set</button>
@@ -22,9 +23,8 @@ const NewSet = ({data, fetchData}) => {
             >
                 <AddEditSet
                     data={data}
-                    fetchData={fetchData}
                     setModal={(val) => setModal(val)}
-                    onSave={(setData) => addSet(setData).then(() => fetchData())}
+                    onSave={(setData) => addSet(dispatch, setData, userId)}
                 />
 
             </Modal>

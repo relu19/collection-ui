@@ -54,7 +54,7 @@ const SetsPage = () => {
     return (
         <div className='cl-content'>
             <div className='list-page'>
-                <SetsMenu data={sets.list} fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)} isAdmin={isAdmin}/>
+                <SetsMenu data={sets.list} isAdmin={isAdmin}/>
 
                 <div className='my-sets'>
 

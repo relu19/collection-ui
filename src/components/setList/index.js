@@ -52,7 +52,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const deleteSet = (set) => {
-        deleteSetAndNumbers(set).then(() => fetchData())
+        deleteSetAndNumbers(dispatch, set)
         setModalOpen(false)
     }
 
@@ -218,7 +218,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     data={editModal}
                     fetchData={fetchData}
                     setModal={(val) => setEditModal(val)}
-                    onSave={(data) => editSet(data).then(() => fetchData())}
+                    onSave={(data) => editSet(data)}
                 />
 
             </Modal>

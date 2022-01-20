@@ -10,7 +10,7 @@ import objectAssign from "object-assign";
 import {getURLParams} from "../../utils/getURLParams";
 import {getCategoriesWithSetTypes} from "../../actions/type";
 
-const SetsMenu = ({isAdmin, fetchData, data}) => {
+const SetsMenu = ({isAdmin, data}) => {
     const [userInfo, setUserInfo] = useState({})
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
     const [clicked, setClicked] = useState(0);
@@ -62,8 +62,7 @@ const SetsMenu = ({isAdmin, fetchData, data}) => {
                     </li>
                 )}
             </ul>
-
-            {isAdmin ? <NewSet data={data}  fetchData={fetchData}/> : <div />}
+            {isAdmin ? <NewSet userId={userInfo.id} data={data} /> : <div />}
         </nav>
     )
 }

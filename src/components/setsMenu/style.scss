@@ -82,9 +82,9 @@
         }
         .sets-list {
           transition: max-height ease 0.3s;
-          max-height: 1600px;
+          max-height: 600px;
           height: auto;
-          overflow: hidden;
+          overflow: auto;
           li {
             &:hover {
               background-color: rgba(0, 0, 0, 0.1);

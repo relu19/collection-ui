@@ -6,7 +6,7 @@ import {getCategoriesWithSetTypes} from "../../actions/type";
 import {useDispatch, useSelector} from "react-redux";
 
 
-const AddEditSet = ({data, fetchData, setModal, onSave}) => {
+const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     const defaultState = {
         id: data?.id,
         name: data?.name || '',

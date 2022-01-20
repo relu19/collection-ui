@@ -108,7 +108,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
         // add numbers to user collection
         return Actions.post(newNumber, `number`).then((res) => {
             if (res && !res.error) {
-                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: nr.userId});
             }
         }).catch((err) => {
             console.log(err)
@@ -119,7 +119,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
         const removeNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
         return Actions.post(removeNumber, `remove-number`).then((res) => {
             if (res && !res.error) {
-                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: nr.userId});
             }
         }).catch((err) => {
             console.log(err)
@@ -129,7 +129,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
     // update number status
     return Actions.patch(updateNumber, `number/${nr.id}`).then((res) => {
         if (res && !res.error) {
-            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: nr.userId});
+            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: nr.userId});
         }
     }).catch((err) => {
             console.log(err)
@@ -146,7 +146,7 @@ export const markAllAtOnce = async (dispatch, set, type, userId) => {
     if (type === 0) {
         return Actions.post(numbersData, `remove-all-numbers`).then((res) => {
             if (res && !res.error) {
-                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: userId});
+                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: userId});
             }
         }).catch((err) => {
             console.log(err)
@@ -156,7 +156,7 @@ export const markAllAtOnce = async (dispatch, set, type, userId) => {
     numbersData.maxNr = set.maxNr;
     return Actions.post(numbersData, `add-all-numbers`).then((res) => {
         if (res && !res.error) {
-            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, set: set, userId: userId});
+            dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: userId});
         }
     }).catch((err) => {
         console.log(err)
@@ -167,7 +167,7 @@ export const markAllAtOnce = async (dispatch, set, type, userId) => {
 export const addSetToCollection = async (dispatch,  elem) => {
     return Actions.post(elem, 'set-users').then((res) => {
         if (res && !res.error) {
-            dispatch({type: ACTIONS.ADD_TO_COLLECTION, res});
+            dispatch({type: ACTIONS.ADD_TO_COLLECTION, data: res});
         }
     }).catch((err) => {
         console.log(err)
@@ -175,14 +175,31 @@ export const addSetToCollection = async (dispatch,  elem) => {
 };
 
 
-export const addSet = async (newSet) => {
+export const addSet = async (dispatch, newSet, userId) => {
     delete newSet.id
-    return Actions.post(newSet, 'sets')
+    return Actions.post(newSet, 'sets').then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.ADD_SET_TO_LIST, data: res, userId: userId});
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
 };
 
 export const editSet = async (setData) => {
     return Actions.patch(setData, `sets/${setData.id}`)
 };
+
+//
+// export const editSet = async (dispatch, setData) => {
+//     return Actions.patch(setData, `sets/${setData.id}`).then((res) => {
+//         if (res && !res.error) {
+//             dispatch({type: ACTIONS.UPDATE_SET_INFO, data: res});
+//         }
+//     }).catch((err) => {
+//         console.log(err)
+//     })
+// };
 
 export const removeFromCollection = async (dispatch, set, userId) => {
     return Actions.post({
@@ -190,14 +207,14 @@ export const removeFromCollection = async (dispatch, set, userId) => {
         'userId': userId,
     }, 'remove-set-from-collection').then((res) => {
         if (res && !res.error) {
-            dispatch({type: ACTIONS.REMOVE_FROM_COLLECTION, set});
+            dispatch({type: ACTIONS.REMOVE_FROM_COLLECTION, data: set});
         }
     }).catch((err) => {
         console.log(err)
     })
 }
 
-export const deleteSetAndNumbers = async (set) => {
+export const deleteSetAndNumbers = async (dispatch, set) => {
     return Actions.post({
         'id': set.id,
         'name': set.name,
@@ -205,5 +222,11 @@ export const deleteSetAndNumbers = async (set) => {
         'maxNr': set.maxNr,
         'setTypeId': set.type,
         'categoryId': set.category,
-    }, 'remove-set')
+    }, 'remove-set').then((res) => {
+        if (res && !res.error) {
+            dispatch({type: ACTIONS.DELETE_SET_AND_NUMBERS, data: set});
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
 }
