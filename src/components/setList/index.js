@@ -21,6 +21,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [modalOpen, setModalOpen] = useState(false);
     const [viewModeAlert, setViewModeAlert] = useState(false);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
@@ -45,7 +46,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const removeSetFromCollection = (elem) => {
-        removeFromCollection(dispatch, elem, userDetails.id)
+        setLoading(true)
+        removeFromCollection(dispatch, elem, userDetails.id).then(() => setLoading(false))
         setModalOpen(false)
     }
 
@@ -55,13 +57,14 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const addToCollection = (set, userId) => {
+        setLoading(true)
         const elem = {
             categoryId: set.categoryId,
             usersId: userId,
             setTypeId: set.setTypeId,
             setId: set.id,
         }
-        addSetToCollection(dispatch, elem)
+        addSetToCollection(dispatch, elem).then(() => setLoading(false))
     }
 
     const setAlert = () => {
@@ -76,6 +79,15 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         setModalOpen(true)
     }
 
+    const changeStatus = (item, elem) => {
+        setLoading(true)
+        changeNumberStatus(dispatch, item, elem).then(() => setLoading(false))
+    }
+
+    const changeBulkStatus = (elem, type, id) => {
+        setLoading(true)
+        markAllAtOnce(dispatch, elem, type, id).then(() => setLoading(false))
+    }
     return (
         <div>
             <ConditionalRender if={isMyPage}>
@@ -127,8 +139,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     {elem?.numbers.map((item, i) => {
                                         return (
                                             <span key={i}
-                                                  onClick={() => userDetails && editMode ? changeNumberStatus(dispatch, item, elem) : setAlert()}
-                                                  className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''}`}>{item.number}</span>
+                                                  onClick={() => userDetails && editMode && !loading ? changeStatus(item, elem) : setAlert()}
+                                                  className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''}`}>{item.number}</span>
                                         )
                                     })}
                                 </div>
@@ -136,13 +148,13 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
                                     <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
-                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 1, userDetails.id)}
+                                            <Icon onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {}}
                                                   name='check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 2, userDetails.id)}
+                                            <Icon onClick={() =>  !loading ? changeBulkStatus(elem, 2, userDetails.id) : () => {}}
                                                   name='double-check'
                                                   color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() => markAllAtOnce(dispatch, elem, 0, userDetails.id)}
+                                            <Icon onClick={() =>  !loading ? changeBulkStatus(elem, 0, userDetails.id) : () => {}}
                                                   name='uncheck'
                                                   color="#cccccc" width={15} height={15}/>
                                         </div>
@@ -162,7 +174,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
             <ConditionalRender if={isMyPage && editMode && remaining.length}>
                 <AvailableSets userDetails={userDetails} remainingSets={remaining}
-                               addToCollection={addToCollection}/>
+                               addToCollection={!loading ? addToCollection : () => {}}/>
             </ConditionalRender>
 
             <Modal
@@ -187,7 +199,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setModalOpen(false)}>No</button>
                     <button className='button'
-                            onClick={() => modalData?.delete ? deleteSet(modalData) : removeSetFromCollection(modalData)}>Yes
+                            onClick={() => modalData?.delete ? deleteSet(modalData) : !loading ? removeSetFromCollection(modalData) : () => {}}>Yes
                     </button>
                 </div>
             </Modal>

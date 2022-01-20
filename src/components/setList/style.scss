@@ -19,11 +19,13 @@
       text-decoration: underline;
     }
   }
+
   span {
     cursor: pointer;
     font-weight: normal;
     font-size: 13px;
     transition: all ease 0.1s;
+
     &.view-alert {
       color: $double;
     }
@@ -73,12 +75,16 @@
     font-size: 13px;
     user-select: none;
     color: $content;
+
     &.active {
       &:hover {
         font-weight: bold;
       }
     }
 
+    &.loading {
+      pointer-events: none;
+    }
 
     &.missing {
       background-color: $missing;
@@ -138,6 +144,7 @@
   opacity: 40%;
   left: 5px;
   cursor: pointer;
+
   &:hover {
     color: $missing;
     opacity: 190%;
@@ -154,6 +161,7 @@
   opacity: 40%;
   left: 5px;
   cursor: pointer;
+
   &:hover {
     color: $double;
     opacity: 190%;
@@ -170,6 +178,7 @@
   opacity: 40%;
   right: 5px;
   cursor: pointer;
+
   &:hover {
     color: $missing;
     opacity: 190%;
@@ -182,6 +191,7 @@
   background-color: $content;
   border-radius: 10px;
   position: relative;
+
   &.no-set {
     margin: 50px auto;
     height: 100px !important;
@@ -205,8 +215,10 @@
 .edit-sets {
   text-align: left;
   padding: 10px 5px;
+
   span {
     cursor: pointer;
+
     &:hover {
       text-decoration: underline;
     }
@@ -220,8 +232,9 @@
   .set-image {
     display: none;
   }
-  .set-wrapper{
+  .set-wrapper {
     padding: 30px 10px;
+
     &.no-set {
       width: 400px;
     }
@@ -230,8 +243,9 @@
 
 
 @media screen and (max-width: 600px) {
-  .set-wrapper{
+  .set-wrapper {
     padding: 30px 10px;
+
     &.no-set {
       width: 250px;
     }
