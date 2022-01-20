@@ -16,7 +16,7 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
         image: data?.image || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
-        order: data?.order || data?.length
+        order: data?.order || data?.length + 1
     }
 
     const [newSet, setNewSet] = useState(defaultState);
@@ -64,11 +64,11 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
                            onChange={(e) => setNewSet({...newSet, name: e.target.value})}/>
 
                     <label>First Number</label>
-                    <input disabled={isEdit} type='number' value={newSet.minNr}
+                    <input type='number' value={newSet.minNr}
                            onChange={(e) => setNewSet({...newSet, minNr: parseInt(e.target.value)})}/>
 
                     <label>Last Number</label>
-                    <input disabled={isEdit} type='number' value={newSet.maxNr}
+                    <input type='number' value={newSet.maxNr}
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
                     <AddEditCategory update={updateCategories} categories={categories} newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
@@ -84,7 +84,7 @@ const AddEditSet = ({data, fetchData, setModal, onSave}) => {
                            onChange={(e) => setNewSet({...newSet, image: e.target.value})}/>
 
                     <label>Set Order</label>
-                    <input type='number' value={newSet.order + 1}
+                    <input type='number' value={newSet.order}
                            onChange={(e) => setNewSet({...newSet, order: parseInt(e.target.value)})}/>
 
                 </div>
