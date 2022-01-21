@@ -9,8 +9,8 @@
   left: 0;
   z-index: 5;
   outline: none;
-  //display: flex;
-  //flex-direction: column;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding-top: 50px;
   box-sizing: border-box;
@@ -41,6 +41,7 @@
     margin: 0;
     overflow: auto;
     width: 100%;
+    height: 100%;
 
     .menu-header {
       width: 100%;
@@ -67,7 +68,6 @@
       }
 
       .sets-list {
-        max-height: 0;
         transition: max-height ease 0.2s;
         width: 100%;
 
@@ -89,7 +89,6 @@
 
         .sets-list {
           transition: max-height ease 0.3s;
-          max-height: 557px;
           height: auto;
           overflow: auto;
 
@@ -141,12 +140,8 @@
     }
 
     ul {
+      padding-bottom: 20px;
       li {
-        &.active {
-          .sets-list {
-            max-height: 500px;
-          }
-        }
 
         .sets-list {
           li {
@@ -202,12 +197,8 @@
 
 
     ul {
+      padding-bottom: 30px;
       li {
-        &.active {
-          .sets-list {
-            max-height: 370px;
-          }
-        }
         .sets-list {
 
           li {
