@@ -13,7 +13,8 @@ const FaceBookLogin = ({setUserDetails}) => {
                 fields="name,email,picture"
                 callback={responseFacebook}
                 isMobile={false}
-                autoLoad={false}
+                autoLoad={true}
+                disableMobileRedirect={true}
                 cssClass='button'
             />
     )
