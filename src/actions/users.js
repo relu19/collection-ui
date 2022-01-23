@@ -23,7 +23,7 @@ export const getUsers = async () => {
 
 export const getUser = (user) => {
     return Actions.get(
-        `/users?filter=${JSON.stringify({
+        `users?filter=${JSON.stringify({
             where: {
                 fbId: user?.id,
             },
