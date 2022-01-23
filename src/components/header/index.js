@@ -35,7 +35,7 @@ const Header = () => {
             <div className='header-data'>
                 <span className='collector-select' onClick={() => setUsersModal(true)}>Select Collector</span>
                 {!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Log In</span>}
-                {userDetails && <div className='user-info' onClick={() => setLogOutModal(true)}>
+                {userDetails?.name && <div className='user-info' onClick={() => setLogOutModal(true)}>
                     <img alt={''} src={userDetails?.picture?.data?.url}/>
                     <p>{userDetails?.name}</p>
                 </div>}
