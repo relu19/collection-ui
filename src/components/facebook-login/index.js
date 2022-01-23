@@ -24,6 +24,7 @@ const FaceBookLogin = ({setUserDetails}) => {
                 callback={responseFacebook}
                 disableMobileRedirect={!isFacebookApp()}
                 autoLoad={isFacebookApp()}
+                isMobile={false}
                 cssClass='button'
             />
     )
