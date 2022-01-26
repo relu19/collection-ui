@@ -38,6 +38,16 @@
   font-size: 14px;
 }
 
+.set-search {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #41403e;
+  border:none;
+  outline: none;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
 .set-image {
   display: flex;
   align-items: center;
@@ -213,8 +223,9 @@
 
 
 .edit-sets {
-  text-align: left;
   padding: 10px 5px;
+  text-align: right;
+  margin-bottom: -27px;
 
   span {
     cursor: pointer;
@@ -225,6 +236,12 @@
   }
 }
 
+
+@media screen and (max-width: 1000px) {
+  .edit-sets {
+    padding-right: 20px;
+  }
+}
 @media screen and (max-width: 700px) {
   .set-list, .set-statistics {
     width: 100%;
@@ -251,6 +268,7 @@
     }
   }
   .edit-sets {
-    text-align: center;
+    padding-top: 50px;
+    padding-right: 0;
   }
 }

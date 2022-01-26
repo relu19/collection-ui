@@ -5,7 +5,7 @@ import {
     markAllAtOnce,
     addSetToCollection, removeFromCollection
 } from "../../actions/set";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import './style.scss'
 import AvailableSets from "../availableSets";
@@ -22,10 +22,15 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [viewModeAlert, setViewModeAlert] = useState(false);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [collectionList, setCollectionList] = useState([]);
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
     }
+
+    useEffect(() => {
+        setCollectionList(data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order))
+    }, [data]);
 
     const collection = data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
     const remaining = data.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
@@ -84,10 +89,21 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         changeNumberStatus(dispatch, item, elem).then(() => setLoading(false))
     }
 
+
+    const filterSeries = (e) => {
+        const searchWord = e.target.value.toLowerCase()
+        const filteredList = collection.filter(value => {
+            return value.name.toLowerCase().match(new RegExp(searchWord, 'g'))
+        })
+        setCollectionList(filteredList)
+    }
+
     const changeBulkStatus = (elem, type, id) => {
         setLoading(true)
         markAllAtOnce(dispatch, elem, type, id).then(() => setLoading(false))
     }
+
+
     return (
         <div>
             <ConditionalRender if={isMyPage}>
@@ -107,7 +123,9 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={collection.length}>
-                {collection.map((elem, i) =>
+                <input type="search" className="set-search" placeholder = "Search set..."
+                       onChange = {(e) => filterSeries(e) }/>
+                {collectionList.map((elem, i) =>
                     <div key={i} className='set-wrapper'>
 
                         <ConditionalRender if={isAdmin && editMode}>

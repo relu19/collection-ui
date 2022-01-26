@@ -35,7 +35,7 @@ const UsersList = ({setUsersModal}) => {
     const goToUserPage = (user) => {
         const filters = {
             categoryId: params.category || 1,
-            setTypeId: params.type || 1,
+            setTypeId: params.type || 11,
             userId: user.id,
             userPublicId: user.publicId,
         }
