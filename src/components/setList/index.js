@@ -107,14 +107,23 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     return (
         <div>
             <ConditionalRender if={isMyPage}>
-                {editMode ?
-                    <p className='edit-sets'><span onClick={() => setEditMode(false)}>Close Edit</span></p> :
-                    <p className='edit-sets' onClick={() => setEditMode(true)}>
-                        <span onClick={() => setEditMode(false)}>Add / Edit Sets</span></p>}
+                <div className='set-list-header'>
+                    <input type="search" className="set-search" placeholder="Search set..."
+                           onChange={(e) => filterSeries(e)}/>
+                    {editMode ?
+                        <p className='edit-sets'><span onClick={() => setEditMode(false)}>Close Edit</span></p> :
+                        <p className='edit-sets' onClick={() => setEditMode(true)}>
+                            <span onClick={() => setEditMode(false)}>Add / Edit Sets</span></p>}
+
+                </div>
             </ConditionalRender>
 
             <ConditionalRender if={!collection.length && isMyPage}>
-                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add' color="#cccccc" width={15} height={15}/> some sets from Available Sets list</p>
+                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add'
+                                                                                                color="#cccccc"
+                                                                                                width={15}
+                                                                                                height={15}/> some sets
+                    from Available Sets list</p>
                 </div>
             </ConditionalRender>
 
@@ -123,8 +132,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={collection.length}>
-                <input type="search" className="set-search" placeholder = "Search set..."
-                       onChange = {(e) => filterSeries(e) }/>
+                {!isMyPage && <div className='set-list-header'><input type="search" className="set-search"
+                                                                      placeholder="Search set..."
+                                                                      onChange={(e) => filterSeries(e)}/></div>}
+
                 {collectionList.map((elem, i) =>
                     <div key={i} className='set-wrapper'>
 
@@ -166,15 +177,21 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
                                     <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
-                                            <Icon onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {}}
-                                                  name='check'
-                                                  color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() =>  !loading ? changeBulkStatus(elem, 2, userDetails.id) : () => {}}
-                                                  name='double-check'
-                                                  color="#cccccc" width={15} height={15}/>
-                                            <Icon onClick={() =>  !loading ? changeBulkStatus(elem, 0, userDetails.id) : () => {}}
-                                                  name='uncheck'
-                                                  color="#cccccc" width={15} height={15}/>
+                                            <Icon
+                                                onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {
+                                                }}
+                                                name='check'
+                                                color="#cccccc" width={15} height={15}/>
+                                            <Icon
+                                                onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : () => {
+                                                }}
+                                                name='double-check'
+                                                color="#cccccc" width={15} height={15}/>
+                                            <Icon
+                                                onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : () => {
+                                                }}
+                                                name='uncheck'
+                                                color="#cccccc" width={15} height={15}/>
                                         </div>
                                     </ConditionalRender>
                                 </div>
@@ -192,7 +209,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
             <ConditionalRender if={isMyPage && editMode && remaining.length}>
                 <AvailableSets userDetails={userDetails} remainingSets={remaining}
-                               addToCollection={!loading ? addToCollection : () => {}}/>
+                               addToCollection={!loading ? addToCollection : () => {
+                               }}/>
             </ConditionalRender>
 
             <Modal
@@ -217,7 +235,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setModalOpen(false)}>No</button>
                     <button className='button'
-                            onClick={() => modalData?.delete ? deleteSet(modalData) : !loading ? removeSetFromCollection(modalData) : () => {}}>Yes
+                            onClick={() => modalData?.delete ? deleteSet(modalData) : !loading ? removeSetFromCollection(modalData) : () => {
+                            }}>Yes
                     </button>
                 </div>
             </Modal>

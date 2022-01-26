@@ -45,7 +45,6 @@
   border:none;
   outline: none;
   color: #fff;
-  margin-bottom: 10px;
 }
 
 .set-image {
@@ -225,7 +224,6 @@
 .edit-sets {
   padding: 10px 5px;
   text-align: right;
-  margin-bottom: -27px;
 
   span {
     cursor: pointer;
@@ -235,7 +233,12 @@
     }
   }
 }
-
+.set-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
 
 @media screen and (max-width: 1000px) {
   .edit-sets {
@@ -267,8 +270,10 @@
       width: 250px;
     }
   }
-  .edit-sets {
+  .set-list-header {
     margin-top: 40px;
-    padding-right: 0;
+  }
+  .edit-sets {
+    padding-right: 20px;
   }
 }
