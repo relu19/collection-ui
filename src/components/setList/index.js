@@ -22,6 +22,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [viewModeAlert, setViewModeAlert] = useState(false);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [searchFilter, setSearchFilter] = useState('');
     const [collectionList, setCollectionList] = useState([]);
 
     const getTotal = (set, total) => {
@@ -29,10 +30,15 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     useEffect(() => {
-        setCollectionList(data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order))
+        const list = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
+        const filteredList = list.filter(value => {
+            return value.name.toLowerCase().match(new RegExp(searchFilter, 'g'))
+        })
+        setCollectionList(filteredList)
     }, [data, data.list]);
 
     const collection = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
+
     const remaining = data.list.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
     const getClassName = (type) => {
@@ -92,6 +98,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
     const filterSeries = (e) => {
         const searchWord = e.target.value.toLowerCase()
+        setSearchFilter(searchWord)
         const filteredList = collection.filter(value => {
             return value.name.toLowerCase().match(new RegExp(searchWord, 'g'))
         })
@@ -102,7 +109,6 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         setLoading(true)
         markAllAtOnce(dispatch, elem, type, id).then(() => setLoading(false))
     }
-
 
     return (
         <div>
