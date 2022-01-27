@@ -69,7 +69,7 @@ const SetsPage = () => {
                     </ConditionalRender>
 
                     <ConditionalRender if={sets.list.length && !loading}>
-                        <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets.list}
+                        <SetList editMode={editMode} setEditMode={setEditMode} userDetails={userDetails} isMyPage={isMyPage} isAdmin={isAdmin} data={sets}
                                  fetchData={() => getAllSetsWithNumbers(dispatch, filterParams)}/>
                     </ConditionalRender>
                     <ConditionalRender if={!sets.list.length && !loading}>

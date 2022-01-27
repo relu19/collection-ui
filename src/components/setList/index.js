@@ -29,11 +29,11 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     useEffect(() => {
-        setCollectionList(data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order))
-    }, [data]);
+        setCollectionList(data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order))
+    }, [data, data.list]);
 
-    const collection = data.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
-    const remaining = data.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
+    const collection = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
+    const remaining = data.list.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
     const getClassName = (type) => {
         switch (type) {
