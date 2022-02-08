@@ -18,8 +18,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         group: data?.group || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
-        order: data?.order || data?.length + 1.
-
+        order: data?.order || data?.length + 1
     }
 
     const [newSet, setNewSet] = useState(defaultState);
