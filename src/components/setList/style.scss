@@ -30,6 +30,17 @@
       color: $double;
     }
   }
+
+  &.extra-numbers {
+    background: none;
+    padding-left: 0;
+
+    span {
+      display: none;
+    }
+
+    color: $double;
+  }
 }
 
 
@@ -42,7 +53,7 @@
   border-radius: 5px;
   padding: 5px;
   background-color: #41403e;
-  border:none;
+  border: none;
   outline: none;
   color: #fff;
 }
@@ -166,7 +177,7 @@
   width: 15px;
   height: 15px;
   transition: all ease .5s;
-  bottom: 5px;
+  bottom: 27px;
   opacity: 40%;
   left: 5px;
   cursor: pointer;
@@ -195,7 +206,7 @@
 }
 
 .set-wrapper {
-  margin: 0 auto 20px;
+  margin: 20px auto 0;
   padding: 20px 30px;
   background-color: $content;
   border-radius: 10px;
@@ -211,6 +222,12 @@
     width: 500px;
     text-align: center;
     line-height: 32px;
+  }
+
+  &.extra-numbers {
+    margin: -8px 0 0 0;
+    border-radius: 0 0 10px 10px;
+    padding: 0 30px 20px 30px
   }
 }
 
@@ -233,6 +250,7 @@
     }
   }
 }
+
 .set-list-header {
   display: flex;
   justify-content: space-between;
@@ -245,6 +263,7 @@
     padding-right: 20px;
   }
 }
+
 @media screen and (max-width: 700px) {
   .set-list, .set-statistics {
     width: 100%;

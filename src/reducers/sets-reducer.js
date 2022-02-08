@@ -41,6 +41,7 @@ export default function setsReducer(state = defaultState, action) {
         case ACTIONS.REMOVE_FROM_COLLECTION:
             const setToRemove = state.list.findIndex(item => item.id === action.data.id)
             state.list[setToRemove].inCollection = false
+            state.list[setToRemove].numbers.map(item => item.type = 0)
             return objectAssign({}, state);
         case ACTIONS.GET_SETS:
             return objectAssign({}, state, { list: action.data });

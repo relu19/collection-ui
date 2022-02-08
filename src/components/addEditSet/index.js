@@ -14,9 +14,12 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         maxNr: data?.maxNr || 70,
         link: data?.link || '',
         image: data?.image || '',
+        extraNumbers: data?.extraNumbers || '',
+        group: data?.group || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
-        order: data?.order || data?.length + 1
+        order: data?.order || data?.length + 1.
+
     }
 
     const [newSet, setNewSet] = useState(defaultState);
@@ -43,7 +46,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
 
     const onSaveClick = () => {
         if (!newSet.name || !newSet.minNr || !newSet.maxNr || !newSet.categoryId || !newSet.setTypeId || !newSet.order || !newSet.link || !newSet.image) {
-            setError('All Fields are Required')
+            setError('Fields with * are Required')
         } else {
             setError('')
             onSave(newSet).then(() => fetchData())
@@ -52,22 +55,21 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         }
     }
 
-
     return (<div>
             <div className='modal-header'>
                 Add a New Set
             </div>
             <div className='modal-content'>
                 <div className='modal-form'>
-                    <label>Set Name</label>
+                    <label>Set Name*</label>
                     <input type='text' value={newSet.name}
                            onChange={(e) => setNewSet({...newSet, name: e.target.value})}/>
 
-                    <label>First Number</label>
+                    <label>First Number*</label>
                     <input type='number' value={newSet.minNr}
                            onChange={(e) => setNewSet({...newSet, minNr: parseInt(e.target.value)})}/>
 
-                    <label>Last Number</label>
+                    <label>Last Number*</label>
                     <input type='number' value={newSet.maxNr}
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
@@ -75,17 +77,25 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                     <AddEditType update={updateCategories} categories={categories} newSet={newSet}
                                  setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
 
-                    <label>Set Link</label>
+                    <label>Set Link*</label>
                     <input type='text' value={newSet.link}
                            onChange={(e) => setNewSet({...newSet, link: e.target.value})}/>
 
-                    <label>Set Image</label>
+                    <label>Set Image*</label>
                     <input type='text' value={newSet.image}
                            onChange={(e) => setNewSet({...newSet, image: e.target.value})}/>
 
-                    <label>Set Order</label>
+                    <label>Set Order*</label>
                     <input type='number' value={newSet.order}
                            onChange={(e) => setNewSet({...newSet, order: parseInt(e.target.value)})}/>
+
+                    <label>Group</label>
+                    <input type='text' value={newSet.group}
+                           onChange={(e) => setNewSet({...newSet, group: e.target.value})}/>
+
+                    <label>Extra Numbers</label>
+                    <input type='text' value={newSet.extraNumbers}
+                           onChange={(e) => setNewSet({...newSet, extraNumbers: e.target.value})}/>
 
                 </div>
             </div>

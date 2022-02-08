@@ -55,7 +55,7 @@ const AddEditType = ({newSet, setNewSet, categories, update, setError}) => {
 
     return (
         <>
-            <label>Type</label>
+            <label>Type*</label>
             <select disabled={!newSet.categoryId}
                     onChange={(e) => {
                         setNewSet({...newSet, setTypeId: parseInt(e.target.value)});

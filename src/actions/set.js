@@ -103,7 +103,7 @@ export const getSetsFotThisType = async (typeId) => {
 export const changeNumberStatus = async (dispatch, nr, set) => {
     const newType = nr.type > 2 ? 0 : nr.type + 1;
     if (newType === 1 && !nr.id) {
-        const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
+        const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType, desc: nr.desc || ''}
 
         // add numbers to user collection
         return Actions.post(newNumber, `number`).then((res) => {
@@ -125,7 +125,7 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
             console.log(err)
         })
     }
-    const updateNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
+    const updateNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType, desc: nr.desc || ''}
     // update number status
     return Actions.patch(updateNumber, `number/${nr.id}`).then((res) => {
         if (res && !res.error) {
@@ -177,6 +177,9 @@ export const addSetToCollection = async (dispatch,  elem) => {
 
 export const addSet = async (dispatch, newSet, userId) => {
     delete newSet.id
+    if (newSet.group && newSet.extraNumbers) {
+        newSet.extraNumbers = JSON.stringify(JSON.parse(newSet.extraNumbers))
+    }
     return Actions.post(newSet, 'sets').then((res) => {
         if (res && !res.error) {
             dispatch({type: ACTIONS.ADD_SET_TO_LIST, data: res, userId: userId});
@@ -187,6 +190,9 @@ export const addSet = async (dispatch, newSet, userId) => {
 };
 
 export const editSet = async (setData) => {
+    if (setData.group && setData.extraNumbers) {
+        setData.extraNumbers = JSON.stringify(JSON.parse(setData.extraNumbers))
+    }
     return Actions.patch(setData, `sets/${setData.id}`)
 };
 

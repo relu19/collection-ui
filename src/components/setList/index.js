@@ -41,6 +41,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
     const remaining = data.list.filter(sets => !sets.inCollection).sort((a, b) => a?.order - b?.order)
 
+
     const getClassName = (type) => {
         switch (type) {
             case 0:
@@ -110,6 +111,15 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         markAllAtOnce(dispatch, elem, type, id).then(() => setLoading(false))
     }
 
+    const getExtraNumbersClassName = (list, set) => {
+        const groupName = set.group
+        // search if parent set is in collection
+        const findSetsWithSameGroup = list.filter(item => item.group && item.group=== groupName && item.inCollection)
+
+        // if parent set is in collection and set has extra numbers add class
+        return findSetsWithSameGroup.length > 1 && set.extraNumbers ? 'extra-numbers' : ''
+    }
+
     return (
         <div>
             <ConditionalRender if={isMyPage}>
@@ -143,8 +153,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                                       onChange={(e) => filterSeries(e)}/></div>}
 
                 {collectionList.map((elem, i) =>
-                    <div key={i} className='set-wrapper'>
-
+                    <div key={i} className={`set-wrapper ${getExtraNumbersClassName(collectionList, elem)}`}>
+                    {/*<div key={i} className={`set-wrapper ${elem.extraNumbers ? 'extra-numbers' : ''}`}>*/}
                         <ConditionalRender if={isAdmin && editMode}>
                             <Icon onClick={() => openModal({...elem, remove: false, delete: true})} name='delete'
                                   color="#cccccc" width={15} height={15}/>
@@ -162,7 +172,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                         <div className='set-content'>
 
                             <div className='set-list'>
-                                <p className='set-title'>
+                                <p className={`set-title ${getExtraNumbersClassName(collectionList, elem)}`}>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
                                     <ConditionalRender if={isMyPage}>
                                         {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> :
@@ -173,7 +183,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                     {elem?.numbers.map((item, i) => {
                                         return (
-                                            <span key={i}
+                                            <span title={item.desc || ''} key={i}
                                                   onClick={() => userDetails && editMode && !loading ? changeStatus(item, elem) : setAlert()}
                                                   className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''}`}>{item.number}</span>
                                         )
@@ -181,7 +191,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                 </div>
                                 <div className='set-statistics'>
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
-                                    <ConditionalRender if={isMyPage && editMode}>
+                                    <ConditionalRender if={isMyPage && editMode && (elem.minNr !== elem.maxNr)}>
                                         <div className='bulk-actions'>
                                             <Icon
                                                 onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {
@@ -202,10 +212,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     </ConditionalRender>
                                 </div>
                             </div>
-                            <div
-                                className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
-                                <img alt='' src={elem?.image || NoImage}/>
-                            </div>
+                            <ConditionalRender if={elem.minNr !== elem.maxNr || !getExtraNumbersClassName(collectionList, elem)}>
+                                <div
+                                    className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
+                                    <img alt='' src={elem?.image || NoImage}/>
+                                </div>
+                            </ConditionalRender>
                         </div>
 
                     </div>

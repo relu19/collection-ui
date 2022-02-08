@@ -43,7 +43,7 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
 
     return (
         <>
-            <label>Category</label>
+            <label>Category*</label>
             <select onChange={(e) => {
                 setNewSet({...newSet, categoryId: parseInt(e.target.value), setTypeId: ''});
                 setError('')

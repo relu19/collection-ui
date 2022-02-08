@@ -22,6 +22,7 @@ const NewSet = ({data, userId}) => {
                 closeTimeoutMS={500}
             >
                 <AddEditSet
+                    fetchData={() => {}}
                     data={data}
                     setModal={(val) => setModal(val)}
                     onSave={(setData) => addSet(dispatch, setData, userId)}
