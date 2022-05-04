@@ -7,6 +7,7 @@ export const createNewUser = async (user) => {
         'name': user.name,
         'email': user.email,
         'phone': user.phone,
+        'logo': user.picture?.data?.url,
         'type': 1,
         'fbId': user.id,
         'publicId': uuidv4(),
@@ -16,7 +17,7 @@ export const createNewUser = async (user) => {
 export const getUsers = async () => {
     return Actions.get(
         `/users?filter=${JSON.stringify({
-            fields: { id: true, fbId: true, name: true, publicId: true },
+            fields: { id: true, fbId: true, name: true, publicId: true, logo: true },
         })}`,
     );
 };
@@ -31,6 +32,7 @@ export const getUser = (user) => {
     );
 };
 
+
 export const deleteUserAndNumbers = async (user, userDetails) => {
     if (userDetails.type !== parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE)) {
         return false
@@ -44,6 +46,7 @@ export const deleteUserAndNumbers = async (user, userDetails) => {
         'publicId': uuidv4(),
     }, 'remove-users')
 };
+
 export const getUserById = (user) => {
     return Actions.get(
         `users?filter=${JSON.stringify({

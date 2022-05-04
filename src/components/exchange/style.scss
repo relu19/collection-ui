@@ -1,0 +1,103 @@
+@import "../../style/constants";
+
+.exchange-table {
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__cell {
+    flex: 0 0 33.333333%;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    padding: 10px;
+    margin: -1px -1px 0 0;
+
+    img {
+      width: 50px;
+      border-radius: 100%;
+      margin-right: 5px;
+    }
+
+    &.get, &.give {
+      display: flex;
+      flex-wrap: wrap;
+
+      span {
+        font-weight: bold;
+        padding: 5px;
+        margin: 3px;
+        font-size: 13px;
+        text-align: center;
+      }
+    }
+
+    &.get {
+      span {
+        background-color: #D15553;
+      }
+    }
+
+    &.give {
+      span {
+        background-color: #75D153;
+      }
+    }
+
+    &.header {
+      background-color: #ebebeb;
+      padding: 5px;
+      p {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.no-data {
+  text-align: center;
+  font-size: 40px;
+  color: #999;
+}
+.compare-me {
+  margin-bottom: 5px;
+  input, label {
+    cursor: pointer;
+    line-height: 20px;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  b {
+    font-weight: bold;
+  }
+
+}
+@media screen and (max-width: 1000px) and (max-width: 600px) {
+  .exchange-table {
+    font-size: 13px;
+    &__row {
+
+    }
+
+    &__cell {
+      padding: 5px;
+      img {
+        width: 20px;
+      }
+      &.get, &.give {
+        span {
+          margin: 1px;
+          font-size: 10px;
+          font-weight: normal;
+          padding: 2px;
+        }
+      }
+    }
+  }
+}

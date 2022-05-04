@@ -55,8 +55,7 @@ const UsersList = ({setUsersModal}) => {
                                   color="#cccccc" width={15} height={15}/>
                         </ConditionalRender>
                         <div onClick={() => goToUserPage(user)}>
-                            <img alt='' src={logo}/><span>{user.name}</span></div>
-
+                            <img alt='' src={user.logo || logo}/><span>{user.name}</span></div>
                         </div>
                 )}
 

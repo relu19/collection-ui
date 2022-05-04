@@ -13,21 +13,62 @@ import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import NoImage from '../../images/noImage.png'
 import AddEditSet from "../addEditSet";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import Exchange from "../exchange";
+import {getCurrentUser, getUser, getUserById} from "../../actions/users";
+import objectAssign from "object-assign";
+import {getURLParams} from "../../utils/getURLParams";
+import NoData from "../no-date-modal";
 
 const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, setEditMode}) => {
     const [modalData, setModalData] = useState();
     const [editModal, setEditModal] = useState();
+    const [showExchange, setShowExchange] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [viewModeAlert, setViewModeAlert] = useState(false);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [searchFilter, setSearchFilter] = useState('');
     const [collectionList, setCollectionList] = useState([]);
+    const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
+    const [userInfo, setUserInfo] = useState({})
 
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
     }
+
+    const shouldExchange = (set) => {
+        let canExchange = false
+        // let result = { missing: 0, swap: 0}
+        // set.numbers.forEach(nr => {
+        //     if (nr.type === 2 || nr.type === 3) {
+        //         result.swap = 1
+        //     }
+        //     if (nr.type === 0) {
+        //         result.missing = 1
+        //     }
+        // })
+        // return result
+        set.numbers.forEach(nr => {
+            if (nr.type === 2 || nr.type === 3 || nr.type === 0) {
+                canExchange = true
+            }
+        })
+        return canExchange
+    }
+
+    const fetchUser = async () => {
+        const data = await getUserById(filterParams)
+        if (!data.length) {
+            window.location = '/'
+        }
+        setUserInfo(data ? data[0] : {})
+    }
+
+    useEffect(() => {
+        fetchUser().then(() => {
+        })
+    }, [filterParams.userId]);
 
     useEffect(() => {
         const list = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
@@ -114,7 +155,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const getExtraNumbersClassName = (list, set) => {
         const groupName = set.group
         // search if parent set is in collection
-        const findSetsWithSameGroup = list.filter(item => item.group && item.group=== groupName && item.inCollection)
+        const findSetsWithSameGroup = list.filter(item => item.group && item.group === groupName && item.inCollection)
 
         // if parent set is in collection and set has extra numbers add class
         return findSetsWithSameGroup.length > 1 && set.extraNumbers ? 'extra-numbers' : ''
@@ -154,7 +195,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
                 {collectionList.map((elem, i) =>
                     <div key={i} className={`set-wrapper ${getExtraNumbersClassName(collectionList, elem)}`}>
-                    {/*<div key={i} className={`set-wrapper ${elem.extraNumbers ? 'extra-numbers' : ''}`}>*/}
+                        {/*<div key={i} className={`set-wrapper ${elem.extraNumbers ? 'extra-numbers' : ''}`}>*/}
                         <ConditionalRender if={isAdmin && editMode}>
                             <Icon onClick={() => openModal({...elem, remove: false, delete: true})} name='delete'
                                   color="#cccccc" width={15} height={15}/>
@@ -190,7 +231,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     })}
                                 </div>
                                 <div className='set-statistics'>
-                                    <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}</span>
+                                    <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}
+                                        {shouldExchange(elem) ?
+                                            <span onClick={() => setShowExchange(elem)} className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name}` : 'Find users for trade'}</span>  : ''}
+                                    </span>
                                     <ConditionalRender if={isMyPage && editMode && (elem.minNr !== elem.maxNr)}>
                                         <div className='bulk-actions'>
                                             <Icon
@@ -212,14 +256,14 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     </ConditionalRender>
                                 </div>
                             </div>
-                            <ConditionalRender if={elem.minNr !== elem.maxNr || !getExtraNumbersClassName(collectionList, elem)}>
+                            <ConditionalRender
+                                if={elem.minNr !== elem.maxNr || !getExtraNumbersClassName(collectionList, elem)}>
                                 <div
                                     className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
                                     <img alt='' src={elem?.image || NoImage}/>
                                 </div>
                             </ConditionalRender>
                         </div>
-
                     </div>
                 )}
             </ConditionalRender>
@@ -276,6 +320,22 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     onSave={(data) => editSet(data)}
                 />
 
+            </Modal>
+
+
+            <Modal
+                isOpen={!!showExchange}
+                ariaHideApp={false}
+                onRequestClose={() => setShowExchange(null)}
+                contentLabel="Exchange"
+                className="page-modal wide"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                {userDetails ? showExchange &&
+                    <Exchange userInfo={userInfo} userDetails={userDetails} set={showExchange}
+                              setModal={(val) => setShowExchange(val)}/> :
+                    <NoData setModal={(val) => setShowExchange(val)}/>}
             </Modal>
         </div>
 

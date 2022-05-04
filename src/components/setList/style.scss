@@ -255,7 +255,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 10px;
+  position: sticky;
+  border-radius: 10px;
+  top: 0;
+  background-color: #242526;
+}
+.exchange {
+  margin-left: 5px;
+  color: #87CEFA ;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 @media screen and (max-width: 1000px) {

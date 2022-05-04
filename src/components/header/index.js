@@ -18,11 +18,11 @@ const Header = () => {
         const userInfo = await getUser(data)
         const userId = userInfo?.length && userInfo[0].id
         const userType = userInfo?.length && userInfo[0].type
-        const userData = {...data, id: userId, type: userType || 1}
+        const userData = {...data, id: userId, type: userType || 1, logo: data?.picture?.data?.url }
         setUserDetails(userData)
         setLogInModal(false)
         userInfo ? setStorageItem('collector-data', userData) : deleteStorageItem('collector-data')
-        window.location.reload();
+        window.location = '/';
     }
 
     const logOutUser = () => {
@@ -34,7 +34,7 @@ const Header = () => {
         <div className='cl-header'>
             <div className='header-data'>
                 <span className='collector-select' onClick={() => setUsersModal(true)}>Select Collector</span>
-                {!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Log In</span>}
+                {!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Add your collection</span>}
                 {userDetails?.name && <div className='user-info' onClick={() => setLogOutModal(true)}>
                     <img alt={''} src={userDetails?.picture?.data?.url}/>
                     <p>{userDetails?.name}</p>
@@ -80,10 +80,11 @@ const Header = () => {
 
                 <div className='modal-content'>
                     <p>Create an account so you can add your own collection and share it with others</p>
-                    <p>By creating an account you agree that your data will be saved and associated with any sets you
-                        add to your collection</p>
+
                 </div>
                 <hr/>
+                <p className='note'>*By creating an account you agree that your data will be saved and associated with any sets you
+                    add to your collection</p>
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setLogInModal(false)}>Cancel</button>
                     <FaceBookLogin userDetails={userDetails} setUserDetails={fetchUser}/>
@@ -110,6 +111,7 @@ const Header = () => {
                 <hr/>
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setUsersModal(false)}>Close</button>
+                    <button className='button blue' onClick={() => {setUsersModal(false); setLogInModal(true)}}>Add your own collection</button>
                 </div>
             </Modal>
         </div>

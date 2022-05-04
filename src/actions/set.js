@@ -2,6 +2,21 @@ import Actions from "./api";
 import {ACTIONS} from "../config";
 import {createNumbersArray} from "../utils/createNumbersArray";
 
+export const getSetWithNumbers = async (setId, userId) => {
+    const filter = {
+        where: {
+            id: parseInt(setId),
+        }
+    }
+    const setData = await Actions.get(`sets?filter=${JSON.stringify(filter)}`)
+        .then((res) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+    return _createSetNumbersArray(setData, userId)
+};
+
 
 export const getAllSetsWithNumbers = async (dispatch, params) => {
     // get all sets is from user collection
@@ -60,7 +75,6 @@ const _addNumbersToSet = async (set, userId) => {
         numbers: createNumbersArray(set, numbers, userId)
     };
 }
-
 export const _getSetsInCollection = async (set) => {
     const filter = {
         where: {

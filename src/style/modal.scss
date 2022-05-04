@@ -14,6 +14,11 @@
   outline: none;
   color: $black;
   width: 500px;
+  &.wide {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+  }
 }
 
 .modal-header {

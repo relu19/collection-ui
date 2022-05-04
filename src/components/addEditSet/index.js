@@ -32,7 +32,6 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         getCategoriesWithSetTypes(dispatch)
     }
 
-
     useEffect(() => {
         updateCategories()
     }, []);
@@ -56,7 +55,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
 
     return (<div>
             <div className='modal-header'>
-                Add a New Set
+                {!data.name ? 'Add a New Set' : 'Edit Set'}
             </div>
             <div className='modal-content'>
                 <div className='modal-form'>

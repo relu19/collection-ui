@@ -59,3 +59,17 @@
     cursor: pointer;
   }
 }
+.add-your-collection {
+  width: 100%;
+  text-align: center;
+  color: #3b5998;
+  margin: 20px 0 10px  0;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.note {
+  font-size: 10px;
+  padding: 0 20px;
+}

@@ -29,6 +29,10 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   min-width: 70px;
+  &.blue {
+    background: linear-gradient(to bottom, #87CEFA 0%, #78BFEB 100%);
+    font-weight: bold;
+  }
 }
 
 .button:hover {
