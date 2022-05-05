@@ -170,7 +170,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     {editMode ?
                         <p className='edit-sets'><span onClick={() => setEditMode(false)}>Close Edit</span></p> :
                         <p className='edit-sets' onClick={() => setEditMode(true)}>
-                            <span onClick={() => setEditMode(false)}>Add / Edit Sets</span></p>}
+                            <span onClick={() => setEditMode(false)}>Edit</span></p>}
 
                 </div>
             </ConditionalRender>

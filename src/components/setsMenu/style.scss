@@ -7,13 +7,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 5;
   outline: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding-top: 50px;
   box-sizing: border-box;
+  z-index: 999;
 
   .avatar {
     background: rgba(0, 0, 0, 0.1);
