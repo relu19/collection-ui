@@ -17,7 +17,7 @@
 
   .avatar {
     background: rgba(0, 0, 0, 0.1);
-    padding: 2em 0.5em;
+    padding: 20px;
     text-align: center;
 
     img {
@@ -39,11 +39,13 @@
   ul {
     list-style: none;
     margin: 0;
-    overflow: auto;
+    //overflow: auto;
     width: 100%;
+    //height: calc(100vh - 320px);
     height: 100%;
 
     .menu-header {
+      user-select: none;
       width: 100%;
       padding: 10px;
       background-color: rgba(255, 255, 255, 0.1);
@@ -51,8 +53,14 @@
       display: flex;
       justify-content: space-between;
 
-      &:after {
-        content: '+';
+      &:after{
+        content: '-';
+        float: right;
+      }
+      &.expanded {
+        &:after{
+          content: '+';
+        }
       }
     }
 
@@ -68,11 +76,13 @@
       }
 
       .sets-list {
-        transition: max-height ease 0.2s;
+        transition: max-height ease 0.5s;
         width: 100%;
-
+        //transition: height 1s ease
+        max-height: 300px;
+        overflow: auto;
         li {
-          padding: 1em 1em 1em 2em;
+          padding: 0.5em 1em 0.5em 2em;
           font-weight: normal;
           flex-direction: row;
           background-repeat: no-repeat;
@@ -81,15 +91,9 @@
       }
 
       &.active {
-        .menu-header {
-          &:after {
-            content: '-';
-          }
-        }
 
         .sets-list {
           transition: max-height ease 0.3s;
-          height: auto;
           overflow: auto;
 
           li {
@@ -140,7 +144,7 @@
     }
 
     ul {
-      padding-bottom: 20px;
+      //padding-bottom: 20px;
       li {
 
         .sets-list {
@@ -163,6 +167,9 @@
     padding-left: 0;
   }
 
+  .menu .avatar {
+    padding: 10px ;
+  }
   .menu {
     width: $menu-width-smartphone;
     box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
@@ -197,7 +204,7 @@
 
 
     ul {
-      padding-bottom: 30px;
+      //padding-bottom: 30px;
       li {
         .sets-list {
 
@@ -205,7 +212,7 @@
             padding: 10px 0 10px 10px;
 
             svg {
-              width: 1em;
+              width: 1.5em;
               height: 1em;
             }
           }

@@ -40,6 +40,18 @@ const SetsMenu = ({isAdmin, data}) => {
         fetchUser().then(() => {})
     }, [filterParams.userId]);
 
+    const toggleMenu = (id) => {
+        const menuHeader = document.getElementById(id + 'header');
+        const menu = document.getElementById(id);
+        menuHeader.classList.toggle('expanded');
+        const menuHeight = menu.style.maxHeight
+        if (!menuHeight || menuHeight=== '500px') {
+            menu.style.maxHeight = '0'
+        } else {
+            menu.style.maxHeight = '500px'
+        }
+    }
+
     return (
         <nav className="menu" tabIndex="0">
             <header className="avatar">
@@ -50,8 +62,8 @@ const SetsMenu = ({isAdmin, data}) => {
             <ul>
                 {menu && menu.map((category, i) =>
                     <li key={i} onClick={() => handleToggle(i)}  className={`${clicked === i ? 'active' : ''}`}>
-                        <div className='menu-header'>{category.name}</div>
-                        <ul className={`sets-list`}>
+                        <div onClick={() => toggleMenu(category.id + '' + i)} id={category.id + '' + i + 'header'} className='menu-header'>{category.name}</div>
+                        <ul id={category.id + '' + i} className={`sets-list`}>
                             {category.categoryTypes.map((type, j) =>
                                 <li className={parseInt(filterParams.setTypeId) === type.id ? 'selected' : ''} key={j}
                                     onClick={() => {changeCategory(dispatch, category.id, type.id); handleToggle(i)}}>
