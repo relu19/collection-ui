@@ -69,7 +69,15 @@
     padding: 5px 10px;
   }
 }
-
+.suggestion {
+  font-size: 13px;
+  a {
+    color: #fff;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
 
 @media screen and (max-width: 1000px) {
 
