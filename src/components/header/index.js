@@ -1,7 +1,7 @@
 import FaceBookLogin from "../facebook-login";
-import {deleteStorageItem, getStorageItem, setStorageItem} from "../../storage";
-import {getUser} from "../../actions/users";
-import React, {useState} from "react";
+import { deleteStorageItem, getStorageItem, setStorageItem } from "../../storage";
+import { getUser } from "../../actions/users";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import './style.scss';
 import UsersList from "../users-list";
@@ -15,10 +15,19 @@ const Header = () => {
     const [userDetails, setUserDetails] = useState(getStorageItem('collector-data'))
 
     const fetchUser = async (data) => {
-        const userInfo = await getUser(data)
+        // const userInfo = await getUser(data)
+        const userInfo = {
+            email: "relu1919@yahoo.com",
+            fbid: "5122927974398404",
+            id: 3,
+            name: "Relu Plesciuc",
+            publicid: "18ac6704-f528-4d1a-9d43-db13611d7c03",
+            type: 114
+        }
+
         const userId = userInfo?.length && userInfo[0].id
         const userType = userInfo?.length && userInfo[0].type
-        const userData = {...data, id: userId, type: userType || 1, logo: data?.picture?.data?.url }
+        const userData = {...data, id: userId, type: userType || 1, logo: data?.picture?.data?.url}
         setUserDetails(userData)
         setLogInModal(false)
         userInfo ? setStorageItem('collector-data', userData) : deleteStorageItem('collector-data')
@@ -34,7 +43,8 @@ const Header = () => {
         <div className='cl-header'>
             <div className='header-data'>
                 <span className='collector-select' onClick={() => setUsersModal(true)}>Select Collector</span>
-                {!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Add your collection</span>}
+                {!userDetails?.name &&
+                    <span className='pointer' onClick={() => setLogInModal(true)}>Add your collection</span>}
                 {userDetails?.name && <div className='user-info' onClick={() => setLogOutModal(true)}>
                     <img alt={''} src={userDetails?.picture?.data?.url}/>
                     <p>{userDetails?.name}</p>
@@ -83,7 +93,8 @@ const Header = () => {
 
                 </div>
                 <hr/>
-                <p className='note'>*By creating an account you agree that your data will be saved and associated with any sets you
+                <p className='note'>*By creating an account you agree that your data will be saved and associated with
+                    any sets you
                     add to your collection</p>
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setLogInModal(false)}>Cancel</button>
@@ -111,7 +122,11 @@ const Header = () => {
                 <hr/>
                 <div className='modal-footer'>
                     <button className='button' onClick={() => setUsersModal(false)}>Close</button>
-                    <button className='button blue' onClick={() => {setUsersModal(false); setLogInModal(true)}}>Add your own collection</button>
+                    <button className='button blue' onClick={() => {
+                        setUsersModal(false);
+                        setLogInModal(true)
+                    }}>Add your own collection
+                    </button>
                 </div>
             </Modal>
         </div>
