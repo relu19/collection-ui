@@ -260,8 +260,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                 if={elem.minNr !== elem.maxNr || !getExtraNumbersClassName(collectionList, elem)}>
                                 <div
                                     className={`set-image ${elem?.numbers.length < 31 ? 'half' : elem?.numbers.length > 99 ? 'double' : 'default'}`}>
-                                    <img alt='' src={`/inserts/${elem?.image.toString().replace('https://collections-19.s3.eu-central-1.amazonaws.com/', '')}` || NoImage}/>
-                                    {/*<img alt='' src={ elem?.image || NoImage}/>*/}
+                                    <img alt='' src={`/inserts/${elem?.image.toString()}` || NoImage}/>
                                 </div>
                             </ConditionalRender>
                         </div>
