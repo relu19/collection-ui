@@ -10,8 +10,7 @@ const AvailableSets = ({userDetails, remainingSets, addToCollection}) => {
                 {remainingSets.map((elem, i) =>
                     <div className='add-set' key={i}>
                         <a href={elem.link} rel="noreferrer" className='add-set-title' target='_blank'>{elem.name}</a>
-                        {userDetails.id &&
-                            <Icon onClick={() => addToCollection(elem, userDetails.id)}  name='add' color="#cccccc" width={20} height={20} />}
+                            <Icon onClick={() => addToCollection(elem, userDetails.id)}  name='add' color="#cccccc" width={20} height={20} />
                     </div>
                 )}
             </div>

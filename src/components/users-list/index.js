@@ -20,6 +20,8 @@ const UsersList = ({setUsersModal}) => {
     const userDetails = getStorageItem('collector-data')
     const isAdmin = userDetails && userDetails.name ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
 
+    console.log('userDetails', userDetails)
+
     const params = getURLParams()
 
     useEffect(() => {
