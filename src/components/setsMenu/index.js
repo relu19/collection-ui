@@ -56,7 +56,8 @@ const SetsMenu = ({isAdmin, data}) => {
         <nav className="menu" tabIndex="0">
             <header className="avatar">
                 <div className="smartphone-menu-trigger"/>
-                <img alt='' src={userInfo?.logo || logo}/>
+                {/*<img alt='' src={userInfo?.logo || logo}/>*/}
+                <img alt='' src={logo}/>
                 <h2>{userInfo?.name}</h2>
             </header>
             <ul>
