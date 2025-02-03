@@ -1,43 +1,45 @@
-import React, { useState } from 'react';
-import ForgotPasswordForm from "./forgot-password";
-import SignupForm from "./sign-up";
+import React from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import { createNewUser, getUser } from "../../actions/users"; // Add getUser
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = ({ setUserDetails }) => {
-    const [isSignedUp, setIsSignedUp] = useState(false);
-    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const responseGoogle = async (response) => {
+        const decoded = jwtDecode(response.credential);
 
-    const handleSignupSubmit = async ({ email, password }) => {
-        // Call your backend API for signup and send confirmation email
-        // Example: await signupApi(email, password);
-        setIsSignedUp(true);
+        // Extract user details
+        const userDetails = {
+            name: decoded.name,
+            email: decoded.email,
+            logo: decoded.picture,
+            type: 1,
+            fbId: decoded.sub,
+        };
+
+        // Step 1: Check if user exists in the database
+        const existingUser = await getUser(userDetails);
+
+
+        if (existingUser && existingUser.length > 0) {
+            // Step 2: User exists, log them in
+            console.log("User exists, logging in...");
+            setUserDetails(existingUser[0]);
+        } else {
+            // Step 3: User does not exist, create a new one
+            console.log("User not found, creating a new one...");
+            await createNewUser(userDetails);
+            setUserDetails(userDetails);
+        }
     };
-
-    const handleForgotPasswordSubmit = async (email) => {
-        // Call backend to send password reset email
-        // Example: await forgotPasswordApi(email);
-        setIsForgotPassword(true);
-    };
-
-
-    const EmailConfirmation = () => (
-        <div>
-            <h2>Email Confirmation</h2>
-            <p>Please check your email for a confirmation link.</p>
-        </div>
-    );
-
 
     return (
-        <div>
-            {!isSignedUp && !isForgotPassword ? (
-                <SignupForm onSubmit={handleSignupSubmit}/>
-            ) : isForgotPassword ? (
-                <ForgotPasswordForm onSubmit={handleForgotPasswordSubmit}/>
-            ) : (
-                <EmailConfirmation/>
-            )}
-        </div>
+        <GoogleLogin
+            onSuccess={responseGoogle}
+            onError={() => {
+                console.log('Login Failed');
+            }}
+        />
     );
-}
+};
 
 export default LoginPage;

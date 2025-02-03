@@ -50,9 +50,10 @@
 }
 
 .set-search {
-  border-radius: 5px;
+  border-radius: 2px;
+  width: 80%;
   padding: 5px;
-  background-color: #41403e;
+  background-color: #ebebeb;
   border: none;
   outline: none;
   color: #fff;
@@ -209,7 +210,7 @@
   margin: 20px auto 0;
   padding: 20px 30px;
   background-color: $content;
-  border-radius: 10px;
+  border-radius: 5px;
   position: relative;
 
   &.no-set {
@@ -239,8 +240,14 @@
 
 
 .edit-sets {
-  padding: 10px 5px;
+  padding: 5px 15px;
+  cursor: pointer;
+  color: #000;
   text-align: right;
+  font-size: 15px;
+  background-color:#75D153;
+  font-weight: bold;
+  border-radius: 10px;
 
   span {
     cursor: pointer;
@@ -252,11 +259,11 @@
 }
 
 .set-list-header {
-  z-index: 99;
+  z-index: 9;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 50px;
+  padding: 5px 10px;
   position: sticky;
   border-radius: 10px;
   top: 0;

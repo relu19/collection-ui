@@ -8,18 +8,28 @@
 
   &__cell {
     flex: 0 0 33.333333%;
-    display: flex;
-    align-items: center;
     border: 1px solid #ebebeb;
     padding: 10px;
     margin: -1px -1px 0 0;
+    overflow: auto;
 
     img {
       width: 50px;
       border-radius: 100%;
       margin-right: 5px;
     }
-
+    .user-info {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #41403e;
+      a {
+        color: #75D153;
+      }
+      h2 {
+        //white-space: nowrap;
+      }
+    }
     &.get, &.give {
       display: flex;
       flex-wrap: wrap;
@@ -28,6 +38,7 @@
         font-weight: bold;
         padding: 5px;
         margin: 3px;
+        max-height: 25px;
         font-size: 13px;
         text-align: center;
       }

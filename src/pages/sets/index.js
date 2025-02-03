@@ -16,16 +16,8 @@ import Footer from "../../components/footer";
 const SetsPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // const userDetails = getStorageItem('collector-data')
-    const userDetails ={
-        email: 'relu1919@yahoo.com',
-        type: 114,
-        id: 3,
-        publicid: '18ac6704-f528-4d1a-9d43-db13611d7c03',
-        name: "Relu Plesciuc",
-        fbid: '5122927974398404'
-    }
-    console.log('userDetails', userDetails)
+    const userDetails = getStorageItem('collector-data')
+
     const sets = useSelector((sets) => sets.setsReducer);
     const filterParams = useSelector((filters) => filters.filterReducer);
     const [editMode, setEditMode] = useState(false);
@@ -41,7 +33,8 @@ const SetsPage = () => {
     // }
 
     useEffect(() => {
-        const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}-${filterParams.userPublicId}`
+        // const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}`
+        const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}`
         navigate(url, {replace: true})
         setLoading(true)
 
@@ -57,14 +50,8 @@ const SetsPage = () => {
         // }
     }, [filterParams]);
 
-    console.log(userDetails)
-    // const isAdmin = userDetails?.type ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
-    // const isMyPage = true
-
-
-    const isAdmin = false
-    const isMyPage = false
-    // const isMyPage = userDetails?.type ? parseInt(userDetails.id) === parseInt(filterParams.userId) : false
+    const isAdmin = userDetails?.type ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
+    const isMyPage = userDetails?.type ? parseInt(userDetails.id) === parseInt(filterParams.userId) : false
 
     return (
         <div className='cl-content'>

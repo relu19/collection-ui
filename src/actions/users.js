@@ -7,7 +7,7 @@ export const createNewUser = async (user) => {
         'name': user.name,
         'email': user.email,
         'phone': user.phone,
-        'logo': user.picture?.data?.url,
+        'logo': user.logo,
         'type': 1,
         'fbId': user.id,
         'publicId': uuidv4(),
@@ -17,7 +17,7 @@ export const createNewUser = async (user) => {
 export const getUsers = async () => {
     return Actions.get(
         `/users?filter=${JSON.stringify({
-            fields: { id: true, fbId: true, name: true, publicId: true, logo: true },
+            fields: { id: true, fbId: true, name: true, logo: true, email: true },
         })}`,
     );
 };
@@ -26,7 +26,7 @@ export const getUser = (user) => {
     return Actions.get(
         `users?filter=${JSON.stringify({
             where: {
-                fbId: user?.id,
+                email: user?.email,
             },
         })}`,
     );
@@ -43,7 +43,6 @@ export const deleteUserAndNumbers = async (user, userDetails) => {
         'phone': user.phone,
         'type': 1,
         'fbId': user.fbId,
-        'publicId': uuidv4(),
     }, 'remove-users')
 };
 
@@ -52,7 +51,6 @@ export const getUserById = (user) => {
         `users?filter=${JSON.stringify({
             where: {
                 id: user.userId,
-                publicId: user.userPublicId
             },
         })}`,
     );

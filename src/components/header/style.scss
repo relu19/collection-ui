@@ -12,6 +12,11 @@
 }
 .collector-select {
   cursor: pointer;
+  padding: 5px 15px;
+  color: #000;
+  text-align: right;
+  font-size: 15px;
+  background-color: #75D153;
   &:hover {
     text-decoration: underline;
   }
@@ -21,7 +26,7 @@
   width: 100%;
   position: fixed;
   padding: 10px;
-  height: 50px;
+  height: 60px;
   box-sizing: border-box;
   top: 0;
   background-color: $background;
@@ -72,4 +77,10 @@
 .note {
   font-size: 10px;
   padding: 0 20px;
+}
+.center-align {
+  display: flex;
+  > div {
+    margin: auto;
+  }
 }

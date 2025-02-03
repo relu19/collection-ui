@@ -176,11 +176,11 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={!collection.length && isMyPage}>
-                <div className='set-wrapper no-set'><p>No sets added yet. You need to add <Icon name='add'
+                <div className='set-wrapper no-set'><p>No sets added yet. You need click <span onClick={() => setEditMode(!editMode)} className='edit-sets'>Edit</span> then add (<Icon name='add'
                                                                                                 color="#cccccc"
                                                                                                 width={15}
-                                                                                                height={15}/> some sets
-                    from Available Sets list</p>
+                                                                                                height={15}/>) the sets you have
+                    from "Available Sets" list bellow</p>
                 </div>
             </ConditionalRender>
 
@@ -189,7 +189,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={collection.length}>
-                {!isMyPage && <div className='set-list-header'><input type="search" className="set-search"
+                {!isMyPage && <div className='set-list-header'>
+                    <input type="search" className="set-search"
                                                                       placeholder="Search set..."
                                                                       onChange={(e) => filterSeries(e)}/></div>}
 
