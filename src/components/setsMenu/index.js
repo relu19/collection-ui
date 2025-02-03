@@ -79,7 +79,7 @@ const SetsMenu = ({isAdmin, data}) => {
                     </div>
                 </ConditionalRender>
                 <ConditionalRender if={!userDetails?.id}>
-                    <span>(Log In to see contact details)</span>
+                    <span className="email-container">(Log In to see contact details)</span>
                 </ConditionalRender>
             </header>
             <ul>
