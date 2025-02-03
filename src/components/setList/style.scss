@@ -57,6 +57,11 @@
   border: none;
   outline: none;
   color: #fff;
+  &::placeholder {
+    color: gray;
+    font-style: italic;
+  }
+
 }
 
 .set-image {
