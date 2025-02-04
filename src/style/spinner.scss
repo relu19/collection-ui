@@ -16,7 +16,7 @@
 
 .spinner {
   --animation-duration: 1000ms;
-  margin: calc(20% - 100px) auto 0;
+  margin: calc(40% - 100px) auto 0;
   width: var(--size);
   height: var(--size);
   display: flex;
@@ -60,4 +60,8 @@
     --clr-spinner: var(--clr2);
     animation-delay: calc(var(--animation-duration) / 10 * -3);
   }
+}
+
+.modal-content .spinner {
+  margin: calc(30% - 100px) auto 0;
 }
