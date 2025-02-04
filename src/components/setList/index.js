@@ -238,22 +238,31 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     </span>
                                     <ConditionalRender if={isMyPage && editMode && (elem.minNr !== elem.maxNr)}>
                                         <div className='bulk-actions'>
-                                            <Icon
-                                                onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {}}
-                                                name='check'
-                                                title='Add all'
-                                                color="#cccccc" width={15} height={15}/>
-                                            <Icon
-                                                onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : () => {}}
-                                                title='Add all for trade'
-                                                name='double-check'
-                                                color="#cccccc" width={15} height={15}/>
-                                            <Icon
-                                                onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : () => {}}
-                                                title='Remove all'
-                                                name='uncheck'
-                                                color="#cccccc" width={15} height={15}/>
-                                        </div>
+                                            <div className='bulk-button'
+                                                 onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : () => {
+                                                 }}>
+                                                <Icon
+                                                    name='check'
+                                                    title='Add all'
+                                                    color="#cccccc" width={15} height={15}/>
+                                            </div>
+                                            <div className='bulk-button'
+                                                 onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : () => {
+                                                 }}>
+                                                <Icon
+                                                    title='Add all for trade'
+                                                    name='double-check'
+                                                    color="#cccccc" width={15} height={15}/>
+                                            </div>
+                                                <div className='bulk-button'
+                                                     onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : () => {
+                                                     }}>
+                                                    <Icon
+                                                        title='Remove all'
+                                                        name='uncheck'
+                                                        color="#cccccc" width={15} height={15}/>
+                                                </div>
+                                                </div>
                                     </ConditionalRender>
                                 </div>
                             </div>
