@@ -91,7 +91,16 @@
         transition: max-height ease 0.5s;
         width: 100%;
         //transition: height 1s ease
-        max-height: 500px;
+        max-height: 450px;
+
+        @media screen and (max-height: 1000px) {
+
+          max-height: 250px;
+        }
+        @media screen and (max-height: 700px) {
+
+          max-height: 150px;
+        }
         overflow: auto;
         li {
           padding: 0.5em 1em 0.5em 2em;
