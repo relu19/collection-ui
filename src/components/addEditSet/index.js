@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 
 
 const AddEditSet = ({data, setModal, onSave, fetchData}) => {
+    const length = data?.length || 0
+    const lastOrder = data.length ? data[length - 1].order + 1 : 0
     const defaultState = {
         id: data?.id,
         name: data?.name || '',
@@ -18,7 +20,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         group: data?.group || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
-        order: data?.order || data?.length + 1
+        order: data?.order || lastOrder
     }
 
     const [newSet, setNewSet] = useState(defaultState);
