@@ -2,7 +2,7 @@ export const createNumbersArray = (set, numbers, userId) => {
 
     // create all numbers as 'missing'
     const numbersArray = []
-    if (set.minNr !== set.maxNr) {
+    if (set.minNr && set.maxNr) {
         for (let i = set.minNr; i <= set.maxNr; i++) {
             numbersArray.push({
                 number: i,
@@ -11,7 +11,7 @@ export const createNumbersArray = (set, numbers, userId) => {
                 type: 0
             })
         }
-    } else {
+    } else if (set.extraNumbers) {
         const setNumbers = JSON.parse(set.extraNumbers);
         setNumbers.forEach(nr => {
             numbersArray.push({
