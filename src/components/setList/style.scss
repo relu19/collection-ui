@@ -12,7 +12,8 @@
   justify-content: space-between;
 
   a {
-    color: $text;
+    //color: $text;
+    color: #87CEFA ;
     text-decoration: none;
 
     &:hover {
@@ -23,7 +24,9 @@
   span {
     cursor: pointer;
     font-weight: normal;
+    user-select: none;
     font-size: 13px;
+    color: #87CEFA ;
     transition: all ease 0.1s;
 
     &.view-alert {
