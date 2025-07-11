@@ -1,11 +1,10 @@
 export const createNumbersArray = (set, numbers, userId) => {
-
     // create all numbers as 'missing'
     const numbersArray = []
     if (set.minNr === -1 && set.maxNr === -1) {
         for (let i = set.minNr; i <= set.maxNr; i++) {
             numbersArray.push({
-                number: 1,
+                number: i.toString(),
                 setId: set.id,
                 userId: parseInt(userId),
                 type: 0
@@ -14,7 +13,7 @@ export const createNumbersArray = (set, numbers, userId) => {
     } else if (set.minNr !== set.maxNr) {
         for (let i = set.minNr; i <= set.maxNr; i++) {
             numbersArray.push({
-                number: i,
+                number: i.toString(),
                 setId: set.id,
                 userId: parseInt(userId),
                 type: 0
@@ -24,7 +23,7 @@ export const createNumbersArray = (set, numbers, userId) => {
         const setNumbers = JSON.parse(set.extraNumbers);
         setNumbers.forEach(nr => {
             numbersArray.push({
-                number: parseInt(nr.number),
+                number: nr.number.toString(),
                 setId: set.id,
                 userId: parseInt(userId),
                 type: 0,
@@ -34,7 +33,20 @@ export const createNumbersArray = (set, numbers, userId) => {
     }
 
     const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
-    return mergedNumbers.sort((a, b) => a.number - b.number)
+    
+    // Custom sorting function that handles both numeric and string values
+    return mergedNumbers.sort((a, b) => {
+        const numA = parseFloat(a.number);
+        const numB = parseFloat(b.number);
+        
+        // If both are valid numbers, sort numerically
+        if (!isNaN(numA) && !isNaN(numB)) {
+            return numA - numB;
+        }
+        
+        // Otherwise sort as strings
+        return a.number.localeCompare(b.number)
+    })
 }
 
 
@@ -42,7 +54,7 @@ const _mergeArrays = (a, b, p) => {
     return a.filter(aa => !b.find(bb => aa[p] === bb[p])).concat(b);
 }
 
-
+// Example test data
 // const turbo121 = [{"number":"124","desc":"BMW 318"},{"number": "131", "desc": "pEntera"}, {"number": "144", "desc": "Motor: 1500cc"}, {"number": "149", "desc": "Diablo"}, {"number": "159", "desc": "SL 300"}, {"number": "188", "desc": "Voltswagen"}]
 // const sindy = [{"number":"1","desc":"3rd Number"}, {"number": "2", "desc": "3rd Number"}, {"number": "6", "desc": "3rd Number"}, {"number": "7", "desc": "3rd Number"}]
 // const sindy2 = [{"number": "1", "desc": "4th Number"}]
