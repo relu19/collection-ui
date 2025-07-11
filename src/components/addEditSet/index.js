@@ -45,15 +45,26 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     }
 
     const onSaveClick = () => {
-        if (!newSet.name || !newSet.minNr || !newSet.maxNr || !newSet.categoryId || !newSet.setTypeId || !newSet.order || !newSet.link || !newSet.image) {
-            setError('Fields with * are Required')
+        const { name, minNr, maxNr, categoryId, setTypeId, order, link, image } = newSet;
+
+        if (
+            !name ||
+            minNr === null || minNr === undefined ||
+            maxNr === null || maxNr === undefined ||
+            !categoryId ||
+            !setTypeId ||
+            !order ||
+            !link ||
+            !image
+        ) {
+            setError('Fields with * are Required');
         } else {
-            setError('')
-            onSave(newSet).then(() => fetchData())
-            setModal(false)
-            setNewSet(defaultState)
+            setError('');
+            onSave(newSet).then(() => fetchData());
+            setModal(false);
+            setNewSet(defaultState);
         }
-    }
+    };
 
     return (<div>
             <div className='modal-header'>
