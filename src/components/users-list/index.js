@@ -28,7 +28,7 @@ const UsersList = ({setUsersModal}) => {
     }, []);
 
     useEffect(() => {
-        if(users.length) {
+        if(users && users.length) {
             setLoading(false)
         }
     }, [users]);

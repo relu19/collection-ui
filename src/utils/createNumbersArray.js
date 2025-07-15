@@ -30,11 +30,12 @@ export const createNumbersArray = (set, numbers, userId) => {
                 desc: nr.desc
             })
         })
+        return _mergeArrays(numbersArray, numbers, "number"); // Return without sorting for extraNumbers
     }
 
     const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
     
-    // Custom sorting function that handles both numeric and string values
+    // Only sort for non-extraNumbers cases
     return mergedNumbers.sort((a, b) => {
         const numA = parseFloat(a.number);
         const numB = parseFloat(b.number);
