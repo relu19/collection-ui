@@ -30,24 +30,19 @@ export const createNumbersArray = (set, numbers, userId) => {
                 desc: nr.desc
             })
         })
-        return _mergeArrays(numbersArray, numbers, "number"); // Return without sorting for extraNumbers
     }
 
     const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
     
-    // Only sort for non-extraNumbers cases
-    return mergedNumbers.sort((a, b) => {
-        const numA = parseFloat(a.number);
-        const numB = parseFloat(b.number);
-        
-        // If both are valid numbers, sort numerically
-        if (!isNaN(numA) && !isNaN(numB)) {
-            return numA - numB;
-        }
-        
-        // Otherwise sort as strings
-        return a.number.localeCompare(b.number)
-    })
+    // Check if all values are numeric
+    const allNumeric = mergedNumbers.every(item => !isNaN(parseFloat(item.number)));
+    
+    // Only sort if all values are numeric
+    if (allNumeric) {
+        return mergedNumbers.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+    }
+    
+    return mergedNumbers; // Return unsorted if any non-numeric values
 }
 
 
