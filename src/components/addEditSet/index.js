@@ -68,6 +68,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     const categories = useSelector((cat) => cat.categoriesReducer);
     const [error, setError] = useState('')
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const isEdit = !!data?.name
 
@@ -103,20 +104,26 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             setError('Fields with * are Required');
         } else {
             setError('');
-            // If extraNumbers is empty, delete all extra numbers for this set
-            const isExtraNumbersEmpty =
-                extraNumbers === undefined ||
-                extraNumbers === null ||
-                extraNumbers === '' ||
-                extraNumbers === '[]' ||
-                (Array.isArray(extraNumbers) && extraNumbers.length === 0);
-            if (isExtraNumbersEmpty && id && userId) {
-                await Actions.deleteExtraNumbers(id, userId);
+            setLoading(true);
+            try {
+                // If extraNumbers is empty, delete all extra numbers for this set
+                const isExtraNumbersEmpty =
+                    extraNumbers === undefined ||
+                    extraNumbers === null ||
+                    extraNumbers === '' ||
+                    extraNumbers === '[]' ||
+                    (Array.isArray(extraNumbers) && extraNumbers.length === 0);
+                if (isExtraNumbersEmpty && id && userId) {
+                    await Actions.deleteExtraNumbers(id, userId);
+                }
+                await onSave(newSet);
+                fetchData();
+                setModal(false);
+                setNewSet(defaultState);
+            } catch (e) {
+                // Optionally handle error
             }
-            await onSave(newSet);
-            fetchData();
-            setModal(false);
-            setNewSet(defaultState);
+            setLoading(false);
         }
     };
 
@@ -169,9 +176,9 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             <hr/>
             <div className='modal-footer'>
                 <input className='button' type='button' value='Cancel'
-                       onClick={() => closeModal()}/>
-                <input className='button' type='button' value='Save'
-                       onClick={() => onSaveClick()}/>
+                       onClick={() => closeModal()} disabled={loading}/>
+                <input className='button' type='button' value={loading ? 'Saving...' : 'Save'}
+                       onClick={() => onSaveClick()} disabled={loading}/>
             </div>
         </div>
 
