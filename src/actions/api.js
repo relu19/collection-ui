@@ -67,6 +67,16 @@ class Actions {
   }
 
   /**
+   * Delete all extra numbers for a set and user
+   * @param {number} setId
+   * @param {number} userId
+   * @returns {Promise}
+   */
+  static deleteExtraNumbers(setId, userId) {
+    return this.post({ setId, userId }, '/remove-extra-numbers');
+  }
+
+  /**
    * Make a generic request
    *
    * @param {Object} request Request to be made. Must be of the form: {method, url, query [optional]}

@@ -1,9 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import './style.scss';
 import AddEditCategory from "./addEditCategory";
 import AddEditType from "./addEditType";
-import {getCategoriesWithSetTypes} from "../../actions/type";
-import {useDispatch, useSelector} from "react-redux";
+import { getCategoriesWithSetTypes } from "../../actions/type";
+import { useDispatch, useSelector } from "react-redux";
+import Actions from '../../actions/api';
+import { getStorageItem } from '../../storage';
+import { markAllAtOnce } from '../../actions/set';
 
 
 const AddEditSet = ({data, setModal, onSave, fetchData}) => {
@@ -22,6 +25,30 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         setTypeId: data?.setTypeId || '',
         order: data?.order || lastOrder
     }
+
+    // const test = [
+    //     { "number": "EX-AC", "desc": "Antonio Cassano" },
+    //     { "number": "EX-AD", "desc": "Abou Diaby" },
+    //     { "number": "EX-AN", "desc": "Antonio Nocerino" },
+    //     { "number": "EX-AO", "desc": "Angelo Ogbonna" },
+    //     { "number": "EX-BG", "desc": "Bafetimbi Gomis" },
+    //     { "number": "EX-CC", "desc": "Cedric Carrasso" },
+    //     { "number": "EX-DI", "desc": "Alessandro Diamanti" },
+    //     { "number": "EX-FB", "desc": "Fabio Borini" },
+    //     { "number": "EX-GH", "desc": "Guillaume Hoarau" },
+    //     { "number": "EX-IA", "desc": "Ignazio Abate" },
+    //     { "number": "EX-LS", "desc": "Louis Saha" },
+    //     { "number": "EX-MA", "desc": "Morgan Amalfitano" },
+    //     { "number": "EX-MD", "desc": "Mathieu Debuchy" },
+    //     { "number": "EX-MV", "desc": "Mathieu Valbuena" },
+    //     { "number": "EX-YC", "desc": "Yohan Cabaye" },
+    //     { "number": "CC-A", "desc": "Darijo Srna" },
+    //     { "number": "CC-B", "desc": "Tomáš Rosický" },
+    //     { "number": "CC-C", "desc": "Andrés Iniesta" },
+    //     { "number": "CC-D", "desc": "Giorgio Chiellini" },
+    //     { "number": "CC-E", "desc": "Wesley Sneijder" },
+    //     { "number": "CC-F", "desc": "Andrey Arshavin" }
+    // ]
 
     const [newSet, setNewSet] = useState(defaultState);
     const categories = useSelector((cat) => cat.categoriesReducer);
@@ -44,8 +71,10 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
         setError('')
     }
 
-    const onSaveClick = () => {
-        const { name, minNr, maxNr, categoryId, setTypeId, order, link, image } = newSet;
+    const onSaveClick = async () => {
+        const {name, minNr, maxNr, categoryId, setTypeId, order, link, image, extraNumbers, id} = newSet;
+        const userDetails = getStorageItem('collector-data');
+        const userId = userDetails?.id;
 
         if (
             !name ||
@@ -60,7 +89,18 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             setError('Fields with * are Required');
         } else {
             setError('');
-            onSave(newSet).then(() => fetchData());
+            // If extraNumbers is empty, delete all extra numbers for this set
+            const isExtraNumbersEmpty =
+                extraNumbers === undefined ||
+                extraNumbers === null ||
+                extraNumbers === '' ||
+                extraNumbers === '[]' ||
+                (Array.isArray(extraNumbers) && extraNumbers.length === 0);
+            if (isExtraNumbersEmpty && id && userId) {
+                await Actions.deleteExtraNumbers(id, userId);
+            }
+            await onSave(newSet);
+            fetchData();
             setModal(false);
             setNewSet(defaultState);
         }
@@ -84,7 +124,8 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                     <input type='number' value={newSet.maxNr}
                            onChange={(e) => setNewSet({...newSet, maxNr: parseInt(e.target.value)})}/>
 
-                    <AddEditCategory update={updateCategories} categories={categories} newSet={newSet} setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
+                    <AddEditCategory update={updateCategories} categories={categories} newSet={newSet}
+                                     setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
                     <AddEditType update={updateCategories} categories={categories} newSet={newSet}
                                  setNewSet={setNewSet} isEdit={isEdit} setError={setError}/>
 

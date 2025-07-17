@@ -1,47 +1,46 @@
 export const createNumbersArray = (set, numbers, userId) => {
     // create all numbers as 'missing'
-    const numbersArray = []
-    if (set.minNr === -1 && set.maxNr === -1) {
+    const numbersArray = [];
+
         for (let i = set.minNr; i <= set.maxNr; i++) {
             numbersArray.push({
                 number: i.toString(),
-                setId: set.id,
-                userId: parseInt(userId),
-                type: 0
-            })
-        }
-    } else if (set.minNr !== set.maxNr) {
-        for (let i = set.minNr; i <= set.maxNr; i++) {
-            numbersArray.push({
-                number: i.toString(),
-                setId: set.id,
-                userId: parseInt(userId),
-                type: 0
-            })
-        }
-    } else {
-        const setNumbers = JSON.parse(set.extraNumbers);
-        setNumbers.forEach(nr => {
-            numbersArray.push({
-                number: nr.number.toString(),
                 setId: set.id,
                 userId: parseInt(userId),
                 type: 0,
-                desc: nr.desc
-            })
-        })
+                extra: false
+            });
+        }
+    // Only add extra numbers if they do not already exist in numbers
+    if (set.extraNumbers) {
+        try {
+            const setNumbers = JSON.parse(set.extraNumbers);
+            setNumbers.forEach(nr => {
+                if (!numbers.find(n => n.number.toString() === nr.number.toString())) {
+                    numbersArray.push({
+                        number: nr.number.toString(),
+                        setId: set.id,
+                        userId: parseInt(userId),
+                        type: 0,
+                        desc: nr.desc,
+                        extra: true
+                    });
+                }
+            });
+        } catch (e) {}
     }
 
-    const mergedNumbers = _mergeArrays(numbersArray, numbers, "number")
-    
+    // Merge: always prefer backend numbers for existing, only add new ones
+    const mergedNumbers = numbers.concat(numbersArray.filter(aa => !numbers.find(bb => aa.number === bb.number)));
+
     // Check if all values are numeric
     const allNumeric = mergedNumbers.every(item => !isNaN(parseFloat(item.number)));
-    
+
     // Only sort if all values are numeric
     if (allNumeric) {
         return mergedNumbers.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
     }
-    
+
     return mergedNumbers; // Return unsorted if any non-numeric values
 }
 

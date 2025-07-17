@@ -16,7 +16,11 @@
 
 .spinner {
   --animation-duration: 1000ms;
-  margin: calc(20% - 100px) auto 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
   width: var(--size);
   height: var(--size);
   display: flex;
@@ -63,5 +67,9 @@
 }
 
 .modal-content .spinner {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
   margin: calc(30% - 100px) auto 0;
 }

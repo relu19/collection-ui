@@ -131,6 +131,17 @@
     }
   }
 }
+.extra-numbers-title {
+  cursor: default;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.extra-numbers-content {
+  width: 100%;
+  height: auto;
+  padding: 10px 0 20px;
+}
 
 .set-statistics {
   color: $text;

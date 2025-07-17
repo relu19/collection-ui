@@ -44,7 +44,7 @@ export const _getAllSetsInCategory = async (params, allSetsInCollection) => {
     }
 
     const collectionSetIs = []
-    allSetsInCollection.length && allSetsInCollection.map(c => collectionSetIs.push(c.setId))
+    allSetsInCollection && allSetsInCollection.length && allSetsInCollection.map(c => collectionSetIs.push(c.setId))
     const allSets = await Actions.get(`sets?filter=${JSON.stringify(filter)}`)
         .then((res) => {
             return res;
@@ -54,7 +54,7 @@ export const _getAllSetsInCategory = async (params, allSetsInCollection) => {
 
     // add 'inCollection' true if set it's in user collection'
     const sortedSets = []
-    allSets.map(st => sortedSets.push({...st, inCollection: collectionSetIs.indexOf(st.id) > -1}))
+    allSets.length && allSets.map(st => sortedSets.push({...st, inCollection: collectionSetIs.indexOf(st.id) > -1}))
     return sortedSets
 };
 
@@ -115,23 +115,28 @@ export const getSetsFotThisType = async (typeId) => {
 
 
 export const changeNumberStatus = async (dispatch, nr, set) => {
+    // Get current user ID
+    const userDetails = JSON.parse(localStorage.getItem('collector-data'));
+    const currentUserId = userDetails?.id;
+
+    // Prevent editing if not the owner
+    if (nr.userId && nr.userId !== currentUserId) {
+        return;
+    }
     const newType = nr.type > 2 ? 0 : nr.type + 1;
+    // Determine if this is an extra number
+    let isExtra = false;
+    if (set.extraNumbers) {
+        try {
+            const extraArr = typeof set.extraNumbers === 'string' ? JSON.parse(set.extraNumbers) : set.extraNumbers;
+            isExtra = extraArr.some(n => n.number.toString() === nr.number.toString());
+        } catch (e) {}
+    }
     if (newType === 1 && !nr.id) {
-        const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType, desc: nr.desc || ''}
+        const newNumber = {number: nr.number, setId: nr.setId, userId: nr.userId, type: newType, desc: nr.desc || '', extra: isExtra}
 
         // add numbers to user collection
         return Actions.post(newNumber, `number`).then((res) => {
-            if (res && !res.error) {
-                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: nr.userId});
-            }
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-    if (newType === 0 && nr.id) {
-        // remove number from user collection
-        const removeNumber = {id: nr.id, number: nr.number, setId: nr.setId, userId: nr.userId, type: newType}
-        return Actions.post(removeNumber, `remove-number`).then((res) => {
             if (res && !res.error) {
                 dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: nr.userId});
             }
@@ -151,31 +156,55 @@ export const changeNumberStatus = async (dispatch, nr, set) => {
 }
 
 export const markAllAtOnce = async (dispatch, set, type, userId) => {
+    // 1. Remove all numbers for this set/user
+    await Actions.post({
+        number: "0",
+        type: 0,
+        setId: set.id,
+        userId: userId
+    }, `remove-all-numbers`);
+
+    // 2. Prepare numbers to add: use set.numbers only
+    let numbersArray = [];
+    if (Array.isArray(set.numbers)) {
+        numbersArray = set.numbers.map(nr => ({
+            number: nr.number,
+            extra: nr.extra || false,
+            desc: nr.desc || ''
+        }));
+    } else {
+        // Generate numbers from minNr to maxNr
+        for (let i = set.minNr; i <= set.maxNr; i++) {
+            numbersArray.push({ number: i, extra: false, desc: '' });
+        }
+        // Add extraNumbers if present
+        if (set.extraNumbers) {
+            let extraArr = [];
+            try {
+                extraArr = typeof set.extraNumbers === 'string' ? JSON.parse(set.extraNumbers) : set.extraNumbers;
+            } catch (e) {}
+            extraArr.forEach(nr => {
+                numbersArray.push({ number: nr.number, extra: true, desc: nr.desc || '' });
+            });
+        }
+    }
+
+    // 3. Add all numbers again with the given type
     const numbersData = {
-        number: 0,
+        numbers: numbersArray,
         type: type,
         setId: set.id,
         userId: userId
     };
-    if (type === 0) {
-        return Actions.post(numbersData, `remove-all-numbers`).then((res) => {
-            if (res && !res.error) {
-                dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: userId});
-            }
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-    numbersData.minNr = set.minNr;
-    numbersData.maxNr = set.maxNr;
     return Actions.post(numbersData, `add-all-numbers`).then((res) => {
         if (res && !res.error) {
             dispatch({type: ACTIONS.UPDATE_SET_NUMBERS, numberList: res, data: set, userId: userId});
         }
     }).catch((err) => {
         console.log(err)
-    })
-}
+    });
+};
+
 
 
 export const addSetToCollection = async (dispatch,  elem) => {
@@ -203,11 +232,110 @@ export const addSet = async (dispatch, newSet, userId) => {
     })
 };
 
-export const editSet = async (setData) => {
-    if (setData.group && setData.extraNumbers) {
-        setData.extraNumbers = JSON.stringify(JSON.parse(setData.extraNumbers))
+export const editSet = async (dispatch, setData, userId) => {
+    // Prepare extraNumbers as array
+    let extraNumbersArr = [];
+    if (setData.extraNumbers) {
+        extraNumbersArr = JSON.parse(setData.extraNumbers);
+        setData.extraNumbers = JSON.stringify(extraNumbersArr);
     }
-    return Actions.patch(setData, `sets/${setData.id}`)
+
+    // 1. Update the set itself
+    const setRes = await Actions.patch(setData, `sets/${setData.id}`);
+
+    if (setRes && !setRes.error) {
+        // 2. Fetch current numbers for this set/user
+        const currentNumbers = await Actions.get(
+            `numbers?filter=${JSON.stringify({
+                where: {
+                    setId: setData.id,
+                    userId: userId,
+                },
+            })}`
+        );
+
+        // 3. Handle main numbers (minNr to maxNr)
+        const allNumbers = await Actions.get(
+            `numbers?filter=${JSON.stringify({
+                where: {
+                    setId: setData.id,
+                },
+            })}`
+        );
+        const userIds = [...new Set((allNumbers || []).map(n => n.userId))];
+
+        for (const uid of userIds) {
+            const userNumbers = (allNumbers || []).filter(n => n.userId === uid);
+            const currentMainNumbers = userNumbers.filter(n => !n.extra);
+            const currentMainNumbersSet = new Set(currentMainNumbers.map(n => n.number.toString()));
+            const newMainNumbers = [];
+            for (let i = setData.minNr; i <= setData.maxNr; i++) {
+                newMainNumbers.push(i.toString());
+            }
+            const newMainNumbersSet = new Set(newMainNumbers);
+
+            // To add: in newMainNumbers but not in currentMainNumbers
+            const mainToAdd = newMainNumbers.filter(n => !currentMainNumbersSet.has(n));
+            // To remove: in currentMainNumbers but not in newMainNumbers
+            const mainToRemove = currentMainNumbers.filter(n => !newMainNumbersSet.has(n.number.toString()));
+
+            // Add new main numbers
+            for (const num of mainToAdd) {
+                const numberObj = {
+                    number: num,
+                    setId: setData.id,
+                    userId: uid,
+                    type: 0,
+                    desc: '',
+                    extra: false
+                };
+                await Actions.post(numberObj, 'number');
+            }
+
+            // Remove deleted main numbers
+            for (const num of mainToRemove) {
+                await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: uid }, 'remove-number');
+            }
+        }
+
+        // 3. Parse new extraNumbers
+        let newExtras = [];
+        if (setData.extraNumbers) {
+            newExtras = JSON.parse(setData.extraNumbers);
+        }
+
+        // 4. Find extras to add and remove
+        const currentExtras = (currentNumbers || []).filter(n => n.extra);
+        const currentExtraNumbers = currentExtras.map(n => n.number.toString());
+        const newExtraNumbers = newExtras.map(n => n.number.toString());
+
+        // To add: in newExtras but not in currentExtras
+        const extrasToAdd = newExtras.filter(n => !currentExtraNumbers.includes(n.number.toString()));
+        // To remove: in currentExtras but not in newExtras
+        const extrasToRemove = currentExtras.filter(n => !newExtraNumbers.includes(n.number.toString()));
+
+        // 5. Add new extras
+        for (const num of extrasToAdd) {
+            const numberObj = {
+                number: num.number,
+                setId: setData.id,
+                userId: userId,
+                type: 0, // default type for extra numbers
+                desc: num.desc || '',
+                extra: true
+            };
+            await Actions.post(numberObj, 'number');
+        }
+
+        // 6. Remove deleted extras
+        for (const num of extrasToRemove) {
+            await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: userId }, 'remove-number');
+        }
+
+        // 7. Optionally, dispatch an action to update state
+        dispatch({type: ACTIONS.UPDATE_SET_INFO, data: setRes});
+    }
+    return setRes;
 };
 
 //
