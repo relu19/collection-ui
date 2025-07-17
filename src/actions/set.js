@@ -314,22 +314,29 @@ export const editSet = async (dispatch, setData, userId) => {
         // To remove: in currentExtras but not in newExtras
         const extrasToRemove = currentExtras.filter(n => !newExtraNumbers.includes(n.number.toString()));
 
-        // 5. Add new extras
-        for (const num of extrasToAdd) {
-            const numberObj = {
-                number: num.number,
-                setId: setData.id,
-                userId: userId,
-                type: 0, // default type for extra numbers
-                desc: num.desc || '',
-                extra: true
-            };
-            await Actions.post(numberObj, 'number');
+        // 5. Add new extras for all users who have this set
+        for (const uid of userIds) {
+            for (const num of extrasToAdd) {
+                const numberObj = {
+                    number: num.number,
+                    setId: setData.id,
+                    userId: uid,
+                    type: 0, // default type for extra numbers
+                    desc: num.desc || '',
+                    extra: true
+                };
+                await Actions.post(numberObj, 'number');
+            }
         }
 
-        // 6. Remove deleted extras
-        for (const num of extrasToRemove) {
-            await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: userId }, 'remove-number');
+        // 6. Remove deleted extras for all users who have this set
+        for (const uid of userIds) {
+            // Find extras to remove for this user
+            const userExtrasToRemove = (allNumbers || [])
+                .filter(n => n.userId === uid && n.extra && !newExtraNumbers.includes(n.number.toString()));
+            for (const num of userExtrasToRemove) {
+                await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: uid }, 'remove-number');
+            }
         }
 
         // 7. Optionally, dispatch an action to update state

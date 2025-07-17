@@ -49,6 +49,20 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     //     { "number": "CC-E", "desc": "Wesley Sneijder" },
     //     { "number": "CC-F", "desc": "Andrey Arshavin" }
     // ]
+    //
+    // const test2 = [
+    //     {
+    //         "number": "relu22",
+    //         "desc": "BMW 3181"
+    //     },
+    //     {
+    //         "number": "relu442",
+    //         "desc": "pEntera1"
+    //     },
+    //     {
+    //         "number": "lalalla",
+    //         "desc": "Motor: 1500cc"
+    //     }]
 
     const [newSet, setNewSet] = useState(defaultState);
     const categories = useSelector((cat) => cat.categoriesReducer);
