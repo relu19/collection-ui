@@ -100,7 +100,11 @@ const SetsMenu = ({isAdmin, data}) => {
     return (
         <nav className="menu" tabIndex="0">
             <header className="avatar">
-                <div className="smartphone-menu-trigger"/>
+                <div className="smartphone-menu-trigger">
+                     <span></span>
+                     <span></span>
+                     <span></span>
+                </div>
                 <img alt='' src={userInfo?.logo || logo}/>
                 <h2>{userInfo?.name}</h2>
                 <ConditionalRender if={userDetails?.id}>

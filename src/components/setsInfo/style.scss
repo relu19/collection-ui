@@ -92,28 +92,26 @@
     transition: all 0.3s ease-in-out;
 
     .smartphone-menu-trigger {
+      position: absolute;
+      background: $color-2nd;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px; // space between lines
+      cursor: pointer;
       width: 40px;
       height: 40px;
-      position: absolute;
       right: 100%;
       background: $color-2nd;
-      top: 50px;
+      top: 70px;
 
-      &:before, &:after {
-        content: '';
-        width: 50%;
+      span {
+        display: block;
+        width: 24px;
         height: 2px;
         background: #fff;
-        border-radius: 10px;
-        position: absolute;
-        top: 45%;
-        left: 50%;
-        transform: translate3d(-50%, -50%, 0);
-      }
-
-      &:after {
-        top: 55%;
-        transform: translate3d(-50%, -50%, 0);
+        border-radius: 2px;
       }
     }
 

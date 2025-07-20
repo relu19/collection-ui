@@ -5,8 +5,11 @@ import React from "react";
 const SetsInfo = ({editMode}) => {
     return (
         <nav className="right-menu" tabIndex="1">
-            <div className="smartphone-menu-trigger"/>
-            <div/>
+            <div className="smartphone-menu-trigger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <div className='set-info'>
                 <div><p>Have  {editMode &&<Icon name='check' color="#cccccc" width={15} height={15} />}</p></div>
                 <div><p>For Exchange  {editMode &&<Icon name='double-check' color="#cccccc" width={15} height={15} />}</p></div>

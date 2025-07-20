@@ -103,6 +103,10 @@
     font-size: 13px;
     user-select: none;
     color: $content;
+    @media screen and (max-height: 700px) and (max-width: 1300px) {
+      font-size: 11px;
+      padding: 2px;
+  }
 
     &.active {
       &:hover {
@@ -141,6 +145,12 @@
   width: 100%;
   height: auto;
   padding: 10px 0 20px;
+  &.set-numbers .set-number {
+    @media screen and (max-height: 700px) and (max-width: 1300px) {
+      font-size: 9px;
+      padding: 2px 1px;
+    }
+  }
 }
 
 .set-statistics {
@@ -316,7 +326,7 @@
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1400px) {
   .set-list, .set-statistics {
     width: 100%;
   }
