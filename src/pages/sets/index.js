@@ -10,9 +10,6 @@ import {useNavigate} from 'react-router-dom';
 import {getStorageItem} from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
 import {useDispatch, useSelector} from "react-redux";
-import Footer from "../../components/footer";
-
-
 const SetsPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -77,7 +74,6 @@ const SetsPage = () => {
                     <ConditionalRender if={!sets.list.length && !loading}>
                         <div className='set-wrapper no-set'>No sets added yet.</div>
                     </ConditionalRender>
-                    <Footer />
                 </div>
 
                 <SetsInfo editMode={editMode}/>

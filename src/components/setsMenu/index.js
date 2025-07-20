@@ -15,7 +15,7 @@ import ConditionalRender from "../../utils/conditionalRender";
 const SetsMenu = ({isAdmin, data}) => {
     const [userInfo, setUserInfo] = useState({})
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
-    const [clicked, setClicked] = useState(0);
+    const [clicked, setClicked] = useState(0); // Start with first menu item selected (open by default)
     const dispatch = useDispatch();
 
     const menu = useSelector((categories) => categories.categoriesReducer);
@@ -42,15 +42,53 @@ const SetsMenu = ({isAdmin, data}) => {
         fetchUser().then(() => {})
     }, [filterParams.userId]);
 
+    // Initialize menu items - first one open, rest closed
+    useEffect(() => {
+        if (menu && menu.length > 0) {
+            menu.forEach((category, i) => {
+                const menuElement = document.getElementById(category.id + '' + i);
+                if (menuElement) {
+                    if (i === 0) {
+                        // First menu item should be open
+                        menuElement.style.maxHeight = '350px';
+                        // Add expanded class to first menu header
+                        const menuHeader = document.getElementById(category.id + '' + i + 'header');
+                        if (menuHeader) {
+                            menuHeader.classList.add('expanded');
+                        }
+                    } else {
+                        // Rest of menu items should be closed
+                        menuElement.style.maxHeight = '0';
+                    }
+                }
+            });
+        }
+    }, [menu]);
+
     const toggleMenu = (id) => {
         const menuHeader = document.getElementById(id + 'header');
-        const menu = document.getElementById(id);
+        const menuElement = document.getElementById(id);
+        
+        // Close all other menus first
+        if (menu && menu.length > 0) {
+            menu.forEach((category, i) => {
+                const otherMenu = document.getElementById(category.id + '' + i);
+                const otherHeader = document.getElementById(category.id + '' + i + 'header');
+                if (otherMenu !== menuElement) {
+                    otherMenu.style.maxHeight = '0';
+                    otherHeader.classList.remove('expanded');
+                }
+            });
+        }
+        
+        // Toggle the clicked menu
         menuHeader.classList.toggle('expanded');
-        const menuHeight = menu.style.maxHeight
-        if (!menuHeight || menuHeight=== '500px') {
-            menu.style.maxHeight = '0'
+        
+        const menuHeight = menuElement.style.maxHeight;
+        if (!menuHeight || menuHeight === '350px') {
+            menuElement.style.maxHeight = '0';
         } else {
-            menu.style.maxHeight = '500px'
+            menuElement.style.maxHeight = '350px';
         }
     }
 

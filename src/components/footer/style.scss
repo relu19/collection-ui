@@ -2,12 +2,21 @@
 
 .cl-footer {
   display: flex;
-  justify-content: space-between;
-  padding-bottom: 10px;
-  padding-top: 30px;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px 20px;
+  background-color: #18191A;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  gap: 15px;
+  
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+  
   a {
     color: $border;
-    margin-right: 20px;
     text-decoration: none;
     &:hover  {
       color: $text;
@@ -15,6 +24,7 @@
   }
   p {
     color: $border;
+    margin: 0;
   }
 }
 
