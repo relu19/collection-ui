@@ -32,6 +32,20 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
     const [userInfo, setUserInfo] = useState({})
 
+        // [{"number":"000","desc":"Panini Stamp"}]
+    //
+    // const test3 = [{"number":"PSS","desc":"Panini Logo"}],
+    //     { "number": "CC-A", "desc": "Copa Mundial de la FIFA 2010" },
+    //     { "number": "CC-B", "desc": "Zakumi" },
+    //     { "number": "CC-C", "desc": "El Aeroplano" },
+    //     { "number": "CC-D", "desc": "El Arquero" },
+    //     { "number": "CC-E", "desc": "La Mecedora" },
+    //     { "number": "CC-F", "desc": "El Robot" },
+    //     { "number": "CC-G", "desc": "El Bote" },
+    //     { "number": "CC-H", "desc": "El Rockero" },
+    //     { "number": "CC-T", "desc": "Trophy Tour" }
+    // ];
+
     const getTotal = (set, total) => {
         return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
     }
@@ -168,13 +182,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </ConditionalRender>
 
             <ConditionalRender if={!collection.length && isMyPage}>
-                <div className='set-wrapper no-set'><p>No sets added yet. You need click <span
+                <div className='set-wrapper no-set'><p>No sets added to your collection. Click <span
                     onClick={() => setEditMode(!editMode)} className='edit-sets'>Edit</span> then add (<Icon name='add'
                                                                                                              color="#cccccc"
                                                                                                              width={15}
                                                                                                              height={15}/>)
-                    the sets you have
-                    from "Available Sets" list bellow</p>
+                    sets from "Available Sets" list bellow</p>
                 </div>
             </ConditionalRender>
 
@@ -209,7 +222,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
                             <div className='set-list'>
                                 <p className={`set-title ${getExtraNumbersClassName(collectionList, elem)}`}>
-                                    <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name}</a>
+                                    <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name} <span>🔗</span></a>
                                     <ConditionalRender if={isMyPage}>
                                         {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> :
                                             <span className='view-alert'
@@ -258,7 +271,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}
                                         {shouldExchange(elem) ?
                                             <span onClick={() => setShowExchange(elem)}
-                                                  className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name}` : 'Find users for trade'}</span> : ''}
+                                                  className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find users for trade'}</span> : ''}
+                                        {isMyPage && <span> 🔍</span>}
                                     </span>
                                     <ConditionalRender if={isMyPage && editMode && (elem.minNr !== elem.maxNr)}>
                                         <div className='bulk-actions'>

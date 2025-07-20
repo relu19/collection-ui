@@ -12,8 +12,8 @@
   justify-content: space-between;
 
   a {
-    //color: $text;
-    color: #87CEFA ;
+    color: $text;
+    //color: #87CEFA ;
     text-decoration: none;
 
     &:hover {
@@ -288,8 +288,8 @@
   text-align: right;
   font-size: 15px;
   background-color:#75D153;
-  font-weight: bold;
-  border-radius: 10px;
+  border-radius: 2px;
+  user-select: none;
 
   span {
     cursor: pointer;

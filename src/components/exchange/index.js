@@ -82,56 +82,59 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
 
     return (
         <div>
-            <div className='modal-header'>
-                {set.name} - Trades for {userInfo.name}
+            <div className='modal-header modal-header--fixed'>
+                <span>{set.name} - Trades for {userInfo.name}</span>
+                <button
+                    aria-label="Close"
+                    onClick={closeModal}
+                    className="close-modal-btn"
+                >
+                    ×
+                </button>
             </div>
-            <div className='modal-content'>
-                <div className='exchange-table'>
-                    {(!isMe && total) ?
-                        <div className='compare-me'>
-                            <input onChange={() => compareWithMe()} type="checkbox" id="horns" name="horns"/>
-                            <label htmlFor="horns">Compare only with my list </label>
-                        </div> : ''}
-                    <ConditionalRender if={loading}>
-                        <div className="spinner">
-                            <div className="spinner-item"/>
-                            <div className="spinner-item"/>
-                            <div className="spinner-item"/>
-                            <div className="spinner-item"/>
-                            <div className="spinner-item"/>
-                        </div>
-                    </ConditionalRender>
-                    <ConditionalRender if={!loading && total}>
-                        <div className='exchange-table__row'>
-                            <div className='exchange-table__cell header'>
-                                <p>User</p>
+            <div
+                className='modal-content'
+                style={{maxHeight: '60vh', overflowY: 'auto'}}
+            >
+                    <div className='exchange-table'>
+                        {(!isMe && total) ?
+                            <div className='compare-me'>
+                                <input onChange={() => compareWithMe()} type="checkbox" id="horns" name="horns"/>
+                                <label htmlFor="horns">Compare only with my list </label>
+                            </div> : ''}
+                        <ConditionalRender if={loading}>
+                            <div className="spinner">
+                                <div className="spinner-item"/>
+                                <div className="spinner-item"/>
+                                <div className="spinner-item"/>
+                                <div className="spinner-item"/>
+                                <div className="spinner-item"/>
                             </div>
-                            <div className='exchange-table__cell header'>
-                                <p>Can Give {isMe ? 'Me' : userInfo.name}</p>
+                        </ConditionalRender>
+                        <ConditionalRender if={!loading && total}>
+                            <div className='exchange-table__row'>
+                                <div className='exchange-table__cell header'>
+                                    <p>User</p>
+                                </div>
+                                <div className='exchange-table__cell header'>
+                                    <p>Can Give {isMe ? 'Me' : userInfo.name}</p>
+                                </div>
+                                <div className='exchange-table__cell header'>
+                                    <p>Needs From {isMe ? 'Me' : userInfo.name}</p>
+                                </div>
                             </div>
-                            <div className='exchange-table__cell header'>
-                                <p>Needs From {isMe ? 'Me' : userInfo.name}</p>
-                            </div>
-                        </div>
-                    </ConditionalRender>
-                    {usersToShow.map(user =>
-                        <UserExchange yourExchangeList={yourExchangeList} yourNeedList={yourNeedList} user={user}
-                                      setId={set.id} setTotal={setTotal} setLoading={setLoading} />
-                    )}
+                        </ConditionalRender>
+                        {usersToShow.map(user =>
+                            <UserExchange yourExchangeList={yourExchangeList} yourNeedList={yourNeedList} user={user}
+                                          setId={set.id} setTotal={setTotal} setLoading={setLoading} />
+                        )}
 
-                    <ConditionalRender if={showNoData}>
-                        <p className='no-data'>No Data Found</p>
-                    </ConditionalRender>
+                        <ConditionalRender if={showNoData}>
+                            <p className='no-data'>No Data Found</p>
+                        </ConditionalRender>
+                    </div>
                 </div>
-            </div>
-            <hr/>
-            <div className='modal-footer'>
-                <input className='button' type='button' value='Close'
-                       onClick={() => closeModal()}/>
-            </div>
-
         </div>
-
     )
 }
 export default Exchange

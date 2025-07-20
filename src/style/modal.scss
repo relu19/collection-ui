@@ -9,13 +9,18 @@
   z-index: 12;
   border: 1px solid #ccc;
   background: #fff;
-  overflow: auto;
   border-radius: 4px;
   outline: none;
   color: $black;
   width: 500px;
+  @media screen and (max-height: 1000px) {
+    margin-top: 30px;
+  }
   &.wide {
-    width: 100%;
+    width: calc(100% - 450px);
+    @media screen and (max-width: 1000px) {
+        width: 95%;
+      }
     max-width: 1000px;
     max-height: 70%;
     margin: auto;
@@ -26,15 +31,23 @@
   width: 100%;
   box-sizing: border-box;
   background: linear-gradient(to bottom, #87CEFA 0%, #78BFEB 100%);
-  padding: 15px;
-  font-size: 18px;
-  font-weight: bold;
+  padding: 5px 10px;
+  font-size: 15px;
   border-bottom: 1px solid #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 2
 }
 
 .modal-content {
   padding: 20px;
   width: 100%;
+  overflow: auto;
+  max-height: 60vh;
+  position: relative;
   box-sizing: border-box;
   p {
     padding: 10px 0;

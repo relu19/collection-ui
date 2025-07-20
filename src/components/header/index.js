@@ -153,6 +153,14 @@ const Header = () => {
             >
                 <div className='modal-header'>
                     Collector
+
+                    <button
+                        aria-label="Close"
+                        onClick={() => setUsersModal(false)}
+                        className="close-modal-btn"
+                    >
+                        ×
+                    </button>
                 </div>
 
                 <div className='modal-content'>

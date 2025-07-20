@@ -73,3 +73,15 @@
   transform: none;
   margin: calc(30% - 100px) auto 0;
 }
+.modal-content {
+
+  .exchange-table {
+    .spinner {
+      position: static;
+      top: auto;
+      left: auto;
+      transform: none;
+      margin: 100px auto;
+    }
+  }
+}
