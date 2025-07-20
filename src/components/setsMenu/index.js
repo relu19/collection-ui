@@ -1,14 +1,14 @@
 import NewSet from "../newSet";
-import {changeCategory, getUserById} from "../../actions/users";
-import React, {useEffect, useState} from "react";
+import { changeCategory, getUserById } from "../../actions/users";
+import React, { useEffect, useState } from "react";
 import './style.scss'
 
 import logo from '../../images/avatar.jpg'
 import Icon from "../icon";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import objectAssign from "object-assign";
-import {getURLParams} from "../../utils/getURLParams";
-import {getCategoriesWithSetTypes} from "../../actions/type";
+import { getURLParams } from "../../utils/getURLParams";
+import { getCategoriesWithSetTypes } from "../../actions/type";
 import { getStorageItem } from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
 
@@ -50,7 +50,8 @@ const SetsMenu = ({isAdmin, data}) => {
                 if (menuElement) {
                     if (i === 0) {
                         // First menu item should be open
-                        menuElement.style.maxHeight = '350px';
+                        const screenHeight = window.innerHeight;
+                        menuElement.style.maxHeight = screenHeight <= 900 ? '200px' : '450px';
                         // Add expanded class to first menu header
                         const menuHeader = document.getElementById(category.id + '' + i + 'header');
                         if (menuHeader) {
@@ -84,11 +85,13 @@ const SetsMenu = ({isAdmin, data}) => {
         // Toggle the clicked menu
         menuHeader.classList.toggle('expanded');
         
+        const screenHeight = window.innerHeight;
+        const maxHeight = screenHeight <= 900 ? '200px' : '450px';
         const menuHeight = menuElement.style.maxHeight;
-        if (!menuHeight || menuHeight === '350px') {
+        if (!menuHeight || menuHeight === maxHeight) {
             menuElement.style.maxHeight = '0';
         } else {
-            menuElement.style.maxHeight = '350px';
+            menuElement.style.maxHeight = maxHeight;
         }
     }
 

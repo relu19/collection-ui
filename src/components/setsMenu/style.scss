@@ -92,15 +92,15 @@
         transition: max-height ease 0.5s;
         width: 100%;
         //transition: height 1s ease
-        max-height: 600px;
+        max-height: 450px;
 
         @media screen and (max-height: 1000px) {
 
-          max-height: 150px;
+          max-height: 450px;
         }
-        @media screen and (max-height: 700px) {
+        @media screen and (max-height: 900px) {
 
-          max-height: 60px;
+          max-height: 150px;
         }
         overflow: auto;
         li {
