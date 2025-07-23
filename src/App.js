@@ -10,6 +10,7 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import React from "react";
 import Terms from "./pages/terms";
+import ConvertPage from "./pages/convert";
 import Privacy from "./pages/privacy";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -24,6 +25,7 @@ function App() {
                             <Route path="/" element={<HomeScreen/>}/>
                             <Route path="/sets" element={<SetsScreen/>}/>
                             <Route path="/terms" element={<Terms/>}/>
+                            <Route path="/convert" element={<ConvertPage />}/>
                             <Route path="/privacy" element={<Privacy/>}/>
                         </Routes>
                     </main>

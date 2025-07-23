@@ -6,50 +6,32 @@ import { getCategoriesWithSetTypes } from "../../actions/type";
 import { useDispatch, useSelector } from "react-redux";
 import Actions from '../../actions/api';
 import { getStorageItem } from '../../storage';
-import { markAllAtOnce } from '../../actions/set';
-
 
 const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     const length = data?.length || 0
-    const lastOrder = data.length ? data[length - 1].order + 1 : 0
+    const lastOrder = data.length ? data[length - 1].order + 1 : 1
     const defaultState = {
         id: data?.id,
         name: data?.name || '',
-        minNr: data?.minNr || 1,
-        maxNr: data?.maxNr || 70,
+        minNr: data?.minNr ?? 1,
+        maxNr: data?.maxNr ?? 70,
         link: data?.link || '',
         image: data?.image || '',
         extraNumbers: data?.extraNumbers || '',
+        extraNumbersText: (() => {
+            try {
+                return JSON.stringify(JSON.parse(data?.extraNumbers || '[]'), null, 2);
+            } catch {
+                return data?.extraNumbers || '';
+            }
+        })(),
         group: data?.group || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
         order: data?.order || lastOrder
-    }
+    };
 
-    // const test = [
-    //     { "number": "EX-AC", "desc": "Antonio Cassano" },
-    //     { "number": "EX-AD", "desc": "Abou Diaby" },
-    //     { "number": "EX-AN", "desc": "Antonio Nocerino" },
-    //     { "number": "EX-AO", "desc": "Angelo Ogbonna" },
-    //     { "number": "EX-BG", "desc": "Bafetimbi Gomis" },
-    //     { "number": "EX-CC", "desc": "Cedric Carrasso" },
-    //     { "number": "EX-DI", "desc": "Alessandro Diamanti" },
-    //     { "number": "EX-FB", "desc": "Fabio Borini" },
-    //     { "number": "EX-GH", "desc": "Guillaume Hoarau" },
-    //     { "number": "EX-IA", "desc": "Ignazio Abate" },
-    //     { "number": "EX-LS", "desc": "Louis Saha" },
-    //     { "number": "EX-MA", "desc": "Morgan Amalfitano" },
-    //     { "number": "EX-MD", "desc": "Mathieu Debuchy" },
-    //     { "number": "EX-MV", "desc": "Mathieu Valbuena" },
-    //     { "number": "EX-YC", "desc": "Yohan Cabaye" },
-    //     { "number": "CC-A", "desc": "Darijo Srna" },
-    //     { "number": "CC-B", "desc": "Tomáš Rosický" },
-    //     { "number": "CC-C", "desc": "Andrés Iniesta" },
-    //     { "number": "CC-D", "desc": "Giorgio Chiellini" },
-    //     { "number": "CC-E", "desc": "Wesley Sneijder" },
-    //     { "number": "CC-F", "desc": "Andrey Arshavin" }
-    // ]
-    //
+
     // const test2 = [
     //     {
     //         "number": "relu22",
@@ -87,8 +69,20 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
     }
 
     const onSaveClick = async () => {
-        const {name, minNr, maxNr, categoryId, setTypeId, order, link, image, extraNumbers, id} = newSet;
-        const userDetails = getStorageItem('collector-data');
+        const {
+            name,
+            minNr,
+            maxNr,
+            categoryId,
+            setTypeId,
+            order,
+            link,
+            image,
+            extraNumbersText,
+            id,
+        } = newSet;
+
+        const userDetails = getStorageItem("collector-data");
         const userId = userDetails?.id;
 
         if (
@@ -101,31 +95,49 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             !link ||
             !image
         ) {
-            setError('Fields with * are Required');
-        } else {
-            setError('');
-            setLoading(true);
-            try {
-                // If extraNumbers is empty, delete all extra numbers for this set
-                const isExtraNumbersEmpty =
-                    extraNumbers === undefined ||
-                    extraNumbers === null ||
-                    extraNumbers === '' ||
-                    extraNumbers === '[]' ||
-                    (Array.isArray(extraNumbers) && extraNumbers.length === 0);
-                if (isExtraNumbersEmpty && id && userId) {
-                    await Actions.deleteExtraNumbers(id, userId);
-                }
-                await onSave(newSet);
-                fetchData();
-                setModal(false);
-                setNewSet(defaultState);
-            } catch (e) {
-                // Optionally handle error
-            }
-            setLoading(false);
+            setError("Fields with * are Required");
+            return;
         }
+
+        let extraNumbersString = "[]";
+        let isExtraNumbersEmpty = true;
+
+        if (extraNumbersText && extraNumbersText.trim() !== "") {
+            try {
+                const parsed = JSON.parse(extraNumbersText);
+                if (!Array.isArray(parsed)) throw new Error("Not an array");
+                isExtraNumbersEmpty = parsed.length === 0;
+                extraNumbersString = JSON.stringify(parsed);
+            } catch (e) {
+                setError("Extra Numbers is not valid JSON");
+                return;
+            }
+        }
+
+        setError("");
+        setLoading(true);
+
+        try {
+            if (isExtraNumbersEmpty && id && userId) {
+                await Actions.deleteExtraNumbers(id, userId);
+            }
+
+            const cleanSet = { ...newSet };
+            delete cleanSet.extraNumbersText;
+
+            cleanSet.extraNumbers = extraNumbersString;
+            await onSave(cleanSet);
+
+            fetchData();
+            setModal(false);
+            setNewSet(defaultState);
+        } catch (e) {
+            // handle error
+        }
+
+        setLoading(false);
     };
+
 
     return (<div>
             <div className='modal-header'>
@@ -167,9 +179,15 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                            onChange={(e) => setNewSet({...newSet, group: e.target.value})}/>
 
                     <label>Extra Numbers</label>
-                    <input type='text' value={newSet.extraNumbers}
-                           onChange={(e) => setNewSet({...newSet, extraNumbers: e.target.value})}/>
-
+                    <textarea
+                        value={newSet.extraNumbersText}
+                        onChange={(e) =>
+                            setNewSet({ ...newSet, extraNumbersText: e.target.value })
+                        }
+                        rows={10}
+                        style={{ width: '100%' }}
+                        placeholder="Paste JSON array of extra numbers here..."
+                    />
                 </div>
             </div>
             <p className='modal-error'>{error}</p>

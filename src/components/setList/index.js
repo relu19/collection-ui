@@ -32,7 +32,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
     const [userInfo, setUserInfo] = useState({})
 
-        // [{"number":"000","desc":"Panini Stamp"}]
+    // [{"number":"000","desc":"Panini Stamp"}]
     //
     // const test3 = [{"number":"PSS","desc":"Panini Logo"}],
     //     { "number": "CC-A", "desc": "Copa Mundial de la FIFA 2010" },
@@ -248,14 +248,16 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     );
                                                 })}
                                                 <ConditionalRender if={extraNumbers.length > 0}>
-
-                                                    <p className='extra-numbers-title'>Extra Numbers</p>
+                                                    <ConditionalRender if={mainNumbers.length === 0 || extraNumbers.length < mainNumbers.length}>
+                                                        <p className='extra-numbers-title'>Extra Numbers</p>
+                                                    </ConditionalRender>
                                                     <div className='extra-numbers-content set-numbers'>
 
                                                         {extraNumbers.map((item, i) => {
                                                             const isMine = userId && item.userId === userId;
                                                             return (
-                                                                <span title={item.desc || ''} key={`extra-${item.number}`}
+                                                                <span title={item.desc || ''}
+                                                                      key={`extra-${item.number}`}
                                                                       onClick={() => isMine && editMode && !loading ? changeStatus(item, elem) : console.log('nope')}
                                                                       className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''} ${isMine ? 'pointer' : ''}`}>{item.number}</span>
                                                             );
@@ -282,7 +284,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     name='check'
                                                     title='Add all'
                                                     color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline" />}
+                                                {loading && <div className="sline"/>}
                                             </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : undefined}>
@@ -290,7 +292,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     title='Add all for trade'
                                                     name='double-check'
                                                     color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline" />}
+                                                {loading && <div className="sline"/>}
                                             </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : undefined}>
@@ -298,7 +300,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     title='Remove all'
                                                     name='uncheck'
                                                     color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline" />}
+                                                {loading && <div className="sline"/>}
                                             </div>
                                         </div>
                                     </ConditionalRender>

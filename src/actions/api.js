@@ -94,20 +94,18 @@ class Actions {
     params.body = request.method !== 'GET' && request.body ? request.body : params.body;
     // Do the API Request
 
-    const _handleResponse = async (response) => {
-      const text = await response.text();
-      return text ? JSON.parse(text) : {};
-    }
-
     return fetch(SERVER_URI + request.url, params)
-        .then( async (res) => await _handleResponse(res))
-        .then((response) => response)
+        .then(async (res) => {
+            const text = await res.text();
+            return text ? JSON.parse(text) : {};
+        })
         .catch((err) => {
-          console.log('err', err);
-          // Detect no internet
-          if (err.message === 'Failed to fetch') {
-            console.error('No internet connection (or no connection to the server).');
-          }
+            console.log('err', err);
+            // Detect no internet
+            if (err.message === 'Failed to fetch') {
+                console.error('No internet connection (or no connection to the server).');
+            }
+            throw err; // Re-throw to maintain error handling in calling code
         });
   }
 

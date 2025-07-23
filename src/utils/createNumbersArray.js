@@ -33,22 +33,35 @@ export const createNumbersArray = (set, numbers, userId) => {
     // Merge: always prefer backend numbers for existing, only add new ones
     const mergedNumbers = numbers.concat(numbersArray.filter(aa => !numbers.find(bb => aa.number === bb.number)));
 
-    // Check if all values are numeric
-    const allNumeric = mergedNumbers.every(item => !isNaN(parseFloat(item.number)));
-
-    // Only sort if all values are numeric
-    if (allNumeric) {
-        return mergedNumbers.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+    // Separate main and extra numbers
+    const mainNumbers = mergedNumbers.filter(item => !item.extra);
+    const extraNumbers = mergedNumbers.filter(item => item.extra);
+    
+    // Check if all main values are numeric
+    const allMainNumeric = mainNumbers.every(item => !isNaN(parseFloat(item.number)));
+    
+    // Sort only main numbers if they are all numeric
+    if (allMainNumeric) {
+        mainNumbers.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
     }
-
-    return mergedNumbers; // Return unsorted if any non-numeric values
+    
+    // Preserve original order of extra numbers from set.extraNumbers
+    let orderedExtraNumbers = extraNumbers;
+    if (set.extraNumbers) {
+        try {
+            const originalExtraOrder = JSON.parse(set.extraNumbers);
+            // Sort extra numbers according to their original order in set.extraNumbers
+            orderedExtraNumbers = extraNumbers.sort((a, b) => {
+                const aIndex = originalExtraOrder.findIndex(n => n.number.toString() === a.number.toString());
+                const bIndex = originalExtraOrder.findIndex(n => n.number.toString() === b.number.toString());
+                return aIndex - bIndex;
+            });
+        } catch (e) {}
+    }
+    
+    // Return main numbers sorted + extra numbers in original order
+    return [...mainNumbers, ...orderedExtraNumbers];
 }
-
-
-const _mergeArrays = (a, b, p) => {
-    return a.filter(aa => !b.find(bb => aa[p] === bb[p])).concat(b);
-}
-
 // Example test data
 // const turbo121 = [{"number":"124","desc":"BMW 318"},{"number": "131", "desc": "pEntera"}, {"number": "144", "desc": "Motor: 1500cc"}, {"number": "149", "desc": "Diablo"}, {"number": "159", "desc": "SL 300"}, {"number": "188", "desc": "Voltswagen"}]
 // const sindy = [{"number":"1","desc":"3rd Number"}, {"number": "2", "desc": "3rd Number"}, {"number": "6", "desc": "3rd Number"}, {"number": "7", "desc": "3rd Number"}]
