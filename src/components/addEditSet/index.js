@@ -25,6 +25,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                 return data?.extraNumbers || '';
             }
         })(),
+        extraNumbersTitle: data?.extraNumbersTitle || 'Extra Numbers',
         group: data?.group || '',
         categoryId: data?.categoryId || '',
         setTypeId: data?.setTypeId || '',
@@ -79,6 +80,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             link,
             image,
             extraNumbersText,
+            extraNumbersTitle,
             id,
         } = newSet;
 
@@ -144,6 +146,9 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                 {!data.name ? 'Add a New Set' : 'Edit Set'}
             </div>
             <div className='modal-content'>
+                <div className='modal-info-message'>
+                    <p><strong>Tip:</strong> To create a set with only extra numbers, set both "First Number" and "Last Number" to 114.</p>
+                </div>
                 <div className='modal-form'>
                     <label>Set Name*</label>
                     <input type='text' value={newSet.name}
@@ -179,6 +184,17 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                            onChange={(e) => setNewSet({...newSet, group: e.target.value})}/>
 
                     <label>Extra Numbers</label>
+                    <input
+                        type='text'
+                        value={newSet.extraNumbersTitle || 'Extra Numbers'}
+                        onChange={(e) =>
+                            setNewSet({ ...newSet, extraNumbersTitle: e.target.value })
+                        }
+                        placeholder="Extra Numbers"
+                        style={{ marginTop: '5px' }}
+                    />
+
+
                     <textarea
                         value={newSet.extraNumbersText}
                         onChange={(e) =>
@@ -188,6 +204,7 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
                         style={{ width: '100%' }}
                         placeholder="Paste JSON array of extra numbers here..."
                     />
+
                 </div>
             </div>
             <p className='modal-error'>{error}</p>

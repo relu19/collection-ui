@@ -279,22 +279,31 @@ export const editSet = async (dispatch, setData, userId) => {
             // To remove: in currentMainNumbers but not in newMainNumbers
             const mainToRemove = currentMainNumbers.filter(n => !newMainNumbersSet.has(n.number.toString()));
 
-            // Add new main numbers
-            for (const num of mainToAdd) {
-                const numberObj = {
-                    number: num,
+            // Add new main numbers (bulk operation)
+            if (mainToAdd.length > 0) {
+                const numbersData = {
+                    numbers: mainToAdd.map(num => ({
+                        number: num,
+                        extra: false,
+                        desc: ''
+                    })),
                     setId: setData.id,
-                    userId: uid,
-                    type: 0,
-                    desc: '',
-                    extra: false
+                    userId: uid
                 };
-                await Actions.post(numberObj, 'number');
+                await Actions.post(numbersData, 'add-numbers-preserve-status');
             }
 
-            // Remove deleted main numbers
-            for (const num of mainToRemove) {
-                await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: uid }, 'remove-number');
+            // Remove deleted main numbers (bulk operation)
+            if (mainToRemove.length > 0) {
+                const removeData = {
+                    setId: setData.id,
+                    userId: uid,
+                    numbers: mainToRemove.map(num => ({
+                        id: num.id,
+                        number: num.number
+                    }))
+                };
+                await Actions.post(removeData, 'remove-multiple-numbers');
             }
         }
 
@@ -311,31 +320,37 @@ export const editSet = async (dispatch, setData, userId) => {
 
         // To add: in newExtras but not in currentExtras
         const extrasToAdd = newExtras.filter(n => !currentExtraNumbers.includes(n.number.toString()));
-        // To remove: in currentExtras but not in newExtras
-        const extrasToRemove = currentExtras.filter(n => !newExtraNumbers.includes(n.number.toString()));
 
-        // 5. Add new extras for all users who have this set
+        // 5. Add new extras for all users who have this set (bulk operation)
         for (const uid of userIds) {
-            for (const num of extrasToAdd) {
-                const numberObj = {
+            const numbersData = {
+                numbers: extrasToAdd.map(num => ({
                     number: num.number,
-                    setId: setData.id,
-                    userId: uid,
-                    type: 0, // default type for extra numbers
-                    desc: num.desc || '',
-                    extra: true
-                };
-                await Actions.post(numberObj, 'number');
-            }
+                    extra: true,
+                    desc: num.desc || ''
+                })),
+                setId: setData.id,
+                userId: uid
+            };
+            await Actions.post(numbersData, 'add-numbers-preserve-status');
         }
 
-        // 6. Remove deleted extras for all users who have this set
+        // 6. Remove deleted extras for all users who have this set (bulk operation)
         for (const uid of userIds) {
             // Find extras to remove for this user
             const userExtrasToRemove = (allNumbers || [])
                 .filter(n => n.userId === uid && n.extra && !newExtraNumbers.includes(n.number.toString()));
-            for (const num of userExtrasToRemove) {
-                await Actions.post({ id: num.id, number: num.number, setId: setData.id, userId: uid }, 'remove-number');
+            
+            if (userExtrasToRemove.length > 0) {
+                const removeData = {
+                    setId: setData.id,
+                    userId: uid,
+                    numbers: userExtrasToRemove.map(num => ({
+                        id: num.id,
+                        number: num.number
+                    }))
+                };
+                await Actions.post(removeData, 'remove-multiple-numbers');
             }
         }
 

@@ -146,8 +146,9 @@
   height: auto;
   padding: 0 0 20px;
   &.set-numbers .set-number {
-    @media screen and (max-height: 700px) and (max-width: 1300px) {
-      font-size: 9px;
+    font-size: 11px;
+    @media screen and (max-width: 1300px) {
+      font-size: 10px;
       padding: 2px 1px;
     }
   }

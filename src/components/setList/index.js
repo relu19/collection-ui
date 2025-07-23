@@ -239,7 +239,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                         const userId = userDetails?.id;
                                         return (
                                             <>
-                                                {mainNumbers.map((item, i) => {
+                                                {/* Only show main numbers if minNr and maxNr are not both 114 (special case for extra-only sets) */}
+                                                {!(elem.minNr === 114 && elem.maxNr === 114) && mainNumbers.map((item, i) => {
                                                     const isMine = userId && item.userId === userId;
                                                     return (
                                                         <span title={item.desc || ''} key={`main-${item.number}`}
@@ -249,7 +250,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                 })}
                                                 <ConditionalRender if={extraNumbers.length > 0}>
                                                     <ConditionalRender if={mainNumbers.length === 0 || extraNumbers.length < mainNumbers.length}>
-                                                        <p className='extra-numbers-title'>Extra Numbers</p>
+                                                        <p className='extra-numbers-title'>{elem.extraNumbersTitle || 'Extra Numbers'}</p>
                                                     </ConditionalRender>
                                                     <div className='extra-numbers-content set-numbers'>
 
@@ -276,7 +277,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                   className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find users for trade'}</span> : ''}
                                         {isMyPage && <span> 🔍</span>}
                                     </span>
-                                    <ConditionalRender if={isMyPage && editMode && (elem.minNr !== elem.maxNr)}>
+                                    <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : undefined}>
