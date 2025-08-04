@@ -162,7 +162,7 @@
 
     .avatar {
       padding: 0.5em;
-      position: relative;
+      //position: relative;
     }
 
     ul {
@@ -203,6 +203,7 @@
       height: 40px;
       position: absolute;
       left: 100%;
+      top: 107px;
       background: $color-2nd;
       display: flex;
       flex-direction: column;

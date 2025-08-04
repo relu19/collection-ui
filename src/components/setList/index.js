@@ -25,6 +25,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [editModal, setEditModal] = useState();
     const [showExchange, setShowExchange] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [numbersListModal, setNumbersListModal] = useState(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [searchFilter, setSearchFilter] = useState('');
@@ -68,6 +69,25 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             }
         })
         return canExchange
+    }
+
+    const getNumbersLists = (set) => {
+        if (!set?.numbers) return { iHave: [], iNeed: [], iHaveForExchange: [] };
+        
+        const iHave = set.numbers.filter(n => n.type === 1).map(n => n.number).sort((a, b) => Number(a) - Number(b));
+        const iNeed = set.numbers.filter(n => n.type === 0).map(n => n.number).sort((a, b) => Number(a) - Number(b));
+        const iHaveForExchange = set.numbers.filter(n => n.type === 2 || n.type === 3).map(n => n.number).sort((a, b) => Number(a) - Number(b));
+        
+        return { iHave, iNeed, iHaveForExchange };
+    }
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            // You could add a toast notification here if needed
+            console.log('Copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
     }
 
     const fetchUser = async () => {
@@ -174,9 +194,9 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     <input type="search" className="set-search" placeholder="Search set..."
                            onChange={(e) => filterSeries(e)}/>
                     {editMode ?
-                        <p className='edit-sets'><span onClick={() => setEditMode(false)}>Close Edit</span></p> :
+                        <p className='edit-sets' onClick={() => setEditMode(false)}><span>Close Edit</span></p> :
                         <p className='edit-sets' onClick={() => setEditMode(true)}>
-                            <span onClick={() => setEditMode(false)}>Edit</span></p>}
+                            <span>Edit</span></p>}
 
                 </div>
             </ConditionalRender>
@@ -223,11 +243,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                             <div className='set-list'>
                                 <p className={`set-title ${getExtraNumbersClassName(collectionList, elem)}`}>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name} <span>🔗</span></a>
-                                    <ConditionalRender if={isMyPage}>
-                                        {editMode ? <span onClick={() => setEditMode(false)}>Edit Mode</span> :
-                                            <span className='view-alert'
-                                                  onClick={() => setEditMode(true)}>View Mode</span>}
-                                    </ConditionalRender>
+                                    <span className='view-alert' onClick={() => setNumbersListModal(elem)}>Numbers list</span>
                                 </p>
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                     {/* Separate and sort main and extra numbers */}
@@ -387,6 +403,78 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     <Exchange userInfo={userInfo} userDetails={userDetails} set={showExchange}
                               setModal={(val) => setShowExchange(val)}/> :
                     <NoData setModal={(val) => setShowExchange(val)}/>}
+            </Modal>
+
+            <Modal
+                isOpen={!!numbersListModal}
+                ariaHideApp={false}
+                onRequestClose={() => setNumbersListModal(null)}
+                contentLabel="Numbers List"
+                className="page-modal wide"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                {numbersListModal && (() => {
+                    const { iHave, iNeed, iHaveForExchange } = getNumbersLists(numbersListModal);
+                    return (
+                        <div>
+                            <div className='modal-header'>
+                                Numbers List - {numbersListModal.name}
+                            </div>
+                            <div className='modal-content'>
+                                <div className='numbers-lists-container'>
+                                    <div className='numbers-list-section'>
+                                        <h3>Have (White)</h3>
+                                        <div className='numbers-content'>
+                                            <span className='numbers-text'>{iHave.join(', ')}</span>
+                                            {iHave.length > 0 && (
+                                                <button 
+                                                    className='copy-button' 
+                                                    onClick={() => copyToClipboard(iHave.join(', '))}
+                                                >
+                                                    Copy to Clipboard
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className='numbers-list-section'>
+                                        <h3>Need (Red)</h3>
+                                        <div className='numbers-content'>
+                                            <span className='numbers-text'>{iNeed.join(', ')}</span>
+                                            {iNeed.length > 0 && (
+                                                <button 
+                                                    className='copy-button' 
+                                                    onClick={() => copyToClipboard(iNeed.join(', '))}
+                                                >
+                                                    Copy to Clipboard
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className='numbers-list-section'>
+                                        <h3>For Exchange (Green)</h3>
+                                        <div className='numbers-content'>
+                                            <span className='numbers-text'>{iHaveForExchange.join(', ')}</span>
+                                            {iHaveForExchange.length > 0 && (
+                                                <button 
+                                                    className='copy-button' 
+                                                    onClick={() => copyToClipboard(iHaveForExchange.join(', '))}
+                                                >
+                                                    Copy to Clipboard
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='modal-footer'>
+                                <button className='button' onClick={() => setNumbersListModal(null)}>Close</button>
+                            </div>
+                        </div>
+                    );
+                })()}
             </Modal>
         </div>
 
