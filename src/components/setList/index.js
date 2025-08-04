@@ -33,6 +33,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
     const [userInfo, setUserInfo] = useState({})
     const [copiedButtons, setCopiedButtons] = useState({});
+    const [editButtonFlash, setEditButtonFlash] = useState(false);
 
     // [{"number":"000","desc":"Panini Stamp"}]
     //
@@ -195,6 +196,17 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         return findSetsWithSameGroup.length > 1 && set.extraNumbers ? 'extra-numbers' : ''
     }
 
+    const handleNumberClick = (item, elem, isMine, editMode, loading) => {
+        if (isMine && editMode && !loading) {
+            changeStatus(item, elem);
+        } else {
+            console.log('nope');
+            // Flash the edit button
+            setEditButtonFlash(true);
+            setTimeout(() => setEditButtonFlash(false), 500);
+        }
+    };
+
     return (
         <div>
             <ConditionalRender if={isMyPage}>
@@ -203,7 +215,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                            onChange={(e) => filterSeries(e)}/>
                     {editMode ?
                         <p className='edit-sets' onClick={() => setEditMode(false)}><span>Close Edit</span></p> :
-                        <p className='edit-sets' onClick={() => setEditMode(true)}>
+                        <p className={`edit-sets ${editButtonFlash ? 'flash' : ''}`} onClick={() => setEditMode(true)}>
                             <span>Edit</span></p>}
 
                 </div>
@@ -268,8 +280,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     const isMine = userId && item.userId === userId;
                                                     return (
                                                         <span title={item.desc || ''} key={`main-${item.number}`}
-                                                              onClick={() => isMine && editMode && !loading ? changeStatus(item, elem) : console.log('nope')}
-                                                              className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''} ${isMine ? 'pointer' : ''}`}>{item.number}</span>
+                                                              onClick={() => handleNumberClick(item, elem, isMine, editMode, loading)}
+                                                              className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''} ${isMine ? 'pointer' : 'no-pointer'}`}>{item.number}</span>
                                                     );
                                                 })}
                                                 <ConditionalRender if={extraNumbers.length > 0}>
@@ -283,8 +295,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                             return (
                                                                 <span title={item.desc || ''}
                                                                       key={`extra-${item.number}`}
-                                                                      onClick={() => isMine && editMode && !loading ? changeStatus(item, elem) : console.log('nope')}
-                                                                      className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''} ${isMine ? 'pointer' : ''}`}>{item.number}</span>
+                                                                      onClick={() => handleNumberClick(item, elem, isMine, editMode, loading)}
+                                                                      className={`set-number ${getClassName(item.type)} ${editMode ? 'active' : ''} ${loading ? 'loading' : ''} ${isMine ? 'pointer' : 'no-pointer'}`}>{item.number}</span>
                                                             );
                                                         })}
 
