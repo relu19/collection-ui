@@ -1,0 +1,616 @@
+@import "../../style/constants";
+
+// Base exchange table styles
+.exchange-table {
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+  }
+
+  &__cell {
+    flex: 0 0 33.333333%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin: -1px -1px 0 0;
+    overflow: auto;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #fff;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    }
+
+    &.header {
+      background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+      padding: 12px 15px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+
+      p {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-weight: 700;
+        color: #fff;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+}
+
+.no-data {
+  text-align: center;
+  font-size: 24px;
+  color: #ccc;
+  font-weight: 500;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  color: #fff;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #e74c3c;
+    transform: scale(1.1);
+  }
+}
+
+// Override the 3-column layout for global exchange
+.exchange-table {
+  &__cell {
+    flex: 0 0 auto !important;
+  }
+
+  &__row {
+    .header {
+      &.exchange-table__cell {
+        flex: 0 0 auto !important;
+
+        &:first-child {
+          flex: 0 0 20% !important;
+        }
+
+        &:last-child {
+          flex: 0 0 80% !important;
+        }
+      }
+    }
+
+    &.sub-header {
+      .exchange-table__cell {
+        background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%) !important;
+        padding: 8px 15px !important;
+
+        &:first-child {
+          flex: 0 0 20% !important;
+        }
+
+        &:last-child {
+          flex: 0 0 80% !important;
+        }
+      }
+    }
+  }
+}
+
+.sub-header-labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  width: 100%;
+}
+
+.sub-header-label {
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Additional styles for global exchange
+.user-cell {
+  width: 20%;
+  vertical-align: top;
+  flex: 0 0 20% !important;
+}
+
+
+.user-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  p h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #87CEFA;
+    text-decoration: none;
+    padding: 4px 0;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+    justify-content: flex-start;
+    width: 100%;
+    margin-left: -8px;
+    
+    &:hover {
+      background-color: rgba(135, 206, 250, 0.1);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    
+    .email-icon {
+      flex-shrink: 0;
+    }
+    
+    .email-text {
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 120px;
+      cursor: pointer;
+      position: relative;
+      
+      &:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 13px !important;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  p {
+    margin: 0;
+    color: #ccc;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    text-align: center;
+    
+    svg {
+      color: #87CEFA;
+    }
+    
+    a {
+      color: #87CEFA;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      
+      &:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.exchange-table__row {
+  position: relative;
+
+  &.collapsed {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+    
+    .user-cell {
+      padding: 12px 15px !important;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+      color: #fff !important;
+
+      .user-email {
+        margin-bottom: 0 !important;
+        
+        img {
+          width: 35px !important;
+          height: 35px !important;
+        }
+        
+        p h2 {
+          font-size: 13px !important;
+          color: #fff !important;
+        }
+      }
+
+      .user-info {
+        margin-bottom: 0;
+        color: #fff !important;
+
+        img {
+          width: 35px;
+          height: 35px;
+        }
+
+        h2 {
+          font-size: 13px;
+          color: #fff !important;
+        }
+      }
+    }
+
+    .exchanges-cell {
+      display: none;
+    }
+  }
+}
+
+.collapse-toggle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: white;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #f8f9fa;
+    color: #333;
+    border-color: #adb5bd;
+  }
+
+  &:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+  }
+}
+
+.exchanges-cell {
+  width: 80%;
+  vertical-align: top;
+  flex: 0 0 80% !important;
+}
+
+.exchanges-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.exchange-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  align-items: stretch;
+}
+
+.exchange-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &.left-item {
+    background-color: #e8f5e8;
+  }
+
+  &.right-item {
+    background-color: #fff3cd;
+  }
+
+  .set-title {
+    font-weight: bold;
+    font-size: 12px;
+    color: #000;
+    margin-bottom: 8px;
+    padding: 0;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: left;
+    flex-shrink: 0;
+
+    &::after {
+      display: none !important;
+    }
+  }
+
+  .numbers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    max-height: 200px;
+
+    .regular-numbers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .extra-numbers-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      margin: 0;
+      padding: 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .extra-numbers-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    span {
+      padding: 3px 6px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 500;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+
+      &.no-numbers {
+        background-color: #6c757d;
+        font-style: italic;
+        height: 24px;
+        min-width: 30px;
+        padding: 3px 6px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .exchange-table__row {
+    flex-direction: column;
+  }
+
+  .user-cell {
+    width: 100%;
+    flex: 0 0 100% !important;
+  }
+
+  .exchanges-cell {
+    width: 100%;
+    flex: 0 0 100% !important;
+  }
+
+  .exchanges-grid {
+    gap: 10px;
+  }
+
+  .exchange-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .exchange-item {
+    padding: 8px;
+
+    .set-title {
+      font-size: 11px;
+      padding: 0;
+      background: transparent !important;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+
+      &::after {
+        display: none !important;
+      }
+    }
+
+    .numbers-list {
+      max-height: 150px;
+      gap: 6px;
+
+      .regular-numbers {
+        gap: 2px;
+      }
+
+      .extra-numbers-title {
+        font-size: 10px;
+        padding: 1px 0;
+      }
+
+      .extra-numbers-content {
+        gap: 2px;
+      }
+    }
+
+    .numbers-list span {
+      font-size: 11px;
+      padding: 2px 4px;
+      height: 20px;
+      min-width: 25px;
+
+      &.no-numbers {
+        height: 20px;
+        min-width: 25px;
+        padding: 2px 4px;
+      }
+    }
+  }
+
+  .exchange-table__cell.user-cell .user-email {
+    gap: 8px !important;
+    padding: 6px 0 !important;
+    margin-bottom: 6px !important;
+    
+    img {
+      width: 32px !important;
+      height: 32px !important;
+      border-width: 1px !important;
+    }
+    
+    p h2 {
+      font-size: 12px !important;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+
+    img {
+      width: 35px;
+      height: 35px;
+    }
+
+    h2 {
+      font-size: 12px;
+    }
+  }
+
+  // Only apply vertical layout in modal context
+  .page-modal .user-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+    justify-content: flex-start;
+
+    img {
+      width: 35px;
+      height: 35px;
+      flex-shrink: 0;
+    }
+
+    p {
+      margin: 0;
+      flex: 1;
+      text-align: left;
+    }
+
+    h2 {
+      font-size: 12px;
+      text-align: left;
+      white-space: normal;
+      word-wrap: break-word;
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+
+  .collapse-toggle {
+    top: 3px;
+    right: 3px;
+    font-size: 16px;
+    padding: 2px 6px;
+  }
+
+  .exchange-table__row.collapsed {
+    .user-cell {
+      padding: 6px 8px;
+
+      .user-email {
+        img {
+          width: 25px !important;
+          height: 25px !important;
+        }
+        
+        p h2 {
+          font-size: 11px !important;
+        }
+      }
+
+      .user-info {
+        img {
+          width: 25px;
+          height: 25px;
+        }
+
+        h2 {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+} 

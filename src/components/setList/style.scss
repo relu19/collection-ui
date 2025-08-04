@@ -93,6 +93,13 @@
   border-radius: 8px;
 }
 
+.search-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
 .set-search {
   border-radius: 8px;
   width: 60%;
@@ -103,7 +110,7 @@
   color: #fff;
   font-size: 14px;
   transition: all 0.3s ease;
-  
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
@@ -113,6 +120,31 @@
     background-color: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.global-exchange-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  white-space: nowrap;
+
+  &:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
   }
 }
 
@@ -172,7 +204,7 @@
     transition: all 0.15s ease;
     position: relative;
     border: 1px solid transparent;
-    
+
     @media screen and (max-height: 700px) and (max-width: 1300px) {
       font-size: 10px;
       padding: 4px 1px;
@@ -202,7 +234,7 @@
       background: #e74c3c;
       color: #fff;
       border-color: #c0392b;
-      
+
       &:hover {
         background: #c0392b;
         border-color: #a93226;
@@ -213,7 +245,7 @@
       background: #f8f9fa;
       color: #495057;
       border-color: #dee2e6;
-      
+
       &:hover {
         background: #e9ecef;
         border-color: #ced4da;
@@ -224,7 +256,7 @@
       background: #28a745;
       color: #fff;
       border-color: #1e7e34;
-      
+
       &:hover {
         background: #1e7e34;
         border-color: #155724;
@@ -235,7 +267,7 @@
       background: #6c757d;
       color: #fff;
       border-color: #545b62;
-      
+
       &:hover {
         background: #545b62;
         border-color: #3d4449;
@@ -283,11 +315,11 @@
       height: 25px;
       background: transparent;
       border: none;
-      
+
       &:hover {
         opacity: 0.8;
       }
-      
+
       .icon {
         padding: 3px;
         cursor: pointer;
@@ -485,7 +517,7 @@
     max-width: none;
     left: 250px; // Account for left menu width
     transform: none;
-    
+
     &:hover {
       transform: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -499,7 +531,7 @@
     max-width: none;
     left: 150px; // Account for tablet menu width
     transform: none;
-    
+
     &:hover {
       transform: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -522,7 +554,7 @@
     max-width: none;
     left: 0;
     transform: none;
-    
+
     &:hover {
       transform: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -532,8 +564,15 @@
     padding: 10px 20px;
     min-width: 100px;
   }
+  .search-section {
+    gap: 8px;
+  }
   .set-search {
-    width: 55%;
+    width: 50%;
+  }
+  .global-exchange-btn {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 }
 
@@ -568,7 +607,7 @@
     max-width: none;
     left: 5px;
     transform: none;
-    
+
     &:hover {
       transform: none;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -581,10 +620,17 @@
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
+  .search-section {
+    gap: 6px;
+  }
   .set-search {
-    width: 50%;
+    width: 45%;
     padding: 8px 12px;
     font-size: 12px;
+  }
+  .global-exchange-btn {
+    padding: 6px 12px;
+    font-size: 11px;
   }
 }
 

@@ -400,3 +400,29 @@ export const deleteSetAndNumbers = async (dispatch, set) => {
         console.log(err)
     })
 }
+
+export const getUsersWithSetInCollection = async (setId, categoryId, setTypeId) => {
+    const filter = {
+        where: {
+            setId: parseInt(setId),
+            categoryId: parseInt(categoryId),
+            setTypeId: parseInt(setTypeId),
+        },
+        fields: {usersId: true}
+    }
+    return Actions.get(`set-users?filter=${JSON.stringify(filter)}`)
+        .then((res) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+};
+
+export const getAllSets = async () => {
+    return Actions.get('sets')
+        .then((res) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+};

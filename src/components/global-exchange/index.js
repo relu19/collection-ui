@@ -1,13 +1,14 @@
-import '../global-exchange/style.scss'
+import './style.scss'
 import React, {useEffect, useState} from "react";
 import {getUsers} from "../../actions/users";
-import {getSetWithNumbers} from "../../actions/set";
+import {getAllSets, getUsersWithSetInCollection, getSetWithNumbers} from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import logo from "../../images/avatar.jpg";
 
-const Exchange = ({set, setModal, userDetails, userInfo}) => {
+const GlobalExchange = ({setModal, userDetails}) => {
     const [users, setUsers] = useState([])
+    const [allSets, setAllSets] = useState([])
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0)
     const [showNoData, setShowNoData] = useState(false);
@@ -35,8 +36,6 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
         }
     }, [loading, total]);
 
-    const isMe = userInfo.id === userDetails.id;
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -45,25 +44,60 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                 // Get all users
                 const allUsers = await getUsers();
 
-                // Filter out current user
-                const otherUsers = allUsers.filter(user => user.id !== userDetails.id);
+                // Get all sets
+                const sets = await getAllSets();
+
+                // Get all set-user relationships
+                const allSetUsers = [];
+                for (const set of sets) {
+                    const usersWithSet = await getUsersWithSetInCollection(set.id, set.categoryId, set.setTypeId);
+                    usersWithSet.forEach(su => {
+                        allSetUsers.push({
+                            setId: set.id,
+                            setName: set.name,
+                            categoryId: set.categoryId,
+                            setTypeId: set.setTypeId,
+                            userId: su.usersId
+                        });
+                    });
+                }
+
+                // Filter users to only include those who have at least one set in their collection
+                const userIdsWithSets = [...new Set(allSetUsers.map(su => su.userId))];
+                const filteredUsers = allUsers.filter(user => userIdsWithSets.includes(user.id));
+
+                setUsers(filteredUsers);
+                setAllSets(sets);
 
                 // Process exchange results - group by user
                 const userExchangeMap = new Map();
 
-                for (const user of otherUsers) {
-                    // Check if this user has the set in their collection
-                    const userSetNumbers = await getSetWithNumbers(set.id, user.id);
-                    
-                    if (userSetNumbers[0]?.numbers) {
-                        // Check for potential exchanges
-                        const exchange = await checkSetExchange(set.id, user.id, userDetails.id);
-                        if (exchange.hasExchange) {
-                            userExchangeMap.set(user, [{
-                                set: set,
-                                exchange: exchange
-                            }]);
+                for (const user of filteredUsers) {
+                    if (user.id === userDetails.id) continue; // Skip current user
+
+                    const userSets = allSetUsers.filter(su => su.userId === user.id);
+                    const currentUserSets = allSetUsers.filter(su => su.userId === userDetails.id);
+
+                    const userExchanges = [];
+
+                    // Find potential exchanges
+                    for (const userSet of userSets) {
+                        for (const currentSet of currentUserSets) {
+                            if (userSet.setId === currentSet.setId) {
+                                // Same set, check for number exchanges
+                                const exchange = await checkSetExchange(userSet.setId, user.id, userDetails.id);
+                                if (exchange.hasExchange) {
+                                    userExchanges.push({
+                                        set: sets.find(s => s.id === userSet.setId),
+                                        exchange: exchange
+                                    });
+                                }
+                            }
                         }
+                    }
+
+                    if (userExchanges.length > 0) {
+                        userExchangeMap.set(user, userExchanges);
                     }
                 }
 
@@ -73,13 +107,14 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setUsers([]);
+                setAllSets([]);
                 setExchangeResults([]);
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [set.id, userDetails.id]);
+    }, [userDetails.id]);
 
     const checkSetExchange = async (setId, user1Id, user2Id) => {
         try {
@@ -124,6 +159,8 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
         }
     };
 
+
+
     const formatNumberDisplay = (numberObj) => {
         // Always show the number, not the description
         return numberObj.number;
@@ -136,7 +173,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
     return (
         <div>
             <div className='modal-header modal-header--fixed'>
-                <span>{set.name} - Find users for trade 🔍</span>
+                <span>Global Exchange - Find trades across all sets</span>
                 <button
                     aria-label="Close"
                     onClick={closeModal}
@@ -182,7 +219,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                             >
                                 {collapsedUsers.has(user.id) ? '+' : '-'}
                             </button>
-                            <div className='exchange-table__cell user-cell'>
+                            <div className='exchange-table__cell user-cell '>
                                 <div className='user-info'>
                                     <img alt='' src={user?.logo || logo}/>
                                     <p><h2>{user?.name}</h2></p>
@@ -274,7 +311,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                     <ConditionalRender if={showNoData}>
                         <p className='no-data'>
                             {users.length === 0
-                                ? 'No users have this set in their collection yet. Users need to add the set to their collection before they can mark numbers for trading.'
+                                ? 'No users have sets in their collection yet.'
                                 : 'No potential exchanges found.'}
                         </p>
                     </ConditionalRender>
@@ -283,4 +320,5 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
         </div>
     )
 }
-export default Exchange
+
+export default GlobalExchange 

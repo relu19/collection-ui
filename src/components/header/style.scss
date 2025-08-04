@@ -44,11 +44,101 @@
     }
     .user-info {
       display: flex;
+      align-items: center;
       cursor: pointer;
-      img {
-        height: 30px;
-        border-radius: 100%;
-        margin-right: 10px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+      gap: 8px;
+      min-width: 180px;
+      height: 40px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      
+      .user-avatar {
+        position: relative;
+        flex-shrink: 0;
+        
+        img {
+          height: 28px;
+          width: 28px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          transition: border-color 0.2s ease;
+        }
+        
+        .user-status {
+          position: absolute;
+          bottom: 1px;
+          right: 1px;
+          width: 8px;
+          height: 8px;
+          background: #75D153;
+          border-radius: 50%;
+          border: 1px solid $background;
+          box-shadow: 0 0 0 1px rgba(117, 209, 83, 0.3);
+        }
+      }
+      
+      .user-details {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+        
+        .user-name {
+          font-weight: 600;
+          font-size: 13px;
+          color: $text;
+          line-height: 1.1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .user-email {
+          font-size: 10px;
+          color: rgba(255, 255, 255, 0.6);
+          line-height: 1.1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      
+      .logout-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        
+        svg {
+          width: 14px;
+          height: 14px;
+          color: rgba(255, 255, 255, 0.7);
+          transition: color 0.2s ease;
+        }
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+          
+          svg {
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
       }
     }
   }

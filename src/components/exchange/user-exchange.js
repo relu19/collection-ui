@@ -40,22 +40,38 @@ const UserExchange = ({user, setId, yourNeedList, yourExchangeList, setTotal, se
     }
 
     return (data.forMe.length === 0 && data.forHim.length === 0 ? '' :
-        <div className='exchange-table__row'>
-            <div className='exchange-table__cell'>
-                <div className='user-info'>
-                    <img alt='' src={user?.logo || logo}/>
-                    <p><h2>{user?.name}</h2></p>
+        <div className='exchanges-grid'>
+            <div className='exchange-row'>
+                <div className='exchange-item left-item'>
+                    <div className='set-title'>Can Give Me</div>
+                    <div className='numbers-list'>
+                        {data.forMe.length > 0 ? (
+                            <div className='regular-numbers'>
+                                {data.forMe.map((item, i) => <span key={i}>{item}</span>)}
+                            </div>
+                        ) : (
+                            <div className='regular-numbers'>
+                                <span className='no-numbers'>-</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <p className='user-info'><Icon name='mail' color="#000" width={30} height={21}/><a href={`mailto:${user?.email}`}>{user?.email}</a></p>
-                <p className='user-info'><Icon name='phone' color="#000" width={30} height={21}/>N/A</p>
+                <div className='exchange-item right-item'>
+                    <div className='set-title'>Needs From Me</div>
+                    <div className='numbers-list'>
+                        {data.forHim.length > 0 ? (
+                            <div className='regular-numbers'>
+                                {data.forHim.map((item, i) => <span key={i}>{item}</span>)}
+                            </div>
+                        ) : (
+                            <div className='regular-numbers'>
+                                <span className='no-numbers'>-</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
-            <div className='exchange-table__cell get'>
-    {data.forMe.length ? data.forMe.map(item => <span>{item}</span>) : ''}
-                </div>
-                <div className='exchange-table__cell give'>
-                    {data.forHim.length ? data.forHim.map(item => <span>{item}</span>) : ''}
-                </div>
-            </div>
+        </div>
     )
 }
 export default UserExchange

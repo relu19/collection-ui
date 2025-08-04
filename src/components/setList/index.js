@@ -15,6 +15,7 @@ import NoImage from '../../images/noImage.png'
 import AddEditSet from "../addEditSet";
 import { useDispatch, useSelector } from "react-redux";
 import Exchange from "../exchange";
+import GlobalExchange from "../global-exchange";
 import { getUserById } from "../../actions/users";
 import objectAssign from "object-assign";
 import { getURLParams } from "../../utils/getURLParams";
@@ -24,6 +25,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [modalData, setModalData] = useState();
     const [editModal, setEditModal] = useState();
     const [showExchange, setShowExchange] = useState(null);
+    const [showGlobalExchange, setShowGlobalExchange] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [numbersListModal, setNumbersListModal] = useState(null);
     const dispatch = useDispatch();
@@ -211,8 +213,13 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         <div>
             <ConditionalRender if={isMyPage}>
                 <div className='set-list-header'>
-                    <input type="search" className="set-search" placeholder="Search set..."
-                           onChange={(e) => filterSeries(e)}/>
+                    <div className='search-section'>
+                        <input type="search" className="set-search" placeholder="Search set..."
+                               onChange={(e) => filterSeries(e)}/>
+                        <button className='global-exchange-btn' onClick={() => setShowGlobalExchange(true)}>
+                            Find Exchanges
+                        </button>
+                    </div>
                     {editMode ?
                         <p className='edit-sets' onClick={() => setEditMode(false)}><span>Close Edit</span></p> :
                         <p className={`edit-sets ${editButtonFlash ? 'flash' : ''}`} onClick={() => setEditMode(true)}>
@@ -427,6 +434,20 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             </Modal>
 
             <Modal
+                isOpen={showGlobalExchange}
+                ariaHideApp={false}
+                onRequestClose={() => setShowGlobalExchange(false)}
+                contentLabel="Global Exchange"
+                className="page-modal wide"
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                {userDetails && 
+                    <GlobalExchange userDetails={userDetails} setModal={(val) => setShowGlobalExchange(val)}/>
+                }
+            </Modal>
+
+            <Modal
                 isOpen={!!numbersListModal}
                 ariaHideApp={false}
                 onRequestClose={() => setNumbersListModal(null)}
@@ -453,7 +474,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     className={`copy-button ${copiedButtons['have-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iHave.join(', '), 'have-button')}
                                                 >
-                                                    {copiedButtons['have-button'] ? 'Copied!' : 'Copy to Clipboard'}
+                                                    {copiedButtons['have-button'] ? 'Copied!' : 'Copy List'}
                                                 </button>
                                             )}
                                         </div>
@@ -468,7 +489,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     className={`copy-button ${copiedButtons['need-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iNeed.join(', '), 'need-button')}
                                                 >
-                                                    {copiedButtons['need-button'] ? 'Copied!' : 'Copy to Clipboard'}
+                                                    {copiedButtons['need-button'] ? 'Copied!' : 'Copy List'}
                                                 </button>
                                             )}
                                         </div>
@@ -483,7 +504,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     className={`copy-button ${copiedButtons['exchange-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iHaveForExchange.join(', '), 'exchange-button')}
                                                 >
-                                                    {copiedButtons['exchange-button'] ? 'Copied!' : 'Copy to Clipboard'}
+                                                    {copiedButtons['exchange-button'] ? 'Copied!' : 'Copy List'}
                                                 </button>
                                             )}
                                         </div>
