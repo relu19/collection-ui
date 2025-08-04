@@ -307,7 +307,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     })()}
                                 </div>
                                 <div className='set-statistics'>
-                                    <span>{`${getTotal(elem, false)} out of ${getTotal(elem, true)}`}
+                                    <span>
+                                        {`Missing: ${getTotal(elem, true) - getTotal(elem, false)} of ${getTotal(elem, true)}`}
                                         {shouldExchange(elem) ?
                                             <span onClick={() => setShowExchange(elem)}
                                                   className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find users for trade'}</span> : ''}
