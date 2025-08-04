@@ -136,7 +136,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
     return (
         <div>
             <div className='modal-header modal-header--fixed'>
-                <span>{set.name} - Find users for trade 🔍</span>
+                <span>Exchanges for {set.name}</span>
                 <button
                     aria-label="Close"
                     onClick={closeModal}

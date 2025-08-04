@@ -318,7 +318,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                         {`Missing: ${getTotal(elem, true) - getTotal(elem, false)} of ${getTotal(elem, true)}`}
                                         {shouldExchange(elem) ?
                                             <span onClick={() => setShowExchange(elem)}
-                                                  className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find users for trade'}</span> : ''}
+                                                  className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find exchanges for this set'}</span> : ''}
                                         {isMyPage && <span> 🔍</span>}
                                     </span>
                                     <ConditionalRender if={isMyPage && editMode}>

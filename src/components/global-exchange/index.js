@@ -173,7 +173,7 @@ const GlobalExchange = ({setModal, userDetails}) => {
     return (
         <div>
             <div className='modal-header modal-header--fixed'>
-                <span>Global Exchange - Find trades across all sets</span>
+                <span>Global Exchanges</span>
                 <button
                     aria-label="Close"
                     onClick={closeModal}
