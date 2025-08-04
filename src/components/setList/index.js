@@ -32,6 +32,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const [collectionList, setCollectionList] = useState([]);
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
     const [userInfo, setUserInfo] = useState({})
+    const [copiedButtons, setCopiedButtons] = useState({});
 
     // [{"number":"000","desc":"Panini Stamp"}]
     //
@@ -81,9 +82,16 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         return { iHave, iNeed, iHaveForExchange };
     }
 
-    const copyToClipboard = (text) => {
+    const copyToClipboard = (text, buttonId) => {
         navigator.clipboard.writeText(text).then(() => {
-            // You could add a toast notification here if needed
+            // Set the copied state for this specific button
+            setCopiedButtons(prev => ({ ...prev, [buttonId]: true }));
+            
+            // Reset the animation after 2 seconds
+            setTimeout(() => {
+                setCopiedButtons(prev => ({ ...prev, [buttonId]: false }));
+            }, 2000);
+            
             console.log('Copied to clipboard');
         }).catch(err => {
             console.error('Failed to copy: ', err);
@@ -297,28 +305,28 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                         <div className='bulk-actions'>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : undefined}>
-                                                <Icon
-                                                    name='check'
-                                                    title='Add all'
-                                                    color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline"/>}
-                                            </div>
+                                            <Icon
+                                                name='check'
+                                                title='Add all'
+                                                color="#cccccc" width={15} height={15}/>
+                                            {loading && <div className="sline"/>}
+                                        </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : undefined}>
-                                                <Icon
-                                                    title='Add all for trade'
-                                                    name='double-check'
-                                                    color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline"/>}
-                                            </div>
+                                            <Icon
+                                                title='Add all for trade'
+                                                name='double-check'
+                                                color="#cccccc" width={15} height={15}/>
+                                            {loading && <div className="sline"/>}
+                                        </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : undefined}>
-                                                <Icon
-                                                    title='Remove all'
-                                                    name='uncheck'
-                                                    color="#cccccc" width={15} height={15}/>
-                                                {loading && <div className="sline"/>}
-                                            </div>
+                                            <Icon
+                                                title='Remove all'
+                                                name='uncheck'
+                                                color="#cccccc" width={15} height={15}/>
+                                            {loading && <div className="sline"/>}
+                                        </div>
                                         </div>
                                     </ConditionalRender>
                                 </div>
@@ -429,10 +437,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                             <span className='numbers-text'>{iHave.join(', ')}</span>
                                             {iHave.length > 0 && (
                                                 <button 
-                                                    className='copy-button' 
-                                                    onClick={() => copyToClipboard(iHave.join(', '))}
+                                                    className={`copy-button ${copiedButtons['have-button'] ? 'copied' : ''}`}
+                                                    onClick={() => copyToClipboard(iHave.join(', '), 'have-button')}
                                                 >
-                                                    Copy to Clipboard
+                                                    {copiedButtons['have-button'] ? 'Copied!' : 'Copy to Clipboard'}
                                                 </button>
                                             )}
                                         </div>
@@ -444,10 +452,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                             <span className='numbers-text'>{iNeed.join(', ')}</span>
                                             {iNeed.length > 0 && (
                                                 <button 
-                                                    className='copy-button' 
-                                                    onClick={() => copyToClipboard(iNeed.join(', '))}
+                                                    className={`copy-button ${copiedButtons['need-button'] ? 'copied' : ''}`}
+                                                    onClick={() => copyToClipboard(iNeed.join(', '), 'need-button')}
                                                 >
-                                                    Copy to Clipboard
+                                                    {copiedButtons['need-button'] ? 'Copied!' : 'Copy to Clipboard'}
                                                 </button>
                                             )}
                                         </div>
@@ -459,10 +467,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                             <span className='numbers-text'>{iHaveForExchange.join(', ')}</span>
                                             {iHaveForExchange.length > 0 && (
                                                 <button 
-                                                    className='copy-button' 
-                                                    onClick={() => copyToClipboard(iHaveForExchange.join(', '))}
+                                                    className={`copy-button ${copiedButtons['exchange-button'] ? 'copied' : ''}`}
+                                                    onClick={() => copyToClipboard(iHaveForExchange.join(', '), 'exchange-button')}
                                                 >
-                                                    Copy to Clipboard
+                                                    {copiedButtons['exchange-button'] ? 'Copied!' : 'Copy to Clipboard'}
                                                 </button>
                                             )}
                                         </div>
