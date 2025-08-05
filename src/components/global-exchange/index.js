@@ -1,7 +1,7 @@
 import './style.scss'
 import React, {useEffect, useState} from "react";
 import {getUsers} from "../../actions/users";
-import {getAllSets, getUsersWithSetInCollection, getSetWithNumbers} from "../../actions/set";
+import {getAllSets, getUsersWithSetInCollection, getSetWithNumbers, getGlobalExchanges} from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import logo from "../../images/avatar.jpg";
@@ -41,72 +41,42 @@ const GlobalExchange = ({setModal, userDetails}) => {
             try {
                 setLoading(true);
 
-                // Get all users
-                const allUsers = await getUsers();
-
-                // Get all sets
-                const sets = await getAllSets();
-
-                // Get all set-user relationships more efficiently
-                const allSetUsers = [];
-                const userSetMap = new Map(); // Map to track which users have which sets
+                // Use the new backend endpoint for much faster performance
+                const globalExchangesData = await getGlobalExchanges(userDetails.id);
                 
-                for (const set of sets) {
-                    const usersWithSet = await getUsersWithSetInCollection(set.id, set.categoryId, set.setTypeId);
-                    usersWithSet.forEach(su => {
-                        allSetUsers.push({
-                            setId: set.id,
-                            setName: set.name,
-                            categoryId: set.categoryId,
-                            setTypeId: set.setTypeId,
-                            userId: su.usersId
-                        });
-                        
-                        // Track which users have this set
-                        if (!userSetMap.has(su.usersId)) {
-                            userSetMap.set(su.usersId, []);
-                        }
-                        userSetMap.get(su.usersId).push(set.id);
-                    });
+                if (!globalExchangesData.exchanges || globalExchangesData.exchanges.length === 0) {
+                    setExchangeResults([]);
+                    setTotal(0);
+                    setLoading(false);
+                    return;
                 }
 
-                // Filter users to only include those who have at least one set in their collection
-                const userIdsWithSets = [...new Set(allSetUsers.map(su => su.userId))];
-                const filteredUsers = allUsers.filter(user => userIdsWithSets.includes(user.id));
-
-                setUsers(filteredUsers);
-                setAllSets(sets);
-
-                // Process exchange results - group by user
+                // Convert backend data to frontend format
                 const userExchangeMap = new Map();
-
-                for (const user of filteredUsers) {
-                    if (user.id === userDetails.id) continue; // Skip current user
-
-                    const userSets = allSetUsers.filter(su => su.userId === user.id);
-                    const currentUserSets = allSetUsers.filter(su => su.userId === userDetails.id);
-
-                    const userExchanges = [];
-
-                    // Find potential exchanges
-                    for (const userSet of userSets) {
-                        for (const currentSet of currentUserSets) {
-                            if (userSet.setId === currentSet.setId) {
-                                // Same set, check for number exchanges
-                                const exchange = await checkSetExchange(userSet.setId, user.id, userDetails.id);
-                                if (exchange.hasExchange) {
-                                    userExchanges.push({
-                                        set: sets.find(s => s.id === userSet.setId),
-                                        exchange: exchange
-                                    });
-                                }
-                            }
+                
+                for (const userExchange of globalExchangesData.exchanges) {
+                    // Create user object
+                    const user = {
+                        id: userExchange.userId,
+                        name: userExchange.userName,
+                        email: userExchange.userEmail,
+                        logo: userExchange.userLogo
+                    };
+                    
+                    // Convert exchanges to frontend format
+                    const exchanges = userExchange.exchanges.map(exchange => ({
+                        set: {
+                            id: exchange.setId,
+                            name: exchange.setName
+                        },
+                        exchange: {
+                            hasExchange: true,
+                            user1CanGive: exchange.user1CanGive,
+                            user2CanGive: exchange.user2CanGive
                         }
-                    }
-
-                    if (userExchanges.length > 0) {
-                        userExchangeMap.set(user, userExchanges);
-                    }
+                    }));
+                    
+                    userExchangeMap.set(user, exchanges);
                 }
 
                 setExchangeResults(Array.from(userExchangeMap.entries()));
@@ -124,50 +94,7 @@ const GlobalExchange = ({setModal, userDetails}) => {
         fetchData();
     }, [userDetails.id]);
 
-    const checkSetExchange = async (setId, user1Id, user2Id) => {
-        try {
-            // Get numbers for both users for this set
-            const user1Numbers = await getSetWithNumbers(setId, user1Id);
-            const user2Numbers = await getSetWithNumbers(setId, user2Id);
 
-            if (!user1Numbers[0]?.numbers || !user2Numbers[0]?.numbers) {
-                return { hasExchange: false };
-            }
-
-            // Separate regular and extra numbers for each user with full number objects
-            // Type 0 OR Type 3 = "I need this number" (both are needed)
-            // Type 2 = "I have this for exchange" (only type 2 is exchangeable)
-            const user1RegularExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
-            const user1ExtraExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
-            const user1RegularNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
-            const user1ExtraNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
-
-            const user2RegularExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
-            const user2ExtraExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
-            const user2RegularNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
-            const user2ExtraNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
-
-            // Check exchanges: regular with regular, extra with extra
-            const user1CanGiveRegular = user1RegularExchange.filter(num => user2RegularNeed.some(n => n.number === num.number));
-            const user2CanGiveRegular = user2RegularExchange.filter(num => user1RegularNeed.some(n => n.number === num.number));
-
-            const user1CanGiveExtra = user1ExtraExchange.filter(num => user2ExtraNeed.some(n => n.number === num.number));
-            const user2CanGiveExtra = user2ExtraExchange.filter(num => user1ExtraNeed.some(n => n.number === num.number));
-
-            // Combine results
-            const user1CanGive = [...user1CanGiveRegular, ...user1CanGiveExtra];
-            const user2CanGive = [...user2CanGiveRegular, ...user2CanGiveExtra];
-
-            return {
-                hasExchange: user1CanGive.length > 0 || user2CanGive.length > 0,
-                user1CanGive,
-                user2CanGive
-            };
-        } catch (error) {
-            console.error('Error checking set exchange:', error);
-            return { hasExchange: false };
-        }
-    };
 
 
 
@@ -213,8 +140,8 @@ const GlobalExchange = ({setModal, userDetails}) => {
                             </div>
                             <div className='exchange-table__cell header'>
                                 <div className='sub-header-labels'>
-                                    <div className='sub-header-label'>Need From Me</div>
                                     <div className='sub-header-label'>Can Give Me</div>
+                                    <div className='sub-header-label'>Need From Me</div>
                                 </div>
                             </div>
                         </div>
@@ -278,6 +205,13 @@ const GlobalExchange = ({setModal, userDetails}) => {
                                                             </div>
                                                         }
                                                     </div>
+
+
+
+
+
+
+
                                                 </div>
                                                 <div className='exchange-item right-item'>
                                                     <div className='set-title'>{exchange.set?.name}</div>

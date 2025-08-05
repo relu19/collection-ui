@@ -1,7 +1,7 @@
 import '../global-exchange/style.scss'
-import React, {useEffect, useState} from "react";
-import {getUsers} from "../../actions/users";
-import {getSetWithNumbers, getUsersWithSetInCollection} from "../../actions/set";
+import React, { useEffect, useState } from "react";
+import { getUsers } from "../../actions/users";
+import { getSetWithNumbers, getUsersWithSetInCollection } from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import logo from "../../images/avatar.jpg";
@@ -44,7 +44,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
 
                 // Get only users who have this specific set in their collection
                 const usersWithSet = await getUsersWithSetInCollection(set.id, set.categoryId, set.setTypeId);
-                
+
                 if (!usersWithSet || usersWithSet.length === 0) {
                     setExchangeResults([]);
                     setTotal(0);
@@ -95,7 +95,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
             const user2Numbers = await getSetWithNumbers(setId, user2Id);
 
             if (!user1Numbers[0]?.numbers || !user2Numbers[0]?.numbers) {
-                return { hasExchange: false };
+                return {hasExchange: false};
             }
 
             // Separate regular and extra numbers for each user with full number objects
@@ -129,7 +129,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
             };
         } catch (error) {
             console.error('Error checking set exchange:', error);
-            return { hasExchange: false };
+            return {hasExchange: false};
         }
     };
 
@@ -175,15 +175,16 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                             </div>
                             <div className='exchange-table__cell header'>
                                 <div className='sub-header-labels'>
-                                    <div className='sub-header-label'>Need From Me</div>
                                     <div className='sub-header-label'>Can Give Me</div>
+                                    <div className='sub-header-label'>Need From Me</div>
                                 </div>
                             </div>
                         </div>
                     </ConditionalRender>
 
                     {exchangeResults.map(([user, exchanges], userIndex) => (
-                        <div key={userIndex} className={`exchange-table__row ${collapsedUsers.has(user.id) ? 'collapsed' : ''}`}>
+                        <div key={userIndex}
+                             className={`exchange-table__row ${collapsedUsers.has(user.id) ? 'collapsed' : ''}`}>
                             <button
                                 className='collapse-toggle'
                                 onClick={() => toggleUserCollapse(user.id)}
@@ -199,7 +200,8 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                                 {!collapsedUsers.has(user.id) && (
                                     <p className='user-email'>
                                         <a href={`mailto:${user?.email}`}>
-                                            <Icon name='mail' color="#87CEFA" width={30} height={21} className="email-icon"/>
+                                            <Icon name='mail' color="#87CEFA" width={30} height={21}
+                                                  className="email-icon"/>
                                             <span title={user?.email} className="email-text">{user?.email}</span>
                                         </a>
                                     </p>
@@ -211,24 +213,27 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                                         {exchanges.map((exchange, exchangeIndex) => (
                                             <div key={exchangeIndex} className='exchange-row'>
                                                 <div className='exchange-item left-item'>
+
                                                     <div className='set-title'>{exchange.set?.name}</div>
                                                     <div className='numbers-list'>
-                                                        {exchange.exchange.user2CanGive.length ?
+                                                        {exchange.exchange.user1CanGive.length ?
                                                             (() => {
-                                                                const regularNumbers = exchange.exchange.user2CanGive.filter(item => !item.extra);
-                                                                const extraNumbers = exchange.exchange.user2CanGive.filter(item => item.extra);
+                                                                const regularNumbers = exchange.exchange.user1CanGive.filter(item => !item.extra);
+                                                                const extraNumbers = exchange.exchange.user1CanGive.filter(item => item.extra);
                                                                 return (
                                                                     <>
                                                                         {regularNumbers.length > 0 && (
                                                                             <div className='regular-numbers'>
-                                                                                {regularNumbers.map((item, i) => <span key={i}>{formatNumberDisplay(item)}</span>)}
+                                                                                {regularNumbers.map((item, i) => <span
+                                                                                    key={i}>{formatNumberDisplay(item)}</span>)}
                                                                             </div>
                                                                         )}
                                                                         {extraNumbers.length > 0 && (
                                                                             <>
                                                                                 <p className='extra-numbers-title'>{exchange.set?.extraNumbersTitle || 'Extra Numbers'}</p>
                                                                                 <div className='regular-numbers'>
-                                                                                    {extraNumbers.map((item, i) => <span key={i}>{formatNumberDisplay(item)}</span>)}
+                                                                                    {extraNumbers.map((item, i) => <span
+                                                                                        key={i}>{formatNumberDisplay(item)}</span>)}
                                                                                 </div>
                                                                             </>
                                                                         )}
@@ -240,26 +245,30 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                                                             </div>
                                                         }
                                                     </div>
+
+
                                                 </div>
                                                 <div className='exchange-item right-item'>
                                                     <div className='set-title'>{exchange.set?.name}</div>
                                                     <div className='numbers-list'>
-                                                        {exchange.exchange.user1CanGive.length ?
+                                                        {exchange.exchange.user2CanGive.length ?
                                                             (() => {
-                                                                const regularNumbers = exchange.exchange.user1CanGive.filter(item => !item.extra);
-                                                                const extraNumbers = exchange.exchange.user1CanGive.filter(item => item.extra);
+                                                                const regularNumbers = exchange.exchange.user2CanGive.filter(item => !item.extra);
+                                                                const extraNumbers = exchange.exchange.user2CanGive.filter(item => item.extra);
                                                                 return (
                                                                     <>
                                                                         {regularNumbers.length > 0 && (
                                                                             <div className='regular-numbers'>
-                                                                                {regularNumbers.map((item, i) => <span key={i}>{formatNumberDisplay(item)}</span>)}
+                                                                                {regularNumbers.map((item, i) => <span
+                                                                                    key={i}>{formatNumberDisplay(item)}</span>)}
                                                                             </div>
                                                                         )}
                                                                         {extraNumbers.length > 0 && (
                                                                             <>
                                                                                 <p className='extra-numbers-title'>{exchange.set?.extraNumbersTitle || 'Extra Numbers'}</p>
                                                                                 <div className='regular-numbers'>
-                                                                                    {extraNumbers.map((item, i) => <span key={i}>{formatNumberDisplay(item)}</span>)}
+                                                                                    {extraNumbers.map((item, i) => <span
+                                                                                        key={i}>{formatNumberDisplay(item)}</span>)}
                                                                                 </div>
                                                                             </>
                                                                         )}
