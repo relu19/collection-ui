@@ -76,25 +76,25 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const getNumbersLists = (set) => {
-        if (!set?.numbers) return { iHave: [], iNeed: [], iHaveForExchange: [] };
-        
+        if (!set?.numbers) return {iHave: [], iNeed: [], iHaveForExchange: []};
+
         const iHave = set.numbers.filter(n => n.type === 1).map(n => n.number).sort((a, b) => Number(a) - Number(b));
         const iNeed = set.numbers.filter(n => n.type === 0).map(n => n.number).sort((a, b) => Number(a) - Number(b));
         const iHaveForExchange = set.numbers.filter(n => n.type === 2 || n.type === 3).map(n => n.number).sort((a, b) => Number(a) - Number(b));
-        
-        return { iHave, iNeed, iHaveForExchange };
+
+        return {iHave, iNeed, iHaveForExchange};
     }
 
     const copyToClipboard = (text, buttonId) => {
         navigator.clipboard.writeText(text).then(() => {
             // Set the copied state for this specific button
-            setCopiedButtons(prev => ({ ...prev, [buttonId]: true }));
-            
+            setCopiedButtons(prev => ({...prev, [buttonId]: true}));
+
             // Reset the animation after 2 seconds
             setTimeout(() => {
-                setCopiedButtons(prev => ({ ...prev, [buttonId]: false }));
+                setCopiedButtons(prev => ({...prev, [buttonId]: false}));
             }, 2000);
-            
+
             console.log('Copied to clipboard');
         }).catch(err => {
             console.error('Failed to copy: ', err);
@@ -244,9 +244,16 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
 
             <ConditionalRender if={collection.length}>
                 {!isMyPage && <div className='set-list-header'>
-                    <input type="search" className="set-search"
-                           placeholder="Search set..."
-                           onChange={(e) => filterSeries(e)}/></div>}
+                    <div className='search-section'>
+                        <input type="search" className="set-search"
+                               placeholder="Search set..."
+                               onChange={(e) => filterSeries(e)}/>
+                        <button className='global-exchange-btn' onClick={() => setShowGlobalExchange(true)}>
+                            Find Exchanges
+                        </button>
+                    </div>
+                </div>}
+
 
                 {collectionList.map((elem, i) =>
                     <div key={i} className={`set-wrapper ${getExtraNumbersClassName(collectionList, elem)}`}>
@@ -270,7 +277,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                             <div className='set-list'>
                                 <p className={`set-title ${getExtraNumbersClassName(collectionList, elem)}`}>
                                     <a href={elem.link} rel="noreferrer" target='_blank'>{elem.name} <span>🔗</span></a>
-                                    <span className='view-alert' onClick={() => setNumbersListModal(elem)}>Numbers list</span>
+                                    <span className='view-alert'
+                                          onClick={() => setNumbersListModal(elem)}>Numbers list</span>
                                 </p>
                                 <div className={`set-numbers ${userDetails && 'pointer'}`}>
                                     {/* Separate and sort main and extra numbers */}
@@ -292,7 +300,8 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     );
                                                 })}
                                                 <ConditionalRender if={extraNumbers.length > 0}>
-                                                    <ConditionalRender if={mainNumbers.length === 0 || extraNumbers.length < mainNumbers.length}>
+                                                    <ConditionalRender
+                                                        if={mainNumbers.length === 0 || extraNumbers.length < mainNumbers.length}>
                                                         <p className='extra-numbers-title'>{elem.extraNumbersTitle || 'Extra Numbers'}</p>
                                                     </ConditionalRender>
                                                     <div className='extra-numbers-content set-numbers'>
@@ -316,37 +325,36 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                 <div className='set-statistics'>
                                     <span>
                                         {`Missing: ${getTotal(elem, true) - getTotal(elem, false)} of ${getTotal(elem, true)}`}
-                                        {shouldExchange(elem) ?
-                                            <span onClick={() => setShowExchange(elem)}
-                                                  className='exchange'>{!isMyPage ? `Search trades for ${userInfo.name} ` : 'Find exchanges for this set'}</span> : ''}
-                                        {isMyPage && <span> 🔍</span>}
+
+                                            <span onClick={() => setShowExchange(elem)} className='exchange'>Find exchanges for this set</span><span> 🔍</span>
+
                                     </span>
                                     <ConditionalRender if={isMyPage && editMode}>
                                         <div className='bulk-actions'>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 1, userDetails.id) : undefined}>
-                                            <Icon
-                                                name='check'
-                                                title='Add all'
-                                                color="#cccccc" width={15} height={15}/>
-                                            {loading && <div className="sline"/>}
-                                        </div>
+                                                <Icon
+                                                    name='check'
+                                                    title='Add all'
+                                                    color="#cccccc" width={15} height={15}/>
+                                                {loading && <div className="sline"/>}
+                                            </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 2, userDetails.id) : undefined}>
-                                            <Icon
-                                                title='Add all for trade'
-                                                name='double-check'
-                                                color="#cccccc" width={15} height={15}/>
-                                            {loading && <div className="sline"/>}
-                                        </div>
+                                                <Icon
+                                                    title='Add all for trade'
+                                                    name='double-check'
+                                                    color="#cccccc" width={15} height={15}/>
+                                                {loading && <div className="sline"/>}
+                                            </div>
                                             <div className={`bulk-button${loading ? ' disabled' : ''}`}
                                                  onClick={() => !loading ? changeBulkStatus(elem, 0, userDetails.id) : undefined}>
-                                            <Icon
-                                                title='Remove all'
-                                                name='uncheck'
-                                                color="#cccccc" width={15} height={15}/>
-                                            {loading && <div className="sline"/>}
-                                        </div>
+                                                <Icon
+                                                    title='Remove all'
+                                                    name='uncheck'
+                                                    color="#cccccc" width={15} height={15}/>
+                                                {loading && <div className="sline"/>}
+                                            </div>
                                         </div>
                                     </ConditionalRender>
                                 </div>
@@ -442,7 +450,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                {userDetails && 
+                {userDetails &&
                     <GlobalExchange userDetails={userDetails} setModal={(val) => setShowGlobalExchange(val)}/>
                 }
             </Modal>
@@ -457,7 +465,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 closeTimeoutMS={500}
             >
                 {numbersListModal && (() => {
-                    const { iHave, iNeed, iHaveForExchange } = getNumbersLists(numbersListModal);
+                    const {iHave, iNeed, iHaveForExchange} = getNumbersLists(numbersListModal);
                     return (
                         <div>
                             <div className='modal-header'>
@@ -470,7 +478,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                         <div className='numbers-content'>
                                             <span className='numbers-text'>{iHave.join(', ')}</span>
                                             {iHave.length > 0 && (
-                                                <button 
+                                                <button
                                                     className={`copy-button ${copiedButtons['have-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iHave.join(', '), 'have-button')}
                                                 >
@@ -479,13 +487,13 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                             )}
                                         </div>
                                     </div>
-                                    
+
                                     <div className='numbers-list-section'>
                                         <h3>Need (Red)</h3>
                                         <div className='numbers-content'>
                                             <span className='numbers-text'>{iNeed.join(', ')}</span>
                                             {iNeed.length > 0 && (
-                                                <button 
+                                                <button
                                                     className={`copy-button ${copiedButtons['need-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iNeed.join(', '), 'need-button')}
                                                 >
@@ -494,13 +502,13 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                             )}
                                         </div>
                                     </div>
-                                    
+
                                     <div className='numbers-list-section'>
                                         <h3>For Exchange (Green)</h3>
                                         <div className='numbers-content'>
                                             <span className='numbers-text'>{iHaveForExchange.join(', ')}</span>
                                             {iHaveForExchange.length > 0 && (
-                                                <button 
+                                                <button
                                                     className={`copy-button ${copiedButtons['exchange-button'] ? 'copied' : ''}`}
                                                     onClick={() => copyToClipboard(iHaveForExchange.join(', '), 'exchange-button')}
                                                 >

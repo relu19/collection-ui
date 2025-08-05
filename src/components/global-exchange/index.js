@@ -206,12 +206,6 @@ const GlobalExchange = ({setModal, userDetails}) => {
                                                         }
                                                     </div>
 
-
-
-
-
-
-
                                                 </div>
                                                 <div className='exchange-item right-item'>
                                                     <div className='set-title'>{exchange.set?.name}</div>

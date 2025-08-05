@@ -436,3 +436,13 @@ export const getGlobalExchanges = async (userId) => {
             return { exchanges: [] };
         });
 };
+
+export const getSetExchanges = async (setId, userId) => {
+    return Actions.post({setId, userId}, 'set-exchanges')
+        .then((res) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+            return { exchanges: [] };
+        });
+};
