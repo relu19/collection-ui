@@ -47,8 +47,10 @@ const GlobalExchange = ({setModal, userDetails}) => {
                 // Get all sets
                 const sets = await getAllSets();
 
-                // Get all set-user relationships
+                // Get all set-user relationships more efficiently
                 const allSetUsers = [];
+                const userSetMap = new Map(); // Map to track which users have which sets
+                
                 for (const set of sets) {
                     const usersWithSet = await getUsersWithSetInCollection(set.id, set.categoryId, set.setTypeId);
                     usersWithSet.forEach(su => {
@@ -59,6 +61,12 @@ const GlobalExchange = ({setModal, userDetails}) => {
                             setTypeId: set.setTypeId,
                             userId: su.usersId
                         });
+                        
+                        // Track which users have this set
+                        if (!userSetMap.has(su.usersId)) {
+                            userSetMap.set(su.usersId, []);
+                        }
+                        userSetMap.get(su.usersId).push(set.id);
                     });
                 }
 
@@ -127,15 +135,17 @@ const GlobalExchange = ({setModal, userDetails}) => {
             }
 
             // Separate regular and extra numbers for each user with full number objects
-            const user1RegularExchange = user1Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && !n.extra);
-            const user1ExtraExchange = user1Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && n.extra);
-            const user1RegularNeed = user1Numbers[0].numbers.filter(n => n.type === 0 && !n.extra);
-            const user1ExtraNeed = user1Numbers[0].numbers.filter(n => n.type === 0 && n.extra);
+            // Type 0 OR Type 3 = "I need this number" (both are needed)
+            // Type 2 = "I have this for exchange" (only type 2 is exchangeable)
+            const user1RegularExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
+            const user1ExtraExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
+            const user1RegularNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
+            const user1ExtraNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
 
-            const user2RegularExchange = user2Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && !n.extra);
-            const user2ExtraExchange = user2Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && n.extra);
-            const user2RegularNeed = user2Numbers[0].numbers.filter(n => n.type === 0 && !n.extra);
-            const user2ExtraNeed = user2Numbers[0].numbers.filter(n => n.type === 0 && n.extra);
+            const user2RegularExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
+            const user2ExtraExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
+            const user2RegularNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
+            const user2ExtraNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
 
             // Check exchanges: regular with regular, extra with extra
             const user1CanGiveRegular = user1RegularExchange.filter(num => user2RegularNeed.some(n => n.number === num.number));

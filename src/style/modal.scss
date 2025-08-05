@@ -14,7 +14,7 @@
   color: $black;
   width: 500px;
   @media screen and (max-height: 1000px) {
-    margin-top: 30px;
+    margin-top: 50px;
   }
   &.wide {
     width: calc(100% - 450px);
@@ -23,7 +23,7 @@
       }
     max-width: 1000px;
     max-height: 70%;
-    margin: auto;
+    margin: 45px auto;
   }
 }
 

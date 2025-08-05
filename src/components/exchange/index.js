@@ -1,7 +1,7 @@
 import '../global-exchange/style.scss'
 import React, {useEffect, useState} from "react";
 import {getUsers} from "../../actions/users";
-import {getSetWithNumbers} from "../../actions/set";
+import {getSetWithNumbers, getUsersWithSetInCollection} from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import logo from "../../images/avatar.jpg";
@@ -42,28 +42,35 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
             try {
                 setLoading(true);
 
-                // Get all users
+                // Get only users who have this specific set in their collection
+                const usersWithSet = await getUsersWithSetInCollection(set.id, set.categoryId, set.setTypeId);
+                
+                if (!usersWithSet || usersWithSet.length === 0) {
+                    setExchangeResults([]);
+                    setTotal(0);
+                    setLoading(false);
+                    return;
+                }
+
+                // Get user details for users who have the set
                 const allUsers = await getUsers();
+                const userIdsWithSet = usersWithSet.map(su => su.usersId);
+                const usersWithSetDetails = allUsers.filter(user => userIdsWithSet.includes(user.id));
 
                 // Filter out current user
-                const otherUsers = allUsers.filter(user => user.id !== userDetails.id);
+                const otherUsers = usersWithSetDetails.filter(user => user.id !== userDetails.id);
 
                 // Process exchange results - group by user
                 const userExchangeMap = new Map();
 
                 for (const user of otherUsers) {
-                    // Check if this user has the set in their collection
-                    const userSetNumbers = await getSetWithNumbers(set.id, user.id);
-                    
-                    if (userSetNumbers[0]?.numbers) {
-                        // Check for potential exchanges
-                        const exchange = await checkSetExchange(set.id, user.id, userDetails.id);
-                        if (exchange.hasExchange) {
-                            userExchangeMap.set(user, [{
-                                set: set,
-                                exchange: exchange
-                            }]);
-                        }
+                    // Check for potential exchanges
+                    const exchange = await checkSetExchange(set.id, user.id, userDetails.id);
+                    if (exchange.hasExchange) {
+                        userExchangeMap.set(user, [{
+                            set: set,
+                            exchange: exchange
+                        }]);
                     }
                 }
 
@@ -92,15 +99,17 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
             }
 
             // Separate regular and extra numbers for each user with full number objects
-            const user1RegularExchange = user1Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && !n.extra);
-            const user1ExtraExchange = user1Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && n.extra);
-            const user1RegularNeed = user1Numbers[0].numbers.filter(n => n.type === 0 && !n.extra);
-            const user1ExtraNeed = user1Numbers[0].numbers.filter(n => n.type === 0 && n.extra);
+            // Type 0 OR Type 3 = "I need this number" (both are needed)
+            // Type 2 = "I have this for exchange" (only type 2 is exchangeable)
+            const user1RegularExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
+            const user1ExtraExchange = user1Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
+            const user1RegularNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
+            const user1ExtraNeed = user1Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
 
-            const user2RegularExchange = user2Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && !n.extra);
-            const user2ExtraExchange = user2Numbers[0].numbers.filter(n => (n.type === 2 || n.type === 3) && n.extra);
-            const user2RegularNeed = user2Numbers[0].numbers.filter(n => n.type === 0 && !n.extra);
-            const user2ExtraNeed = user2Numbers[0].numbers.filter(n => n.type === 0 && n.extra);
+            const user2RegularExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && !n.extra);
+            const user2ExtraExchange = user2Numbers[0].numbers.filter(n => n.type === 2 && n.extra);
+            const user2RegularNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && !n.extra);
+            const user2ExtraNeed = user2Numbers[0].numbers.filter(n => (n.type === 0 || n.type === 3) && n.extra);
 
             // Check exchanges: regular with regular, extra with extra
             const user1CanGiveRegular = user1RegularExchange.filter(num => user2RegularNeed.some(n => n.number === num.number));
@@ -273,9 +282,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
 
                     <ConditionalRender if={showNoData}>
                         <p className='no-data'>
-                            {users.length === 0
-                                ? 'No users have this set in their collection yet. Users need to add the set to their collection before they can mark numbers for trading.'
-                                : 'No potential exchanges found.'}
+                            No potential exchanges found.
                         </p>
                     </ConditionalRender>
                 </div>
