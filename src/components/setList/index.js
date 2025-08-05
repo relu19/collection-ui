@@ -435,10 +435,24 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                {userDetails ? showExchange &&
-                    <Exchange userInfo={userInfo} userDetails={userDetails} set={showExchange}
-                              setModal={(val) => setShowExchange(val)}/> :
-                    <NoData setModal={(val) => setShowExchange(val)}/>}
+                {userDetails ? 
+                    (showExchange && <Exchange userInfo={userInfo} userDetails={userDetails} set={showExchange}
+                              setModal={(val) => setShowExchange(val)}/>) :
+                    <div>
+                        <div className='modal-header'>
+                            <span>Exchange</span>
+                            <button
+                                aria-label="Close"
+                                onClick={() => setShowExchange(null)}
+                                className="close-modal-btn"
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className='modal-content'>
+                            <p className='no-data'>You need to create an account to exchange</p>
+                        </div>
+                    </div>}
             </Modal>
 
             <Modal
@@ -450,8 +464,23 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                 overlayClassName="modal-overlay"
                 closeTimeoutMS={500}
             >
-                {userDetails &&
-                    <GlobalExchange userDetails={userDetails} setModal={(val) => setShowGlobalExchange(val)}/>
+                {userDetails ? 
+                    <GlobalExchange userDetails={userDetails} setModal={(val) => setShowGlobalExchange(val)}/> :
+                    <div>
+                        <div className='modal-header'>
+                            <span>Global Exchange</span>
+                            <button
+                                aria-label="Close"
+                                onClick={() => setShowGlobalExchange(false)}
+                                className="close-modal-btn"
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className='modal-content'>
+                            <p className='no-data'>You need to create an account to exchange</p>
+                        </div>
+                    </div>
                 }
             </Modal>
 
