@@ -169,17 +169,17 @@
     justify-content: flex-start;
     width: 100%;
     margin-left: -8px;
-    
+
     &:hover {
       background-color: rgba(135, 206, 250, 0.1);
       color: #fff;
       transform: translateY(-1px);
     }
-    
+
     .email-icon {
       flex-shrink: 0;
     }
-    
+
     .email-text {
       color: inherit;
       font-size: inherit;
@@ -190,7 +190,7 @@
       max-width: 120px;
       cursor: pointer;
       position: relative;
-      
+
       &:hover::after {
         content: attr(title);
         position: absolute;
@@ -239,11 +239,11 @@
     justify-content: center;
     white-space: nowrap;
     text-align: center;
-    
+
     svg {
       color: #87CEFA;
     }
-    
+
     a {
       color: #87CEFA;
       text-decoration: none;
@@ -251,7 +251,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      
+
       &:hover {
         color: #fff;
         text-decoration: underline;
@@ -265,7 +265,7 @@
 
   &.collapsed {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-    
+
     .user-cell {
       padding: 12px 15px !important;
       background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
@@ -273,12 +273,12 @@
 
       .user-email {
         margin-bottom: 0 !important;
-        
+
         img {
           width: 35px !important;
           height: 35px !important;
         }
-        
+
         p h2 {
           font-size: 13px !important;
           color: #fff !important;
@@ -465,7 +465,7 @@
 
   .exchange-row {
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 4px;
   }
 
   .exchange-item {
@@ -516,101 +516,53 @@
     }
   }
 
-  .exchange-table__cell.user-cell .user-email {
-    gap: 8px !important;
-    padding: 6px 0 !important;
-    margin-bottom: 6px !important;
-    
-    img {
-      width: 32px !important;
-      height: 32px !important;
-      border-width: 1px !important;
-    }
-    
-    p h2 {
-      font-size: 12px !important;
-    }
-  }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 3px;
-
-    img {
-      width: 35px;
-      height: 35px;
-    }
-
-    h2 {
-      font-size: 12px;
-    }
-  }
 
   // Only apply vertical layout in modal context
-  .page-modal .user-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 3px;
-    justify-content: flex-start;
+  .page-modal {
 
-    img {
-      width: 35px;
-      height: 35px;
-      flex-shrink: 0;
-    }
-
-    p {
+    .user-email {
+      line-height: 13px;
       margin: 0;
-      flex: 1;
-      text-align: left;
+      padding: 0;
     }
 
-    h2 {
-      font-size: 12px;
-      text-align: left;
-      white-space: normal;
-      word-wrap: break-word;
-      max-width: 100%;
-      margin: 0;
-    }
-  }
+    .user-info {
+      display: inline-block;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 3px;
+      justify-content: flex-start;
 
-  .collapse-toggle {
-    top: 3px;
-    right: 3px;
-    font-size: 16px;
-    padding: 2px 6px;
-  }
-
-  .exchange-table__row.collapsed {
-    .user-cell {
-      padding: 6px 8px;
-
-      .user-email {
-        img {
-          width: 25px !important;
-          height: 25px !important;
-        }
-        
-        p h2 {
-          font-size: 11px !important;
-        }
+      img {
+        width: 35px;
+        height: 35px;
+        flex-shrink: 0;
+        float: left;
+        margin-right: 10px;
       }
 
-      .user-info {
-        img {
-          width: 25px;
-          height: 25px;
-        }
-
-        h2 {
-          font-size: 11px;
-        }
+      p {
+        margin: 0;
+        flex: 1;
+        text-align: left;
       }
+
+      h2 {
+        font-size: 12px;
+        text-align: left;
+        white-space: normal;
+        word-wrap: break-word;
+        max-width: 100%;
+        margin: 0;
+      }
+    }
+
+    .collapse-toggle {
+      top: 3px;
+      right: 3px;
+      font-size: 16px;
+      padding: 2px 6px;
     }
   }
 } 
