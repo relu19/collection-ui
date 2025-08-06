@@ -641,7 +641,7 @@
   }
   
   // Specific styling for Euro2024 extra numbers on mobile
-  .set-numbers-Euro2024-extra {
+  .set-numbers-Euro2024-extra, .set-numbers-Qatar2022, .set-numbers-2016-2017, .set-numbers-2020-2021  {
     .set-number {
       width: calc(20% - 1px); // 5 items per row (100% / 5)
       font-size: 9px;
