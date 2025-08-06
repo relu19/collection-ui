@@ -280,7 +280,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span className='view-alert'
                                           onClick={() => setNumbersListModal(elem)}>Numbers list</span>
                                 </p>
-                                <div className={`set-numbers ${userDetails && 'pointer'}`}>
+                                <div className={`set-numbers ${userDetails && 'pointer'} set-numbers-${elem.name.replace(/\s+/g, '')}`}>
                                     {/* Separate and sort main and extra numbers */}
                                     {(() => {
                                         if (!elem?.numbers) return null;
@@ -304,7 +304,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                         if={mainNumbers.length === 0 || extraNumbers.length < mainNumbers.length}>
                                                         <p className='extra-numbers-title'>{elem.extraNumbersTitle || 'Extra Numbers'}</p>
                                                     </ConditionalRender>
-                                                    <div className='extra-numbers-content set-numbers'>
+                                                    <div className={`extra-numbers-content set-numbers set-numbers-${elem.name.replace(/\s+/g, '')}-extra`}>
 
                                                         {extraNumbers.map((item, i) => {
                                                             const isMine = userId && item.userId === userId;
