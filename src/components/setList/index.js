@@ -502,20 +502,6 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                             </div>
                             <div className='modal-content'>
                                 <div className='numbers-lists-container'>
-                                    <div className='numbers-list-section'>
-                                        <h3>Have (White)</h3>
-                                        <div className='numbers-content'>
-                                            <span className='numbers-text'>{iHave.join(', ')}</span>
-                                            {iHave.length > 0 && (
-                                                <button
-                                                    className={`copy-button ${copiedButtons['have-button'] ? 'copied' : ''}`}
-                                                    onClick={() => copyToClipboard(iHave.join(', '), 'have-button')}
-                                                >
-                                                    {copiedButtons['have-button'] ? 'Copied!' : 'Copy List'}
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
 
                                     <div className='numbers-list-section'>
                                         <h3>Need (Red)</h3>
@@ -542,6 +528,22 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                                     onClick={() => copyToClipboard(iHaveForExchange.join(', '), 'exchange-button')}
                                                 >
                                                     {copiedButtons['exchange-button'] ? 'Copied!' : 'Copy List'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+
+                                    <div className='numbers-list-section'>
+                                        <h3>Have (White)</h3>
+                                        <div className='numbers-content'>
+                                            <span className='numbers-text'>{iHave.join(', ')}</span>
+                                            {iHave.length > 0 && (
+                                                <button
+                                                    className={`copy-button ${copiedButtons['have-button'] ? 'copied' : ''}`}
+                                                    onClick={() => copyToClipboard(iHave.join(', '), 'have-button')}
+                                                >
+                                                    {copiedButtons['have-button'] ? 'Copied!' : 'Copy List'}
                                                 </button>
                                             )}
                                         </div>
