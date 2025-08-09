@@ -582,6 +582,13 @@
     }
   }
 }
+.set-numbers-StarFoods  {
+  .set-number {
+    width: calc(33% - 1px); // 5 items per row (100% / 5)
+    font-size: 9px;
+    padding: 4px 1px;
+  }
+}
 
 @media screen and (max-width: 1400px) {
   .set-list, .set-statistics {

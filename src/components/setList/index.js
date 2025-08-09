@@ -52,7 +52,17 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     // ];
 
     const getTotal = (set, total) => {
-        return total ? set.numbers.length : set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length
+        const onlyExtra = set.minNr === 114 && set.maxNr === 114;
+        
+        if (total) {
+            // Return total count
+            const totalCount = set.numbers.length;
+            return onlyExtra ? Math.max(0, totalCount - 1) : totalCount;
+        } else {
+            // Return non-missing count (types 1, 2, 3)
+            const nonMissingCount = set.numbers.filter(s => s.type === 1 || s.type === 2 || s.type === 3).length;
+            return onlyExtra ? Math.max(0, nonMissingCount - 1) : nonMissingCount;
+        }
     }
 
     const shouldExchange = (set) => {
@@ -326,7 +336,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                                     <span>
                                         {`Missing: ${getTotal(elem, true) - getTotal(elem, false)} of ${getTotal(elem, true)}`}
 
-                                            <span onClick={() => setShowExchange(elem)} className='exchange'>Find exchanges for this set</span><span> 🔍</span>
+                                            <span onClick={() => setShowExchange(elem)} className='exchange'>Find exchanges for set</span><span> 🔍</span>
 
                                     </span>
                                     <ConditionalRender if={isMyPage && editMode}>
