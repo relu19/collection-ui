@@ -17,9 +17,12 @@ const ConvertPage = () => {
             for (const row of rows) {
                 const tds = row.querySelectorAll('td');
                 const number = tds[0]?.textContent.trim();
-                const desc = tds[1]?.querySelector('a')?.textContent.trim();
+                // Try to get description from <a> tag first, then fallback to direct text content
+                const desc = tds[1]?.querySelector('a')?.textContent.trim() || tds[1]?.textContent.trim();
 
-                extracted.push({ number, desc });
+                if (number && desc) {
+                    extracted.push({ number, desc });
+                }
 
                 if (number === 'KOR20') break;
             }
