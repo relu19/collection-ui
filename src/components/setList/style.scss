@@ -511,6 +511,15 @@
   }
 }
 
+.set-numbers-Euro2024-extra {
+  .set-number {
+    width: calc(12.5% - 1px); // 8 items per row (100% / 8)
+    font-size: 9px;
+    padding: 4px 1px;
+  }
+}
+
+
 @media screen and (max-width: 1600px) {
   .set-list-header {
     width: calc(100% - 500px);
@@ -646,7 +655,7 @@
     padding: 6px 12px;
     font-size: 11px;
   }
-  
+
   // Specific styling for Euro2024 extra numbers on mobile
   .set-numbers-Euro2024-extra, .set-numbers-Qatar2022, .set-numbers-2016-2017, .set-numbers-2020-2021  {
     .set-number {
