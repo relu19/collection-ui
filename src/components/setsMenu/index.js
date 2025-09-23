@@ -11,6 +11,7 @@ import { getURLParams } from "../../utils/getURLParams";
 import { getCategoriesWithSetTypes } from "../../actions/type";
 import { getStorageItem } from "../../storage";
 import ConditionalRender from "../../utils/conditionalRender";
+import { closeMobileMenu } from "../../utils/closeMobileMenu";
 
 const SetsMenu = ({isAdmin, data}) => {
     const [userInfo, setUserInfo] = useState({})
@@ -95,6 +96,7 @@ const SetsMenu = ({isAdmin, data}) => {
         }
     }
 
+
     const userDetails = getStorageItem('collector-data')
 
     return (
@@ -134,7 +136,7 @@ const SetsMenu = ({isAdmin, data}) => {
                         <ul id={category.id + '' + i} className={`sets-list`}>
                             {category.categoryTypes.map((type, j) =>
                                 <li className={parseInt(filterParams.setTypeId) === type.id ? 'selected' : ''} key={j}
-                                    onClick={() => {changeCategory(dispatch, category.id, type.id); handleToggle(i)}}>
+                                    onClick={() => {changeCategory(dispatch, category.id, type.id); handleToggle(i); closeMobileMenu();}}>
                                     <Icon name={type.icon} color="#cccccc" width={30} height={21}/> {type.name}
                                 </li>
                             )}

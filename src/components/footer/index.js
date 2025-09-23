@@ -1,5 +1,6 @@
 import React from "react";
 import './style.scss';
+import { closeMobileMenu } from "../../utils/closeMobileMenu";
 
 
 const Footer = () => {
@@ -7,8 +8,8 @@ const Footer = () => {
     return (
         <div className='cl-footer'>
             <div className='footer-links'>
-                <a href='/terms'>Terms and Conditions</a>
-                <a href='/privacy'>Privacy Policy</a>
+                <a href='/terms' onClick={closeMobileMenu}>Terms and Conditions</a>
+                <a href='/privacy' onClick={closeMobileMenu}>Privacy Policy</a>
             </div>
             <p>Copyright © 2025 Relu Plesciuc</p>
         </div>
