@@ -601,7 +601,7 @@
 
 .set-numbers-Smurfs {
   .set-number {
-    width: calc(100% - 1px); // 1 item per row (100% / 1)
+    width: calc(50% - 1px); // 2 items per row (100% / 2)
     font-size: 9px;
     padding: 4px 1px;
   }
