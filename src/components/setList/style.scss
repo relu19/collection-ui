@@ -601,12 +601,10 @@
 
 .set-numbers-Smurfs {
   flex-wrap: nowrap;
-  overflow-x: auto;
   
   .set-number {
-    flex-shrink: 0;
+    flex: 1;
     width: auto;
-    min-width: 30px;
   }
 }
 
