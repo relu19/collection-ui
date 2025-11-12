@@ -13,6 +13,7 @@ import Terms from "./pages/terms";
 import ConvertPage from "./pages/convert";
 import Privacy from "./pages/privacy";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import CookieBanner from "./components/cookie-banner";
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                         </Routes>
                     </main>
                     <Footer />
+                    <CookieBanner />
                 </div>
             </BrowserRouter>
         </GoogleOAuthProvider>

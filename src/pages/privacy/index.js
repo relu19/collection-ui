@@ -1,63 +1,118 @@
 import React from 'react';
 
 const Privacy = () => {
-
     return (
         <div className='termsAndPrivacy'>
+            <h1>Privacy Policy for https://www.collectors-hub.art</h1>
 
-                <h1>Privacy Policy for https://collectibles.herokuapp.com/</h1>
-                <p>At Collections, accessible from https://collectibles.herokuapp.com/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Collections and how we use it.</p>
-                <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
-                <p>This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Collections. This policy is not applicable to any information collected offline or via channels other than this website. Our Privacy Policy was created with the help of the&nbsp;</p>
-                <h2>Consent</h2>
-                <p>By using our website, you hereby consent to our Privacy Policy and agree to its terms.</p>
-                <h2>Information we collect</h2>
-                <p>The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.</p>
-                <p>If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.</p>
-                <p>When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.</p>
-                <h2>How we use your information</h2>
-                <p>We use the information we collect in various ways, including to:</p>
-                <ul>
-                        <li>Provide, operate, and maintain our website</li>
-                        <li>Improve, personalize, and expand our website</li>
-                        <li>Understand and analyze how you use our website</li>
-                        <li>Develop new products, services, features, and functionality</li>
-                        <li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes</li>
-                        <li>Send you emails</li>
-                        <li>Find and prevent fraud</li>
-                </ul>
-                <h2>Log Files</h2>
-                <p>Collections follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services&apos; analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users&apos; movement on the website, and gathering demographic information.</p>
-                <h2>Advertising Partners Privacy Policies</h2>
-                <p>You may consult this list to find the Privacy Policy for each of the advertising partners of Collections.</p>
-                <p>Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on Collections, which are sent directly to users&apos; browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.</p>
-                <p>Note that Collections has no access to or control over these cookies that are used by third-party advertisers.</p>
-                <h2>Third Party Privacy Policies</h2>
-                <p>Collections&apos;s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.</p>
-                <p>You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers&apos; respective websites.</p>
-                <h2>CCPA Privacy Rights (Do Not Sell My Personal Information)</h2>
-                <p>Under the CCPA, among other rights, California consumers have the right to:</p>
-                <p>Request that a business that collects a consumer&apos;s personal data disclose the categories and specific pieces of personal data that a business has collected about consumers.</p>
-                <p>Request that a business delete any personal data about the consumer that a business has collected.</p>
-                <p>Request that a business that sells a consumer&apos;s personal data, not sell the consumer&apos;s personal data.</p>
-                <p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>
-                <h2>GDPR Data Protection Rights</h2>
-                <p>We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
-                <p>The right to access &ndash; You have the right to request copies of your personal data. We may charge you a small fee for this service.</p>
-                <p>The right to rectification &ndash; You have the right to request that we correct any information you believe is inaccurate. You also have the right to request that we complete the information you believe is incomplete.</p>
-                <p>The right to erasure &ndash; You have the right to request that we erase your personal data, under certain conditions.</p>
-                <p>The right to restrict processing &ndash; You have the right to request that we restrict the processing of your personal data, under certain conditions.</p>
-                <p>The right to object to processing &ndash; You have the right to object to our processing of your personal data, under certain conditions.</p>
-                <p>The right to data portability &ndash; You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>
-                <p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>
-                <p>You can delete all your stored data by sending an email to plesciuc.relu@gmail.com</p>
+            <p>
+                At <strong>Collectors Hub</strong>, accessible from
+                {' '}
+                <a href="https://www.collectors-hub.art">https://www.collectors-hub.art</a>,
+                protecting the privacy of our visitors and users is one of our main priorities.
+                This Privacy Policy explains what information we collect, how we use it, and what rights you have in relation to it.
+            </p>
 
-            <h2>Children&apos;s Information</h2>
-                <p>Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.</p>
-                <p>Collections does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>
-       </div>
-    )
-}
+            <h2>1. Consent</h2>
+            <p>
+                By using our website or signing in with Google, you consent to the collection and use of your information
+                in accordance with this Privacy Policy.
+            </p>
 
+            <h2>2. Information We Collect</h2>
+            <p>
+                When you log in using your Google account, we receive limited personal information from Google, including:
+            </p>
+            <ul>
+                <li>Your full name</li>
+                <li>Your Google account email address</li>
+                <li>Your Google profile picture</li>
+            </ul>
+            <p>
+                We do not collect your password or any other sensitive data from Google.
+            </p>
+            <p>
+                If you contact us directly (e.g., by email), we may receive additional information such as your name,
+                email address, message content, and any attachments you send.
+            </p>
 
-export default Privacy
+            <h2>3. How We Use Your Information</h2>
+            <ul>
+                <li>To authenticate and manage your account</li>
+                <li>To display your profile information (name, photo, and email) on the user list</li>
+                <li>To improve and maintain the functionality of our website</li>
+                <li>To communicate with you regarding your account or inquiries</li>
+                <li>To prevent fraud and ensure the security of our platform</li>
+            </ul>
+
+            <h2>4. Data Storage and Retention</h2>
+            <p>
+                Your Google profile data is stored securely and used only for the purposes stated above.
+                You may request deletion of your data at any time by contacting us at
+                {' '}
+                <a href="mailto:plesciuc.relu@gmail.com">plesciuc.relu@gmail.com</a>.
+            </p>
+            <p>
+                Once your data is deleted, your profile and login access will also be removed from our system.
+            </p>
+
+            <h2>5. Log Files</h2>
+            <p>
+                Collectors Hub follows standard procedures of using log files. These files log visitors when they visit websites.
+                The data may include IP addresses, browser type, Internet Service Provider (ISP), timestamps, referring/exit pages,
+                and possibly the number of clicks. This information is not personally identifiable and is used for analyzing trends,
+                administering the site, and tracking aggregate usage.
+            </p>
+
+            <h2>6. Cookies</h2>
+            <p>
+                We may use cookies to enhance your experience on our website, such as keeping you signed in.
+                You can choose to disable cookies through your browser settings, but this may limit certain features.
+            </p>
+
+            <h2>7. Third-Party Services</h2>
+            <p>
+                We use Google OAuth for authentication. When you log in, Google may collect and process information
+                according to their own <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+                Privacy Policy</a>.
+            </p>
+            <p>
+                We do not share or sell your data to any third parties.
+            </p>
+
+            <h2>8. GDPR Data Protection Rights</h2>
+            <p>Under the General Data Protection Regulation (GDPR), you have the right to:</p>
+            <ul>
+                <li>Access your personal data</li>
+                <li>Request correction of inaccurate data</li>
+                <li>Request deletion of your personal data</li>
+                <li>Restrict or object to processing</li>
+                <li>Request transfer of your data to another service (data portability)</li>
+            </ul>
+            <p>
+                To exercise these rights, contact us at
+                {' '}
+                <a href="mailto:plesciuc.relu@gmail.com">plesciuc.relu@gmail.com</a>.
+                We will respond within one month.
+            </p>
+
+            <h2>9. Children's Information</h2>
+            <p>
+                Collectors Hub does not knowingly collect any personal information from children under the age of 13.
+                If you believe that your child has provided personal data on our website, please contact us immediately
+                and we will promptly remove such information.
+            </p>
+
+            <h2>10. Contact Information</h2>
+            <p>
+                For any privacy-related questions or data deletion requests, please contact us at:
+            </p>
+            <ul>
+                <li>Email: <a href="mailto:plesciuc.relu@gmail.com">plesciuc.relu@gmail.com</a></li>
+                <li>Website: <a href="https://www.collectors-hub.art">https://www.collectors-hub.art</a></li>
+            </ul>
+        </div>
+    );
+};
+
+export default Privacy;

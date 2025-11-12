@@ -1,0 +1,96 @@
+@import "../../style/constants.scss";
+
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $white;
+    border-top: 2px solid $modalHeader;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 9999;
+    animation: slideUp 0.3s ease-out;
+
+    .cookie-banner-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        p {
+            margin: 0;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+            flex: 1;
+            min-width: 250px;
+
+            a {
+                color: #87CEFA;
+                text-decoration: underline;
+                font-weight: 500;
+
+                &:hover {
+                    color: #78BFEB;
+                }
+            }
+        }
+
+        .cookie-accept-btn {
+            background: linear-gradient(to bottom, #87CEFA 0%, #78BFEB 100%);
+            color: $black;
+            border: 2px solid $black;
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: linear-gradient(to bottom, #78BFEB 0%, #6AAEDC 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 15px;
+
+        .cookie-banner-content {
+            flex-direction: column;
+            text-align: center;
+
+            p {
+                font-size: 13px;
+            }
+
+            .cookie-accept-btn {
+                width: 100%;
+                padding: 12px 20px;
+            }
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+

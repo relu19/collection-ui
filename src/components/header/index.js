@@ -8,12 +8,14 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import ConditionalRender from "../../utils/conditionalRender";
 import LoginPage from "../google-login";
+import { Link } from "react-router-dom";
 
 const Header = () => {
 
     const [logInModal, setLogInModal] = useState(false);
     const [logOutModal, setLogOutModal] = useState(false);
     const [usersModal, setUsersModal] = useState(false);
+    const [consentModal, setConsentModal] = useState(false);
     const [userDetails, setUserDetails] = useState(getStorageItem('collector-data'))
 
     const fetchUser = async (data) => {
@@ -78,12 +80,9 @@ const Header = () => {
                 {/*{!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Add your collection</span>}*/}
 
                 <ConditionalRender if={!userDetails?.name}>
-                    <GoogleLogin
-                        onSuccess={responseGoogle}
-                        onError={() => {
-                            console.log('Login Failed');
-                        }}
-                    />
+                    <button className="google-signin-btn" onClick={() => setConsentModal(true)}>
+                        Sign in with Google
+                    </button>
                 </ConditionalRender>
                 {userDetails?.name && <div className='user-info' onClick={() => setLogOutModal(true)}>
                     <div className='user-avatar'>
@@ -144,7 +143,14 @@ const Header = () => {
                 <div className='modal-content'>
                     <p>Create an account so you can add your own collection and share it with others</p>
 
-                    <p className='center-align'><LoginPage userDetails={userDetails} setUserDetails={fetchUser}/></p>
+                    <p className='center-align'>
+                        <button className="google-signin-btn" onClick={() => {
+                            setLogInModal(false);
+                            setConsentModal(true);
+                        }}>
+                            Sign in with Google
+                        </button>
+                    </p>
                 </div>
                 <hr/>
                 {/*<p className='note'>*By creating an account you agree that your data will be saved and associated with any sets you*/}
@@ -189,6 +195,48 @@ const Header = () => {
                         }}>Add your own collection
                         </button>
                     </ConditionalRender>
+                </div>
+            </Modal>
+
+
+            <Modal
+                isOpen={consentModal}
+                onRequestClose={() => setConsentModal(false)}
+                contentLabel="Google Sign In Consent"
+                className="page-modal consent-modal"
+                ariaHideApp={false}
+                overlayClassName="modal-overlay"
+                closeTimeoutMS={500}
+            >
+                <div className='modal-header'>
+                    Sign in with Google
+                </div>
+
+                <div className='modal-content'>
+                    <p className="consent-message">
+                        By signing in with Google, you agree that Collectors Hub may access your public Google profile information (name, email address, and profile picture) to create and display your user account.
+                    </p>
+                    
+                    <p className="consent-links">
+                        See our <Link to="/privacy" onClick={() => setConsentModal(false)}>Privacy Policy</Link> and <Link to="/terms" onClick={() => setConsentModal(false)}>Terms of Service</Link>
+                    </p>
+
+                    <div className='center-align' style={{ marginTop: '20px' }}>
+                        <GoogleLogin
+                            onSuccess={(response) => {
+                                setConsentModal(false);
+                                responseGoogle(response);
+                            }}
+                            onError={() => {
+                                console.log('Login Failed');
+                                setConsentModal(false);
+                            }}
+                        />
+                    </div>
+                </div>
+                <hr/>
+                <div className='modal-footer'>
+                    <button className='button' onClick={() => setConsentModal(false)}>Cancel</button>
                 </div>
             </Modal>
         </div>
