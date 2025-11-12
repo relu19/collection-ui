@@ -77,6 +77,19 @@ class Actions {
   }
 
   /**
+   * Get JWT token from localStorage
+   * @returns {string|null}
+   */
+  static getAuthToken() {
+    try {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      return authData?.token || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
    * Make a generic request
    *
    * @param {Object} request Request to be made. Must be of the form: {method, url, query [optional]}
@@ -85,6 +98,12 @@ class Actions {
    */
   static makeRequest({ request }) {
     const headers = request.headers || {};
+    
+    // Add Authorization header if token exists
+    const token = this.getAuthToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
 
     const params = {
       headers,
@@ -96,6 +115,14 @@ class Actions {
 
     return fetch(SERVER_URI + request.url, params)
         .then(async (res) => {
+            // Check for authentication errors
+            if (res.status === 401) {
+              // Token expired or invalid, clear auth data
+              localStorage.removeItem('auth');
+              // Optionally redirect to login or refresh page
+              console.error('Authentication failed. Please log in again.');
+              throw new Error('Authentication required');
+            }
             const text = await res.text();
             return text ? JSON.parse(text) : {};
         })

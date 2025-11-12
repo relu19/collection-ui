@@ -2,6 +2,17 @@ import Actions from "./api";
 import { v4 as uuidv4 } from 'uuid';
 import {ACTIONS} from "../config";
 
+/**
+ * Authenticate user with Google token and get JWT
+ * @param {string} googleToken Google ID token from Google login
+ * @returns {Promise<{token: string, user: object}>}
+ */
+export const authenticateWithGoogle = async (googleToken) => {
+    return Actions.post({
+        'token': googleToken
+    }, 'auth/google-login');
+};
+
 export const createNewUser = async (user) => {
     return Actions.post({
         'name': user.name,

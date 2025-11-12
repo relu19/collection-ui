@@ -8,7 +8,7 @@ import './style/button.scss';
 import './style/spinner.scss';
 import Header from "./components/header";
 import Footer from "./components/footer";
-import React from "react";
+import React, {useEffect} from "react";
 import Terms from "./pages/terms";
 import ConvertPage from "./pages/convert";
 import Privacy from "./pages/privacy";
@@ -16,6 +16,18 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import CookieBanner from "./components/cookie-banner";
 
 function App() {
+    // Auto-logout users with old auth (no JWT token)
+    useEffect(() => {
+        const oldData = localStorage.getItem('collector-data');
+        const authData = localStorage.getItem('auth');
+        
+        // If user has old data but no JWT token, clear it
+        if (oldData && !authData) {
+            console.log('Clearing old authentication data...');
+            localStorage.removeItem('collector-data');
+        }
+    }, []);
+
     return (
         <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
             <BrowserRouter>

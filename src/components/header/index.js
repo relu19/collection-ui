@@ -1,13 +1,11 @@
 import {deleteStorageItem, getStorageItem, setStorageItem} from "../../storage";
-import { createNewUser, getUser } from "../../actions/users";
-import React, {useState} from "react";
+import { authenticateWithGoogle } from "../../actions/users";
+import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
 import './style.scss';
 import UsersList from "../users-list";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import ConditionalRender from "../../utils/conditionalRender";
-import LoginPage from "../google-login";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -16,60 +14,65 @@ const Header = () => {
     const [logOutModal, setLogOutModal] = useState(false);
     const [usersModal, setUsersModal] = useState(false);
     const [consentModal, setConsentModal] = useState(false);
-    const [userDetails, setUserDetails] = useState(getStorageItem('collector-data'))
-
-    const fetchUser = async (data) => {
-        const userInfo = await getUser(data);
-
-        if (!userInfo?.length) {
-            deleteStorageItem('collector-data');
-            return;
+    
+    // Initialize user from new auth system OR old storage
+    const getInitialUser = () => {
+        try {
+            // First check new JWT auth
+            const authData = JSON.parse(localStorage.getItem('auth'));
+            if (authData?.user) {
+                return authData.user;
+            }
+        } catch (e) {
+            // Ignore parse errors
         }
-
-        const userId = userInfo[0].id;
-        const userType = userInfo[0].type ?? 1;
-        const userData = {
-            ...data,
-            id: userId,
-            type: userType,
-            logo: data?.logo
-        };
-
-        setUserDetails(userData);
-        setStorageItem('collector-data', userData);
-
-        window.location = '/';
+        
+        // Fall back to old storage format
+        return getStorageItem('collector-data');
     };
+    
+    const [userDetails, setUserDetails] = useState(getInitialUser());
 
     const logOutUser = () => {
-        deleteStorageItem('collector-data')
+        localStorage.removeItem('auth');
+        deleteStorageItem('collector-data'); // Clean up old storage too
+        setUserDetails(null);
         window.location = '/';
     }
 
     const responseGoogle = async (response) => {
-        const decoded = jwtDecode(response.credential);
-
-        // Extract user details
-        const userDetails = {
-            name: decoded.name,
-            email: decoded.email,
-            logo: decoded.picture,
-            type: 1,
-            fbId: decoded.sub,
-        };
-
-        // Step 1: Check if user exists in the database
-        const existingUser = await getUser(userDetails);
-
-        if (existingUser && existingUser.length > 0) {
-            // Step 2: User exists, log them in
-            console.log("User exists, logging in...");
-            await fetchUser(existingUser[0]);
-        } else {
-            // Step 3: User does not exist, create a new one
-            console.log("User not found, creating a new one...");
-            await createNewUser(userDetails);
-            await fetchUser(userDetails);
+        try {
+            // Send Google token to backend for verification and JWT generation
+            const authResponse = await authenticateWithGoogle(response.credential);
+            
+            // Check if we got valid data
+            if (!authResponse.token || !authResponse.user) {
+                console.error("Invalid response from server:", authResponse);
+                alert('Login failed: Invalid response from server. Please try again.');
+                return;
+            }
+            
+            // Store JWT token and user data
+            localStorage.setItem('auth', JSON.stringify({
+                token: authResponse.token,
+                user: authResponse.user
+            }));
+            
+            // Also store in old format for compatibility
+            setStorageItem('collector-data', authResponse.user);
+            
+            console.log("Login successful!", authResponse.user);
+            
+            // Update state BEFORE redirect
+            setUserDetails(authResponse.user);
+            
+            // Small delay to ensure state updates, then reload to refresh everything
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Login failed. Please try again. Check console for details.');
         }
     };
 
