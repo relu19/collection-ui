@@ -1,5 +1,4 @@
 import Actions from "./api";
-import { v4 as uuidv4 } from 'uuid';
 import {ACTIONS} from "../config";
 
 /**
@@ -20,8 +19,8 @@ export const createNewUser = async (user) => {
         'phone': user.phone,
         'logo': user.logo,
         'type': 1,
-        'username': user.id,
-        'contactEmail': uuidv4(),
+        'username': '',
+        'contactEmail': '',
     }, 'users')
 };
 
@@ -45,15 +44,25 @@ export const getUser = (user) => {
 
 
 export const deleteUserAndNumbers = async (user, userDetails) => {
-    if (userDetails.type !== parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE)) {
-        return false
+    // Only admins (type 114) can delete users
+    const ADMIN_TYPE = 114;
+    const isAdmin = userDetails && userDetails.type === ADMIN_TYPE;
+    
+    if (!isAdmin) {
+        throw new Error('Only administrators can delete users');
     }
+    
+    if (!user.email) {
+        throw new Error('User email is required for deletion');
+    }
+    
     return Actions.post({
-        'name': user.name,
+        'name': user.name || '',
         'email': user.email,
-        'phone': user.phone,
-        'type': 1,
-        'username': user.username,
+        'phone': user.phone || '',
+        'type': user.type || 1,
+        'username': user.username || '',
+        'contactEmail': user.contactEmail || '',
     }, 'remove-users')
 };
 

@@ -274,7 +274,7 @@ const Header = () => {
                         setDropdownOpen(!dropdownOpen);
                     }}>
                         <div className='user-avatar'>
-                            <img alt={userDetails?.username || userDetails?.name || ''} src={userDetails?.logo || ''}/>
+                            <img alt='' src={userDetails?.logo || ''}/>
                             <div className='user-status'></div>
                         </div>
                         <div className='user-details'>

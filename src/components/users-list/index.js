@@ -19,7 +19,9 @@ const UsersList = ({setUsersModal}) => {
     const dispatch = useDispatch();
 
     const userDetails = getStorageItem('collector-data')
-    const isAdmin = userDetails && userDetails.name ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
+    const ADMIN_TYPE = 114;
+    const isAdmin = userDetails && userDetails.name ? userDetails.type === ADMIN_TYPE : false
+    const isLoggedIn = userDetails && userDetails.name
 
     const params = getURLParams()
 
@@ -33,9 +35,18 @@ const UsersList = ({setUsersModal}) => {
         }
     }, [users]);
 
-    const deleteUser = (set) => {
-        deleteUserAndNumbers(set, userDetails).then(() => window.location = '/')
-        setModalData(false)
+    const deleteUser = async (userToDelete) => {
+        try {
+            await deleteUserAndNumbers(userToDelete, userDetails);
+            setModalData(null);
+            // Refresh the users list
+            const updatedUsers = await getUsers();
+            setUsers(updatedUsers);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Failed to delete user. ' + (error.message || 'Please try again.'));
+            setModalData(null);
+        }
     }
 
     const goToUserPage = (user) => {
@@ -66,11 +77,21 @@ const UsersList = ({setUsersModal}) => {
                     {users && users.map((user, i) =>
                         <div key={i} className='user-info'>
                             <ConditionalRender if={isAdmin}>
-                                <Icon onClick={() => setModalData(user)} name='delete'
-                                      color="#cccccc" width={15} height={15}/>
+                                <Icon onClick={(e) => {
+                                    e.stopPropagation();
+                                    setModalData(user);
+                                }} name='delete'
+                                      color="#cccccc" width={14} height={14}/>
                             </ConditionalRender>
                             <div onClick={() => goToUserPage(user)}>
-                                <img alt='' src={user.logo || logo}/><span>{user.name}</span></div>
+                                <div className="user-avatar-wrapper">
+                                    <img alt='' src={user.logo || logo}/>
+                                </div>
+                                <div className="user-content">
+                                    <span className="user-name">{user.username || user.name}</span>
+                                    {isLoggedIn && user.email && <span className="user-email">{user.email}</span>}
+                                </div>
+                            </div>
                         </div>
                     )}
 
