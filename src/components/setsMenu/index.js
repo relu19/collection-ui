@@ -108,18 +108,18 @@ const SetsMenu = ({isAdmin, data}) => {
                      <span></span>
                 </div>
                 <img alt='' src={userInfo?.logo || logo}/>
-                <h2>{userInfo?.name}</h2>
+                <h2>{userInfo?.username || userInfo?.name}</h2>
                 <ConditionalRender if={userDetails?.id}>
                     <div className="email-container">
                         <p className="email-text">
-                                <a title={userInfo?.email} href={`mailto:${userInfo?.email}`}>
-                                {userInfo?.email?.split('@')[0].length > 15 ? (
+                                <a title={userInfo?.contactEmail || userInfo?.email} href={`mailto:${userInfo?.contactEmail || userInfo?.email}`}>
+                                {(userInfo?.contactEmail || userInfo?.email)?.split('@')[0].length > 15 ? (
                                     <>
-                                        {userInfo?.email?.split('@')[0]}<br />
-                                        <span className="email-domain">@{userInfo?.email?.split('@')[1]}</span>
+                                        {(userInfo?.contactEmail || userInfo?.email)?.split('@')[0]}<br />
+                                        <span className="email-domain">@{(userInfo?.contactEmail || userInfo?.email)?.split('@')[1]}</span>
                                     </>
                                 ) : (
-                                    userInfo?.email
+                                    userInfo?.contactEmail || userInfo?.email
                                 )}
                             </a>
                         </p>

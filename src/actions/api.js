@@ -103,6 +103,8 @@ class Actions {
     const token = this.getAuthToken();
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      console.warn('No auth token found for request:', request.url);
     }
 
     const params = {

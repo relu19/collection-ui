@@ -157,14 +157,14 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                             <div className='exchange-table__cell user-cell'>
                                 <div className='user-info'>
                                     <img alt='' src={user?.logo || logo}/>
-                                    <p><h2>{user?.name}</h2></p>
+                                    <p><h2>{user?.username || user?.name}</h2></p>
                                 </div>
                                 {!collapsedUsers.has(user.id) && (
                                     <p className='user-email'>
-                                        <a href={`mailto:${user?.email}`}>
+                                        <a href={`mailto:${user?.contactEmail || user?.email}`}>
                                             <Icon name='mail' color="#87CEFA" width={30} height={21}
                                                   className="email-icon"/>
-                                            <span title={user?.email} className="email-text">{user?.email}</span>
+                                            <span title={user?.contactEmail || user?.email} className="email-text">{user?.contactEmail || user?.email}</span>
                                         </a>
                                     </p>
                                 )}

@@ -43,7 +43,7 @@ const UsersList = ({setUsersModal}) => {
             categoryId: params.category || 1,
             setTypeId: params.type || 11,
             userId: user.id,
-            userPublicId: user.publicId,
+            userContactEmail: user.contactEmail,
         }
         changeFilters(dispatch, filters)
         const url = `/sets?cat=${filters.categoryId}&type=${filters.setTypeId}&id=${filters.userId}`

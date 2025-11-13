@@ -20,15 +20,15 @@ export const createNewUser = async (user) => {
         'phone': user.phone,
         'logo': user.logo,
         'type': 1,
-        'fbId': user.id,
-        'publicId': uuidv4(),
+        'username': user.id,
+        'contactEmail': uuidv4(),
     }, 'users')
 };
 
 export const getUsers = async () => {
     return Actions.get(
         `/users?filter=${JSON.stringify({
-            fields: { id: true, fbId: true, name: true, logo: true, email: true },
+            fields: { id: true, username: true, name: true, logo: true, email: true },
         })}`,
     );
 };
@@ -53,7 +53,7 @@ export const deleteUserAndNumbers = async (user, userDetails) => {
         'email': user.email,
         'phone': user.phone,
         'type': 1,
-        'fbId': user.fbId,
+        'username': user.username,
     }, 'remove-users')
 };
 
@@ -73,4 +73,8 @@ export const changeCategory = (dispatch, categoryId, setTypeId) => {
 
 export const changeFilters = (dispatch, filters) => {
     dispatch({ type: ACTIONS.CHANGE_FILTERS, filters });
+};
+
+export const updateProfile = async (userId, profileData) => {
+    return Actions.patch(profileData, `users/${userId}`);
 };
