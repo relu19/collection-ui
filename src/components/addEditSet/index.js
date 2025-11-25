@@ -84,6 +84,25 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             id,
         } = newSet;
 
+        // Check authentication first
+        const authData = localStorage.getItem('auth');
+        if (!authData) {
+            setError("You must be logged in to add/edit sets. Please sign in with Google.");
+            return;
+        }
+
+        let parsedAuth;
+        try {
+            parsedAuth = JSON.parse(authData);
+            if (!parsedAuth?.token) {
+                setError("Your session has expired. Please log out and sign in again.");
+                return;
+            }
+        } catch (e) {
+            setError("Authentication error. Please log out and sign in again.");
+            return;
+        }
+
         const userDetails = getStorageItem("collector-data");
         const userId = userDetails?.id;
 
@@ -134,7 +153,12 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             setModal(false);
             setNewSet(defaultState);
         } catch (e) {
-            // handle error
+            console.error("Error saving set:", e);
+            if (e.message === 'Authentication required') {
+                setError("Your session has expired. Please reload the page and sign in again.");
+            } else {
+                setError("Failed to save set. Please try again or contact support.");
+            }
         }
 
         setLoading(false);

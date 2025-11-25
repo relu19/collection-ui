@@ -90,6 +90,38 @@ class Actions {
   }
 
   /**
+   * Check if token is expired by decoding it
+   * @param {string} token JWT token
+   * @returns {boolean} True if expired
+   */
+  static isTokenExpired(token) {
+    if (!token) return true;
+    
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const decoded = JSON.parse(jsonPayload);
+      
+      if (!decoded.exp) return true;
+      
+      // exp is in seconds, Date.now() is in milliseconds
+      const expirationTime = decoded.exp * 1000;
+      const currentTime = Date.now();
+      
+      return currentTime >= expirationTime;
+    } catch (error) {
+      console.error('Error checking token expiration:', error);
+      return true;
+    }
+  }
+
+  /**
    * Make a generic request
    *
    * @param {Object} request Request to be made. Must be of the form: {method, url, query [optional]}
@@ -101,6 +133,15 @@ class Actions {
     
     // Add Authorization header if token exists
     const token = this.getAuthToken();
+    
+    // Check if token is expired before making request
+    if (token && this.isTokenExpired(token)) {
+      console.error('Token expired. Clearing auth data...');
+      localStorage.removeItem('auth');
+      localStorage.removeItem('collector-data');
+      return Promise.reject(new Error('Your session has expired. Please log in again.'));
+    }
+    
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     } else {
@@ -121,6 +162,7 @@ class Actions {
             if (res.status === 401) {
               // Token expired or invalid, clear auth data
               localStorage.removeItem('auth');
+              localStorage.removeItem('collector-data');
               // Optionally redirect to login or refresh page
               console.error('Authentication failed. Please log in again.');
               throw new Error('Authentication required');

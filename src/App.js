@@ -14,18 +14,41 @@ import ConvertPage from "./pages/convert";
 import Privacy from "./pages/privacy";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import CookieBanner from "./components/cookie-banner";
+import SessionIndicator from "./components/session-indicator";
+import { isTokenExpired, getAuthToken } from "./utils/tokenUtils";
 
 function App() {
-    // Auto-logout users with old auth (no JWT token)
+    // Auto-logout users with expired tokens
     useEffect(() => {
-        const oldData = localStorage.getItem('collector-data');
-        const authData = localStorage.getItem('auth');
+        const checkAuth = () => {
+            const oldData = localStorage.getItem('collector-data');
+            const authData = localStorage.getItem('auth');
+            
+            // If user has old data but no JWT token, clear it
+            if (oldData && !authData) {
+                console.log('Clearing old authentication data...');
+                localStorage.removeItem('collector-data');
+                return;
+            }
+            
+            // Check if token is expired
+            const token = getAuthToken();
+            if (token && isTokenExpired(token)) {
+                console.log('Token expired. Logging out...');
+                localStorage.removeItem('auth');
+                localStorage.removeItem('collector-data');
+                // Reload to update UI
+                window.location.reload();
+            }
+        };
         
-        // If user has old data but no JWT token, clear it
-        if (oldData && !authData) {
-            console.log('Clearing old authentication data...');
-            localStorage.removeItem('collector-data');
-        }
+        // Check on mount
+        checkAuth();
+        
+        // Check every 5 minutes
+        const interval = setInterval(checkAuth, 5 * 60 * 1000);
+        
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -44,6 +67,7 @@ function App() {
                     </main>
                     <Footer />
                     <CookieBanner />
+                    <SessionIndicator />
                 </div>
             </BrowserRouter>
         </GoogleOAuthProvider>
