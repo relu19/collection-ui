@@ -33,16 +33,28 @@ export const updateSetType = async (setType) => {
 };
 
 export const getCategoriesWithSetTypes = async (dispatch) => {
-    const allCategories = await _getCategories();
-    const sortedCategories = allCategories.sort((a, b) => a?.order - b?.order)
-    return _getCategoryTypes(sortedCategories).then((res) => {
-        if (res && !res.error) {
-            dispatch({type: ACTIONS.GET_CATEGORIES_WITH_TYPES, data: res});
-        }
-    })
-        .catch((err) => {
-            console.log(err)
+    try {
+        const allCategories = await _getCategories();
+        const sortedCategories = allCategories.sort((a, b) => a?.order - b?.order)
+        return _getCategoryTypes(sortedCategories).then((res) => {
+            if (res && !res.error) {
+                dispatch({type: ACTIONS.GET_CATEGORIES_WITH_TYPES, data: res});
+            }
         })
+            .catch((err) => {
+                // Don't log handled errors (like session expiration)
+                if (!err?.handled) {
+                    console.log(err)
+                }
+                throw err;
+            })
+    } catch (err) {
+        // Don't log handled errors (like session expiration)
+        if (!err?.handled) {
+            console.error('Error getting categories:', err);
+        }
+        throw err;
+    }
 };
 
 const _getCategoryTypes = async (cat) => {

@@ -16,6 +16,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import CookieBanner from "./components/cookie-banner";
 import SessionIndicator from "./components/session-indicator";
 import { isTokenExpired, getAuthToken } from "./utils/tokenUtils";
+import ErrorBoundary from "./components/error-notification/ErrorBoundary";
+import NotificationContainer from "./components/notification-container";
 
 function App() {
     // Auto-logout users with expired tokens
@@ -52,25 +54,28 @@ function App() {
     }, []);
 
     return (
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-            <BrowserRouter>
-                <div className="app-container">
-                    <Header/>
-                    <main className="main-content">
-                        <Routes>
-                            <Route path="/" element={<HomeScreen/>}/>
-                            <Route path="/sets" element={<SetsScreen/>}/>
-                            <Route path="/terms" element={<Terms/>}/>
-                            <Route path="/convert" element={<ConvertPage />}/>
-                            <Route path="/privacy" element={<Privacy/>}/>
-                        </Routes>
-                    </main>
+        <ErrorBoundary>
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+                <BrowserRouter>
+                    <div className="app-container">
+                        <Header/>
+                        <main className="main-content">
+                            <Routes>
+                                <Route path="/" element={<HomeScreen/>}/>
+                                <Route path="/sets" element={<SetsScreen/>}/>
+                                <Route path="/terms" element={<Terms/>}/>
+                                <Route path="/convert" element={<ConvertPage />}/>
+                                <Route path="/privacy" element={<Privacy/>}/>
+                            </Routes>
+                        </main>
                     <Footer />
                     <CookieBanner />
                     <SessionIndicator />
+                    <NotificationContainer />
                 </div>
             </BrowserRouter>
         </GoogleOAuthProvider>
+        </ErrorBoundary>
     );
 }
 

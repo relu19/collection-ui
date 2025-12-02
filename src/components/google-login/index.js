@@ -18,6 +18,10 @@ const LoginPage = ({ setUserDetails }) => {
             console.log("Login successful, setting user details...");
             setUserDetails(authResponse.user);
         } catch (error) {
+            // Don't show error if it was already handled
+            if (error?.handled) {
+                return;
+            }
             console.error('Login error:', error);
             alert('Login failed. Please try again.');
         }

@@ -15,11 +15,21 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
         if (!newCategory.name || !newCategory.order) {
             setActionError('All Fields are Required')
         } else {
-            isUpdate ? updateCategory(newCategory).then(() => update()) : addNewCategory(newCategory).then(() => update())
-            setActionError('')
-            setAddCategoryModal(false)
-            setEditCategoryModal(false)
-            setNewCategory(DEFAULT_STATE)
+            const promise = isUpdate ? updateCategory(newCategory) : addNewCategory(newCategory);
+            promise
+                .then(() => {
+                    update();
+                    setActionError('');
+                    setAddCategoryModal(false);
+                    setEditCategoryModal(false);
+                    setNewCategory(DEFAULT_STATE);
+                })
+                .catch((err) => {
+                    if (!err?.handled) {
+                        console.error('Error saving category:', err);
+                        setActionError('Failed to save category. Please try again.');
+                    }
+                });
         }
     }
 
@@ -35,9 +45,19 @@ const AddEditCategory = ({newSet, setNewSet, categories, update, setError}) => {
             setError('Can\'t delete, it has set type assigned')
             setDeleteCategoryModal(null)
         } else {
-            removeCategory(categoryFound).then(() => update())
-            setNewSet({...newSet, categoryId: ''})
-            setDeleteCategoryModal(null)
+            removeCategory(categoryFound)
+                .then(() => {
+                    update();
+                    setNewSet({...newSet, categoryId: ''});
+                    setDeleteCategoryModal(null);
+                })
+                .catch((err) => {
+                    if (!err?.handled) {
+                        console.error('Error deleting category:', err);
+                        setError('Failed to delete category. Please try again.');
+                    }
+                    setDeleteCategoryModal(null);
+                });
         }
     }
 

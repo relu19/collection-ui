@@ -1,5 +1,7 @@
 'use strict';
 
+import notificationService from '../services/notificationService';
+
 const SERVER_URI = process.env.REACT_APP_SERVER_URI
 
 class Actions {
@@ -139,7 +141,19 @@ class Actions {
       console.error('Token expired. Clearing auth data...');
       localStorage.removeItem('auth');
       localStorage.removeItem('collector-data');
-      return Promise.reject(new Error('Your session has expired. Please log in again.'));
+      
+      // Show nice notification instead of throwing error
+      notificationService.error('Your session has expired. Please log in again. Refreshing...', {
+        duration: 3000
+      });
+      
+      // Reload page after 3 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+      
+      // Return rejected promise with a flag to prevent further processing
+      return Promise.reject({ sessionExpired: true, handled: true });
     }
     
     if (token) {
@@ -163,18 +177,36 @@ class Actions {
               // Token expired or invalid, clear auth data
               localStorage.removeItem('auth');
               localStorage.removeItem('collector-data');
-              // Optionally redirect to login or refresh page
               console.error('Authentication failed. Please log in again.');
-              throw new Error('Authentication required');
+              
+              // Show nice notification
+              notificationService.error('Your session has expired. Please log in again. Refreshing...', {
+                duration: 3000
+              });
+              
+              // Reload page after 3 seconds
+              setTimeout(() => {
+                window.location.reload();
+              }, 3000);
+              
+              throw { sessionExpired: true, handled: true };
             }
             const text = await res.text();
             return text ? JSON.parse(text) : {};
         })
         .catch((err) => {
+            // If error was already handled, don't re-throw
+            if (err.handled) {
+              return Promise.reject(err);
+            }
+            
             console.log('err', err);
             // Detect no internet
             if (err.message === 'Failed to fetch') {
                 console.error('No internet connection (or no connection to the server).');
+                notificationService.error('No internet connection. Please check your network.', {
+                  duration: 5000
+                });
             }
             throw err; // Re-throw to maintain error handling in calling code
         });

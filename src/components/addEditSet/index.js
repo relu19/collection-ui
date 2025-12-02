@@ -153,12 +153,12 @@ const AddEditSet = ({data, setModal, onSave, fetchData}) => {
             setModal(false);
             setNewSet(defaultState);
         } catch (e) {
-            console.error("Error saving set:", e);
-            if (e.message === 'Authentication required') {
-                setError("Your session has expired. Please reload the page and sign in again.");
-            } else {
-                setError("Failed to save set. Please try again or contact support.");
+            // Don't show error if it was already handled (like session expiration)
+            if (e?.handled) {
+                return;
             }
+            console.error("Error saving set:", e);
+            setError("Failed to save set. Please try again or contact support.");
         }
 
         setLoading(false);

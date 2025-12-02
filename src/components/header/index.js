@@ -248,6 +248,10 @@ const Header = () => {
                 window.location.reload();
             }, 100);
         } catch (error) {
+            // Don't show error if it was already handled
+            if (error?.handled) {
+                return;
+            }
             console.error('Login error:', error);
             alert('Login failed. Please try again. Check console for details.');
         }

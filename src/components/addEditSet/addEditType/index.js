@@ -20,11 +20,21 @@ const AddEditType = ({newSet, setNewSet, categories, update, setError}) => {
         if (!newType.name || !newType.order) {
             setActionError('All Fields are Required')
         } else {
-            isUpdate ? updateSetType(newType).then(() => update()) : addNewType(newType, newSet.categoryId).then(() => update())
-            setActionError('')
-            setAddTypeModal(false)
-            setEditTypeModal(false)
-            setNewType(DEFAULT_STATE)
+            const promise = isUpdate ? updateSetType(newType) : addNewType(newType, newSet.categoryId);
+            promise
+                .then(() => {
+                    update();
+                    setActionError('');
+                    setAddTypeModal(false);
+                    setEditTypeModal(false);
+                    setNewType(DEFAULT_STATE);
+                })
+                .catch((err) => {
+                    if (!err?.handled) {
+                        console.error('Error saving type:', err);
+                        setActionError('Failed to save type. Please try again.');
+                    }
+                });
         }
     }
 
@@ -35,20 +45,38 @@ const AddEditType = ({newSet, setNewSet, categories, update, setError}) => {
     }
 
     const deleteSetTpe = async (id) => {
-        const hasSets = await getSetsFotThisType(id)
-        const typeFound = types.find(cat => cat.id === id)
+        try {
+            const hasSets = await getSetsFotThisType(id)
+            const typeFound = types.find(cat => cat.id === id)
 
-        if (hasSets.length) {
-            const setsArray = hasSets.map(function (el) {
-                return el.name;
-            });
-            const errorMessage = `Can't delete, it has sets assigned: ${JSON.stringify(setsArray)} `
-            setError(errorMessage)
-            setDeleteTypeModal(null)
-        } else {
-            removeSetType(typeFound).then(() => update())
-            setNewSet({...newSet, setTypeId: ''})
-            setDeleteTypeModal(null)
+            if (hasSets.length) {
+                const setsArray = hasSets.map(function (el) {
+                    return el.name;
+                });
+                const errorMessage = `Can't delete, it has sets assigned: ${JSON.stringify(setsArray)} `
+                setError(errorMessage)
+                setDeleteTypeModal(null)
+            } else {
+                removeSetType(typeFound)
+                    .then(() => {
+                        update();
+                        setNewSet({...newSet, setTypeId: ''});
+                        setDeleteTypeModal(null);
+                    })
+                    .catch((err) => {
+                        if (!err?.handled) {
+                            console.error('Error deleting type:', err);
+                            setError('Failed to delete type. Please try again.');
+                        }
+                        setDeleteTypeModal(null);
+                    });
+            }
+        } catch (err) {
+            if (!err?.handled) {
+                console.error('Error checking sets for type:', err);
+                setError('Failed to check type usage. Please try again.');
+            }
+            setDeleteTypeModal(null);
         }
     }
 

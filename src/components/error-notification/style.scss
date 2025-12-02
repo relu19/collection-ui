@@ -1,0 +1,92 @@
+@import '../../style/constants.scss';
+
+.error-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  max-width: 400px;
+  min-width: 320px;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s ease-in-out;
+  
+  &.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .error-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+    backdrop-filter: blur(10px);
+    
+    .error-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      
+      svg {
+        color: white;
+      }
+    }
+    
+    .error-message {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    
+    .error-close {
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.2s;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      svg {
+        color: white;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .error-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    min-width: auto;
+    
+    .error-notification-content {
+      padding: 14px 16px;
+      
+      .error-message {
+        font-size: 14px;
+      }
+    }
+  }
+}
+

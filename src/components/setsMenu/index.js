@@ -35,12 +35,24 @@ const SetsMenu = ({isAdmin, data}) => {
     }
 
     useEffect(() => {
-        getCategoriesWithSetTypes(dispatch)
+        getCategoriesWithSetTypes(dispatch).catch((err) => {
+            // Error is already handled by the notification service
+            if (err?.handled) {
+                return;
+            }
+            console.error('Error loading categories:', err);
+        });
     }, []);
 
 
     useEffect(() => {
-        fetchUser().then(() => {})
+        fetchUser().catch((err) => {
+            // Error is already handled by the notification service
+            if (err?.handled) {
+                return;
+            }
+            console.error('Error loading user:', err);
+        });
     }, [filterParams.userId]);
 
     // Initialize menu items - first one open, rest closed
