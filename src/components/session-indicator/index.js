@@ -1,51 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { getAuthToken, getTokenTimeRemaining } from '../../utils/tokenUtils';
+import React, { useState, useEffect, useRef } from 'react';
+import { getAuthToken } from '../../utils/tokenUtils';
 import './style.scss';
 
+const SERVER_URI = process.env.REACT_APP_SERVER_URI;
+
 const SessionIndicator = () => {
-    const [timeRemaining, setTimeRemaining] = useState(null);
-    const [showWarning, setShowWarning] = useState(false);
+    const lastActivityRef = useRef(Date.now());
+    const isRefreshingRef = useRef(false);
 
     useEffect(() => {
-        const updateTimeRemaining = () => {
-            const token = getAuthToken();
-            if (!token) {
-                setTimeRemaining(null);
-                setShowWarning(false);
-                return;
+        const refreshToken = async () => {
+            if (isRefreshingRef.current) return;
+            
+            const authData = localStorage.getItem('auth');
+            if (!authData) return;
+
+            try {
+                isRefreshingRef.current = true;
+                const auth = JSON.parse(authData);
+                
+                const response = await fetch(`${SERVER_URI}/auth/refresh-token`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${auth.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.token) {
+                        localStorage.setItem('auth', JSON.stringify({
+                            token: data.token,
+                            user: auth.user
+                        }));
+                    }
+                }
+            } catch (error) {
+                console.error('Token refresh failed:', error);
+            } finally {
+                isRefreshingRef.current = false;
             }
-
-            const remaining = getTokenTimeRemaining(token);
-            setTimeRemaining(remaining);
-
-            // Show warning if less than 24 hours remaining
-            const hoursRemaining = remaining / (1000 * 60 * 60);
-            setShowWarning(hoursRemaining < 24 && hoursRemaining > 0);
         };
 
-        // Update immediately
-        updateTimeRemaining();
+        const handleActivity = () => {
+            const now = Date.now();
+            // Only refresh if 5+ minutes since last activity
+            if (now - lastActivityRef.current > 5 * 60 * 1000) {
+                lastActivityRef.current = now;
+                refreshToken();
+            }
+        };
 
-        // Update every minute
-        const interval = setInterval(updateTimeRemaining, 60 * 1000);
+        // Track activity
+        const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+        events.forEach(event => {
+            document.addEventListener(event, handleActivity, { passive: true });
+        });
 
-        return () => clearInterval(interval);
+        return () => {
+            events.forEach(event => {
+                document.removeEventListener(event, handleActivity);
+            });
+        };
     }, []);
 
-    if (!timeRemaining) return null;
-
-    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-    if (!showWarning) return null;
-
-    return (
-        <div className="session-indicator">
-            <span className="session-warning">
-                ⚠️ Session expires in {days > 0 ? `${days}d ` : ''}{hours}h
-            </span>
-        </div>
-    );
+    return null;
 };
 
 export default SessionIndicator;
