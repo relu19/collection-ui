@@ -59,10 +59,22 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.showNotification && this.state.error) {
-      const message = this.state.error.message.includes('session has expired') || 
-                      this.state.error.message.includes('Authentication required')
-        ? 'Your session has expired. Please log in again. Refreshing...'
-        : this.state.error.message || 'An error occurred. Please try again.';
+      // Safely get error message - handle plain objects and missing message property
+      const errorMsg = this.state.error?.message || '';
+      const isSessionError = typeof errorMsg === 'string' && 
+        (errorMsg.includes('session has expired') || errorMsg.includes('Authentication required'));
+      
+      // Also check for session expired flag in plain objects
+      const isSessionExpiredObject = this.state.error?.sessionExpired === true;
+      
+      let message;
+      if (isSessionError || isSessionExpiredObject) {
+        message = 'Your session has expired. Please log in again. Refreshing...';
+      } else if (typeof errorMsg === 'string' && errorMsg.length > 0) {
+        message = errorMsg;
+      } else {
+        message = 'An error occurred. Please try again.';
+      }
 
       return (
         <>

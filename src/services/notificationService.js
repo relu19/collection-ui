@@ -17,9 +17,18 @@ class NotificationService {
   }
 
   error(message, options = {}) {
+    // Ensure message is always a string
+    let displayMessage = message;
+    if (typeof message === 'object' && message !== null) {
+      // Handle error objects - extract message or provide fallback
+      displayMessage = message.message || message.error || 'An error occurred. Please try again.';
+    } else if (typeof message !== 'string') {
+      displayMessage = 'An error occurred. Please try again.';
+    }
+    
     this.notify({
       type: 'error',
-      message,
+      message: displayMessage,
       autoClose: options.autoClose !== undefined ? options.autoClose : true,
       duration: options.duration || 5000,
       ...options
