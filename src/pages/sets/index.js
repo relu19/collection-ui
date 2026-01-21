@@ -30,22 +30,12 @@ const SetsPage = () => {
     // }
 
     useEffect(() => {
-        // const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}`
         const url = `/sets?cat=${filterParams.categoryId}&type=${filterParams.setTypeId}&id=${filterParams.userId}`
         navigate(url, {replace: true})
         setLoading(true)
 
-
         getAllSetsWithNumbers(dispatch, filterParams).then(() => setLoading(false))
-
-        // const validPage = checkIfValidPage();
-        // if (!checkIfValidPage()) {
-        //     // window.location = '/'
-        // } else {
-        //     navigate(url, {replace: true})
-        //     getAllSetsWithNumbers(dispatch, filterParams).then(r => {})
-        // }
-    }, [filterParams]);
+    }, [filterParams, navigate, dispatch]);
 
     const isAdmin = userDetails?.type ? userDetails.type === parseInt(process.env.REACT_APP_FACEBOOK_ADMIN_TYPE) : false
     const isMyPage = userDetails?.type ? parseInt(userDetails.id) === parseInt(filterParams.userId) : false

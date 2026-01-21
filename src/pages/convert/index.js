@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
+import notificationService from "../../services/notificationService";
 
 const ConvertPage = () => {
     const [htmlInput, setHtmlInput] = useState('');
@@ -30,7 +31,7 @@ const ConvertPage = () => {
             setResult(extracted);
             setCopied(false); // Reset copy state
         } catch (e) {
-            alert('Invalid HTML');
+            notificationService.error('Invalid HTML');
         }
     };
 
@@ -40,7 +41,7 @@ const ConvertPage = () => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
-            alert('Copy failed');
+            notificationService.error('Copy failed');
         }
     };
 

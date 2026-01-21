@@ -9,6 +9,7 @@ import {useDispatch} from "react-redux";
 import Modal from "react-modal";
 import Icon from "../icon";
 import {getStorageItem} from "../../storage";
+import notificationService from "../../services/notificationService";
 
 const UsersList = ({setUsersModal}) => {
 
@@ -44,7 +45,7 @@ const UsersList = ({setUsersModal}) => {
             setUsers(updatedUsers);
         } catch (error) {
             console.error('Error deleting user:', error);
-            alert('Failed to delete user. ' + (error.message || 'Please try again.'));
+            notificationService.error('Failed to delete user. ' + (error.message || 'Please try again.'));
             setModalData(null);
         }
     }

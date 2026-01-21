@@ -7,6 +7,7 @@ import UsersList from "../users-list";
 import { GoogleLogin } from "@react-oauth/google";
 import ConditionalRender from "../../utils/conditionalRender";
 import { Link } from "react-router-dom";
+import notificationService from "../../services/notificationService";
 
 const Header = () => {
 
@@ -142,7 +143,7 @@ const Header = () => {
             // Verify we have auth token before making request
             let authData = JSON.parse(localStorage.getItem('auth'));
             if (!authData?.token) {
-                alert('Your session has expired. Please log in again.');
+                notificationService.error('Your session has expired. Please log in again.');
                 logOutUser();
                 return;
             }
@@ -198,10 +199,10 @@ const Header = () => {
         } catch (error) {
             console.error('Failed to update profile:', error);
             if (error.message === 'Authentication required' || error.message?.includes('401')) {
-                alert('Your session has expired. Please log in again.');
+                notificationService.error('Your session has expired. Please log in again.');
                 logOutUser();
             } else {
-                alert('Failed to update profile. Please try again.');
+                notificationService.error('Failed to update profile. Please try again.');
             }
         } finally {
             setIsSaving(false);
@@ -227,7 +228,7 @@ const Header = () => {
                 
                 // Show specific error message if available
                 const errorMsg = authResponse.error?.message || 'Unknown error';
-                alert(`Login failed: ${errorMsg}\n\nPlease contact support if this persists.`);
+                notificationService.error(`Login failed: ${errorMsg}. Please contact support if this persists.`);
                 return;
             }
             
@@ -253,7 +254,7 @@ const Header = () => {
                 return;
             }
             console.error('Login error:', error);
-            alert('Login failed. Please try again. Check console for details.');
+            notificationService.error('Login failed. Please try again.');
         }
     };
 

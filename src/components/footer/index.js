@@ -11,7 +11,7 @@ const Footer = () => {
                 <a href='/terms' onClick={closeMobileMenu}>Terms and Conditions</a>
                 <a href='/privacy' onClick={closeMobileMenu}>Privacy Policy</a>
             </div>
-            <p>Copyright © 2025 Relu Plesciuc</p>
+            <p>Copyright © {new Date().getFullYear()} Relu Plesciuc</p>
         </div>
     )
 }

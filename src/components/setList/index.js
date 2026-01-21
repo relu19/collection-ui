@@ -5,7 +5,7 @@ import {
     markAllAtOnce,
     addSetToCollection, removeFromCollection
 } from "../../actions/set";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Modal from "react-modal";
 import './style.scss'
 import AvailableSets from "../availableSets";
@@ -19,8 +19,6 @@ import GlobalExchange from "../global-exchange";
 import { getUserById } from "../../actions/users";
 import objectAssign from "object-assign";
 import { getURLParams } from "../../utils/getURLParams";
-import NoData from "../no-date-modal";
-
 const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, setEditMode}) => {
     const [modalData, setModalData] = useState();
     const [editModal, setEditModal] = useState();
@@ -65,25 +63,6 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         }
     }
 
-    const shouldExchange = (set) => {
-        let canExchange = false
-        // let result = { missing: 0, swap: 0}
-        // set.numbers.forEach(nr => {
-        //     if (nr.type === 2 || nr.type === 3) {
-        //         result.swap = 1
-        //     }
-        //     if (nr.type === 0) {
-        //         result.missing = 1
-        //     }
-        // })
-        // return result
-        set.numbers.forEach(nr => {
-            if (nr.type === 2 || nr.type === 3 || nr.type === 0) {
-                canExchange = true
-            }
-        })
-        return canExchange
-    }
 
     const getNumbersLists = (set) => {
         if (!set?.numbers) return {iHave: [], iNeed: [], iHaveForExchange: []};
@@ -111,18 +90,18 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         });
     }
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         const data = await getUserById(filterParams)
         if (!data.length) {
             window.location = '/'
         }
         setUserInfo(data ? data[0] : {})
-    }
+    }, [filterParams]);
 
     useEffect(() => {
         fetchUser().then(() => {
         })
-    }, [filterParams.userId]);
+    }, [fetchUser]);
 
     useEffect(() => {
         const list = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
@@ -130,7 +109,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
             return value.name.toLowerCase().includes(searchFilter)
         })
         setCollectionList(filteredList)
-    }, [data, data.list]);
+    }, [data, data.list, searchFilter]);
 
     const collection = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
 
@@ -188,10 +167,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     const filterSeries = (e) => {
         const searchWord = e.target.value.toLowerCase()
         setSearchFilter(searchWord)
-        const filteredList = collection.filter(value => {
-            return value.name.toLowerCase().includes(searchWord)
-        })
-        setCollectionList(filteredList)
+        // Filtering is handled by the useEffect with debounced search
     }
 
     const changeBulkStatus = (elem, type, id) => {

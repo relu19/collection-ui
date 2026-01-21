@@ -1,6 +1,6 @@
 import NewSet from "../newSet";
 import { changeCategory, getUserById } from "../../actions/users";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import './style.scss'
 
 import logo from '../../images/avatar.jpg'
@@ -16,23 +16,18 @@ import { closeMobileMenu } from "../../utils/closeMobileMenu";
 const SetsMenu = ({isAdmin, data}) => {
     const [userInfo, setUserInfo] = useState({})
     const filterParams = useSelector((filters) => objectAssign({}, getURLParams(), filters.filterReducer));
-    const [clicked, setClicked] = useState(0); // Start with first menu item selected (open by default)
+    const [expandedIndex, setExpandedIndex] = useState(0); // Start with first menu item expanded
     const dispatch = useDispatch();
 
     const menu = useSelector((categories) => categories.categoriesReducer);
 
-
-    const handleToggle = (index) => {
-        setClicked(index)
-    };
-
-    const fetchUser = async () => {
-        const data = await getUserById(filterParams)
-        if (!data.length) {
+    const fetchUser = useCallback(async () => {
+        const userData = await getUserById(filterParams)
+        if (!userData.length) {
             window.location = '/'
         }
-        setUserInfo(data ? data[0] : {})
-    }
+        setUserInfo(userData ? userData[0] : {})
+    }, [filterParams]);
 
     useEffect(() => {
         getCategoriesWithSetTypes(dispatch).catch((err) => {
@@ -42,8 +37,7 @@ const SetsMenu = ({isAdmin, data}) => {
             }
             console.error('Error loading categories:', err);
         });
-    }, []);
-
+    }, [dispatch]);
 
     useEffect(() => {
         fetchUser().catch((err) => {
@@ -53,61 +47,19 @@ const SetsMenu = ({isAdmin, data}) => {
             }
             console.error('Error loading user:', err);
         });
-    }, [filterParams.userId]);
+    }, [fetchUser]);
 
-    // Initialize menu items - first one open, rest closed
-    useEffect(() => {
-        if (menu && menu.length > 0) {
-            menu.forEach((category, i) => {
-                const menuElement = document.getElementById(category.id + '' + i);
-                if (menuElement) {
-                    if (i === 0) {
-                        // First menu item should be open
-                        const screenHeight = window.innerHeight;
-                        menuElement.style.maxHeight = screenHeight <= 900 ? '200px' : '450px';
-                        // Add expanded class to first menu header
-                        const menuHeader = document.getElementById(category.id + '' + i + 'header');
-                        if (menuHeader) {
-                            menuHeader.classList.add('expanded');
-                        }
-                    } else {
-                        // Rest of menu items should be closed
-                        menuElement.style.maxHeight = '0';
-                    }
-                }
-            });
-        }
-    }, [menu]);
+    const toggleMenu = (index) => {
+        // Toggle: if clicking the same menu, close it; otherwise open the new one
+        setExpandedIndex(expandedIndex === index ? -1 : index);
+    };
 
-    const toggleMenu = (id) => {
-        const menuHeader = document.getElementById(id + 'header');
-        const menuElement = document.getElementById(id);
-        
-        // Close all other menus first
-        if (menu && menu.length > 0) {
-            menu.forEach((category, i) => {
-                const otherMenu = document.getElementById(category.id + '' + i);
-                const otherHeader = document.getElementById(category.id + '' + i + 'header');
-                if (otherMenu !== menuElement) {
-                    otherMenu.style.maxHeight = '0';
-                    otherHeader.classList.remove('expanded');
-                }
-            });
-        }
-        
-        // Toggle the clicked menu
-        menuHeader.classList.toggle('expanded');
-        
-        const screenHeight = window.innerHeight;
-        const maxHeight = screenHeight <= 900 ? '200px' : '450px';
-        const menuHeight = menuElement.style.maxHeight;
-        if (!menuHeight || menuHeight === maxHeight) {
-            menuElement.style.maxHeight = '0';
-        } else {
-            menuElement.style.maxHeight = maxHeight;
-        }
-    }
-
+    // Calculate max height based on screen size
+    const getMaxHeight = (isExpanded) => {
+        if (!isExpanded) return '0';
+        const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
+        return screenHeight <= 900 ? '200px' : '450px';
+    };
 
     const userDetails = getStorageItem('collector-data')
 
@@ -142,19 +94,36 @@ const SetsMenu = ({isAdmin, data}) => {
                 </ConditionalRender>
             </header>
             <ul>
-            {menu && menu.map((category, i) =>
-                    <li key={i} onClick={() => handleToggle(i)}  className={`${clicked === i ? 'active' : ''}`}>
-                        <div onClick={() => toggleMenu(category.id + '' + i)} id={category.id + '' + i + 'header'} className='menu-header'>{category.name}</div>
-                        <ul id={category.id + '' + i} className={`sets-list`}>
-                            {category.categoryTypes.map((type, j) =>
-                                <li className={parseInt(filterParams.setTypeId) === type.id ? 'selected' : ''} key={j}
-                                    onClick={() => {changeCategory(dispatch, category.id, type.id); handleToggle(i); closeMobileMenu();}}>
+            {menu && menu.map((category, i) => {
+                const isExpanded = expandedIndex === i;
+                return (
+                    <li key={category.id} className={isExpanded ? 'active' : ''}>
+                        <div 
+                            onClick={() => toggleMenu(i)} 
+                            className={`menu-header ${isExpanded ? 'expanded' : ''}`}
+                        >
+                            {category.name}
+                        </div>
+                        <ul 
+                            className="sets-list"
+                            style={{ maxHeight: getMaxHeight(isExpanded) }}
+                        >
+                            {category.categoryTypes.map((type) =>
+                                <li 
+                                    className={parseInt(filterParams.setTypeId) === type.id ? 'selected' : ''} 
+                                    key={type.id}
+                                    onClick={() => {
+                                        changeCategory(dispatch, category.id, type.id);
+                                        closeMobileMenu();
+                                    }}
+                                >
                                     <Icon name={type.icon} color="#cccccc" width={30} height={21}/> {type.name}
                                 </li>
                             )}
                         </ul>
                     </li>
-                )}
+                );
+            })}
             </ul>
             {isAdmin ? <NewSet userId={userInfo.id} data={data} /> : <div />}
         </nav>

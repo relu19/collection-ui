@@ -1,6 +1,7 @@
 'use strict';
 
 import notificationService from '../services/notificationService';
+import { getAuthToken, isTokenExpired } from '../utils/tokenUtils';
 
 const SERVER_URI = process.env.REACT_APP_SERVER_URI
 
@@ -78,50 +79,6 @@ class Actions {
     return this.post({ setId, userId }, '/remove-extra-numbers');
   }
 
-  /**
-   * Get JWT token from localStorage
-   * @returns {string|null}
-   */
-  static getAuthToken() {
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      return authData?.token || null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /**
-   * Check if token is expired by decoding it
-   * @param {string} token JWT token
-   * @returns {boolean} True if expired
-   */
-  static isTokenExpired(token) {
-    if (!token) return true;
-    
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const decoded = JSON.parse(jsonPayload);
-      
-      if (!decoded.exp) return true;
-      
-      // exp is in seconds, Date.now() is in milliseconds
-      const expirationTime = decoded.exp * 1000;
-      const currentTime = Date.now();
-      
-      return currentTime >= expirationTime;
-    } catch (error) {
-      console.error('Error checking token expiration:', error);
-      return true;
-    }
-  }
 
   /**
    * Make a generic request
@@ -134,10 +91,10 @@ class Actions {
     const headers = request.headers || {};
     
     // Add Authorization header if token exists
-    const token = this.getAuthToken();
+    const token = getAuthToken();
     
     // Check if token is expired before making request
-    if (token && this.isTokenExpired(token)) {
+    if (token && isTokenExpired(token)) {
       console.error('Token expired. Clearing auth data...');
       localStorage.removeItem('auth');
       localStorage.removeItem('collector-data');

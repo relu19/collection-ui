@@ -1,6 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { authenticateWithGoogle } from "../../actions/users";
+import notificationService from "../../services/notificationService";
 
 const LoginPage = ({ setUserDetails }) => {
     const responseGoogle = async (response) => {
@@ -23,7 +24,7 @@ const LoginPage = ({ setUserDetails }) => {
                 return;
             }
             console.error('Login error:', error);
-            alert('Login failed. Please try again.');
+            notificationService.error('Login failed. Please try again.');
         }
     };
 
