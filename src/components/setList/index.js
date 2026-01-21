@@ -127,7 +127,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     useEffect(() => {
         const list = data.list.filter(sets => sets.inCollection).sort((a, b) => a?.order - b?.order)
         const filteredList = list.filter(value => {
-            return value.name.toLowerCase().match(new RegExp(searchFilter, 'g'))
+            return value.name.toLowerCase().includes(searchFilter)
         })
         setCollectionList(filteredList)
     }, [data, data.list]);
@@ -189,7 +189,7 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
         const searchWord = e.target.value.toLowerCase()
         setSearchFilter(searchWord)
         const filteredList = collection.filter(value => {
-            return value.name.toLowerCase().match(new RegExp(searchWord, 'g'))
+            return value.name.toLowerCase().includes(searchWord)
         })
         setCollectionList(filteredList)
     }
