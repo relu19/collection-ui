@@ -1,15 +1,15 @@
 @import "../../style/constants";
 
-// Modern Global Exchange Modal Styles
+// Set Exchange Modal - matching Global Exchange style
 
-.global-exchange-modal {
+.set-exchange-modal {
   display: flex;
   flex-direction: column;
   height: 100%;
   background: #f8fafc;
 }
 
-.global-exchange-content {
+.set-exchange-content {
   padding: 0 !important;
   background: #f8fafc;
   max-height: calc(70vh - 50px) !important;
@@ -37,23 +37,17 @@
   50% { opacity: 1; }
 }
 
-// Stats Summary Section
-.exchange-stats {
+// Stats Summary Section - Compact version for set exchange
+.exchange-stats--compact {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-bottom: 1px solid #e5e7eb;
 
-  @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 16px;
-  }
-
   @media screen and (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     padding: 12px;
   }
@@ -62,10 +56,10 @@
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -75,50 +69,51 @@
   }
 
   @media screen and (max-width: 480px) {
-    padding: 10px 12px;
-    gap: 8px;
+    padding: 8px 10px;
+    gap: 6px;
+    flex-direction: column;
+    text-align: center;
   }
 
   .stat-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     flex-shrink: 0;
 
     @media screen and (max-width: 480px) {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
     }
   }
 
   &--users .stat-icon { background: rgba(99, 102, 241, 0.1); }
   &--receive .stat-icon { background: rgba(16, 185, 129, 0.1); }
   &--give .stat-icon { background: rgba(245, 158, 11, 0.1); }
-  &--sets .stat-icon { background: rgba(236, 72, 153, 0.1); }
 
   .stat-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     min-width: 0;
   }
 
   .stat-value {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #1f2937;
     line-height: 1.2;
 
     @media screen and (max-width: 480px) {
-      font-size: 18px;
+      font-size: 16px;
     }
   }
 
   .stat-label {
-    font-size: 12px;
+    font-size: 11px;
     color: #6b7280;
     font-weight: 500;
     white-space: nowrap;
@@ -126,7 +121,7 @@
     text-overflow: ellipsis;
 
     @media screen and (max-width: 480px) {
-      font-size: 10px;
+      font-size: 9px;
     }
   }
 }
@@ -136,16 +131,16 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 16px 20px;
-  padding: 10px 16px;
+  margin: 14px 16px;
+  padding: 10px 14px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus-within {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
   }
 
   @media screen and (max-width: 480px) {
@@ -188,12 +183,12 @@
 .exchange-users-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 0 20px 20px;
+  gap: 10px;
+  padding: 0 16px 16px;
 
   @media screen and (max-width: 480px) {
     padding: 0 12px 12px;
-    gap: 10px;
+    gap: 8px;
   }
 }
 
@@ -207,7 +202,7 @@
   border: 1px solid #e5e7eb;
   position: relative;
 
-  // Left accent bar - purple for global exchange
+  // Left accent bar
   &::before {
     content: '';
     position: absolute;
@@ -215,7 +210,7 @@
     top: 0;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
     border-radius: 14px 0 0 14px;
   }
 
@@ -275,7 +270,7 @@
       }
     }
 
-    // Online-like indicator - purple for global
+    // Online-like indicator
     &::after {
       content: '';
       position: absolute;
@@ -283,7 +278,7 @@
       right: 2px;
       width: 12px;
       height: 12px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       border: 2px solid #fff;
       border-radius: 50%;
 
@@ -383,12 +378,6 @@
     color: #d97706;
     border: 1px solid rgba(245, 158, 11, 0.2);
   }
-
-  &--sets {
-    background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.1) 100%);
-    color: #4b5563;
-    border: 1px solid rgba(107, 114, 128, 0.15);
-  }
 }
 
 // Contact & Expand Buttons
@@ -439,42 +428,19 @@
   }
 }
 
-// Set Exchange Card
+// Set Exchange Card (simplified - no header since it's for single set)
 .set-exchange-card {
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
 
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-bottom: 1px solid #e5e7eb;
-
-    span {
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    @media screen and (max-width: 480px) {
-      padding: 8px 12px;
-
-      span {
-        font-size: 12px;
-      }
-    }
-  }
-
   &__body {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     min-height: 60px;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 500px) {
       grid-template-columns: 1fr;
       grid-template-rows: auto auto auto;
     }
@@ -531,7 +497,7 @@
   width: 1px;
   background: #e5e7eb;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 500px) {
     width: 100%;
     height: 1px;
   }
@@ -673,9 +639,9 @@
 }
 
 // Modal Header Override
-.global-exchange-modal {
+.set-exchange-modal {
   .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     padding: 14px 16px;
     border-bottom: none;
 
@@ -685,7 +651,7 @@
       gap: 10px;
 
       span {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 600;
         color: #fff;
       }
@@ -712,7 +678,7 @@
 }
 
 // Scrollbar Styling
-.global-exchange-content {
+.set-exchange-content {
   &::-webkit-scrollbar {
     width: 8px;
   }

@@ -91,12 +91,12 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
     }
 
     const fetchUser = useCallback(async () => {
-        const data = await getUserById(filterParams)
+        const data = await getUserById({ userId: filterParams.userId })
         if (!data.length) {
             window.location = '/'
         }
         setUserInfo(data ? data[0] : {})
-    }, [filterParams]);
+    }, [filterParams.userId]);
 
     useEffect(() => {
         fetchUser().then(() => {
@@ -202,15 +202,16 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                     <div className='search-section'>
                         <input type="search" className="set-search" placeholder="Search set..."
                                onChange={(e) => filterSeries(e)}/>
-                        <button className='global-exchange-btn' onClick={() => setShowGlobalExchange(true)}>
-                            Find Exchanges
-                        </button>
                     </div>
-                    {editMode ?
-                        <p className='edit-sets' onClick={() => setEditMode(false)}><span>Close Edit</span></p> :
-                        <p className={`edit-sets ${editButtonFlash ? 'flash' : ''}`} onClick={() => setEditMode(true)}>
-                            <span>Edit</span></p>}
-
+                    <div className='action-buttons'>
+                        <button className='global-exchange-btn' onClick={() => setShowGlobalExchange(true)}>
+                            Find Swaps
+                        </button>
+                        {editMode ?
+                            <p className='edit-sets' onClick={() => setEditMode(false)}><span>Close Edit</span></p> :
+                            <p className={`edit-sets ${editButtonFlash ? 'flash' : ''}`} onClick={() => setEditMode(true)}>
+                                <span>Edit</span></p>}
+                    </div>
                 </div>
             </ConditionalRender>
 
@@ -234,8 +235,10 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                         <input type="search" className="set-search"
                                placeholder="Search set..."
                                onChange={(e) => filterSeries(e)}/>
+                    </div>
+                    <div className='action-buttons'>
                         <button className='global-exchange-btn' onClick={() => setShowGlobalExchange(true)}>
-                            Find Exchanges
+                            Find Swaps
                         </button>
                     </div>
                 </div>}
@@ -436,7 +439,25 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                             </button>
                         </div>
                         <div className='modal-content'>
-                            <p className='no-data'>You need to create an account to exchange</p>
+                            <div className='account-required-prompt'>
+                                <div className='prompt-icon'>
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
+                                        <path d="M5 20C5 17.2386 7.23858 15 10 15H14C16.7614 15 19 17.2386 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                        <path d="M15 3L19 7M19 3L15 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3>Account Required</h3>
+                                <p>Create a free account to exchange stickers with collectors around the world!</p>
+                                <div className='prompt-features'>
+                                    <span><span className='feature-check'>✓</span> Track your collection</span>
+                                    <span><span className='feature-check'>✓</span> Find trading partners</span>
+                                    <span><span className='feature-check'>✓</span> Exchange stickers</span>
+                                </div>
+                                <button className='prompt-cta' onClick={() => {setShowExchange(null); document.querySelector('.sign-in-trigger')?.click();}}>
+                                    Sign Up Now
+                                </button>
+                            </div>
                         </div>
                     </div>}
             </Modal>
@@ -464,7 +485,25 @@ const SetList = ({userDetails, data, fetchData, isAdmin, isMyPage, editMode, set
                             </button>
                         </div>
                         <div className='modal-content'>
-                            <p className='no-data'>You need to create an account to exchange</p>
+                            <div className='account-required-prompt'>
+                                <div className='prompt-icon'>
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
+                                        <path d="M5 20C5 17.2386 7.23858 15 10 15H14C16.7614 15 19 17.2386 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                        <path d="M15 3L19 7M19 3L15 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3>Account Required</h3>
+                                <p>Create a free account to exchange stickers with collectors around the world!</p>
+                                <div className='prompt-features'>
+                                    <span><span className='feature-check'>✓</span> Track your collection</span>
+                                    <span><span className='feature-check'>✓</span> Find trading partners</span>
+                                    <span><span className='feature-check'>✓</span> Exchange stickers</span>
+                                </div>
+                                <button className='prompt-cta' onClick={() => {setShowGlobalExchange(false); document.querySelector('.sign-in-trigger')?.click();}}>
+                                    Sign Up Now
+                                </button>
+                            </div>
                         </div>
                     </div>
                 }

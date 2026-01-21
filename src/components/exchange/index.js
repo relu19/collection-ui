@@ -1,4 +1,4 @@
-import '../global-exchange/style.scss'
+import './style.scss'
 import React, { useEffect, useState } from "react";
 import { getSetExchanges } from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
@@ -12,6 +12,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
     const [showNoData, setShowNoData] = useState(false);
     const [exchangeResults, setExchangeResults] = useState([])
     const [collapsedUsers, setCollapsedUsers] = useState(new Set())
+    const [searchQuery, setSearchQuery] = useState('')
 
     const toggleUserCollapse = (userId) => {
         setCollapsedUsers(prev => {
@@ -93,10 +94,7 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
         fetchData();
     }, [set.id, userDetails.id]);
 
-
-
     const formatNumberDisplay = (numberObj) => {
-        // Always show the number, not the description
         return numberObj.number;
     };
 
@@ -104,24 +102,53 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
         setModal(false)
     }
 
+    // Calculate totals for stats
+    const getTotalStats = () => {
+        let totalCanGet = 0;
+        let totalCanGive = 0;
+        
+        exchangeResults.forEach(([user, exchanges]) => {
+            exchanges.forEach(exchange => {
+                totalCanGet += exchange.exchange.user2CanGive.length;
+                totalCanGive += exchange.exchange.user1CanGive.length;
+            });
+        });
+        
+        return { totalCanGet, totalCanGive };
+    };
+
+    // Filter results based on search query
+    const filteredResults = exchangeResults.filter(([user, exchanges]) => {
+        if (!searchQuery) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+            user?.name?.toLowerCase().includes(query) ||
+            user?.username?.toLowerCase().includes(query) ||
+            user?.email?.toLowerCase().includes(query)
+        );
+    });
+
+    const stats = getTotalStats();
+
     return (
-        <div>
+        <div className="set-exchange-modal">
             <div className='modal-header modal-header--fixed'>
-                <span>Exchanges for {set.name}</span>
+                <div className="modal-header__title">
+                    <Icon name='search' color="#fff" width={20} height={20} />
+                    <span>Exchanges for {set.name}</span>
+                </div>
                 <button
                     aria-label="Close"
                     onClick={closeModal}
                     className="close-modal-btn"
                 >
-                    ×
+                    <Icon name='close' color="#fff" width={20} height={20} />
                 </button>
             </div>
-            <div
-                className='modal-content'
-                style={{maxHeight: '60vh', overflowY: 'auto'}}
-            >
-                <div className='exchange-table'>
-                    <ConditionalRender if={loading}>
+            
+            <div className='modal-content set-exchange-content'>
+                <ConditionalRender if={loading}>
+                    <div className="loading-container">
                         <div className="spinner">
                             <div className="spinner-item"/>
                             <div className="spinner-item"/>
@@ -129,137 +156,240 @@ const Exchange = ({set, setModal, userDetails, userInfo}) => {
                             <div className="spinner-item"/>
                             <div className="spinner-item"/>
                         </div>
-                    </ConditionalRender>
-                    <ConditionalRender if={!loading && total}>
-                        <div className='exchange-table__row'>
-                            <div className='exchange-table__cell header'>
-                                <p>User</p>
+                        <p className="loading-text">Finding exchange partners...</p>
+                    </div>
+                </ConditionalRender>
+
+                <ConditionalRender if={!loading && total > 0}>
+                    {/* Stats Summary */}
+                    <div className="exchange-stats exchange-stats--compact">
+                        <div className="stat-card stat-card--users">
+                            <div className="stat-icon">
+                                <Icon name='users' color="#6366f1" width={20} height={20} />
                             </div>
-                            <div className='exchange-table__cell header'>
-                                <div className='sub-header-labels'>
-                                    <div className='sub-header-label'>Can Give Me</div>
-                                    <div className='sub-header-label'>Need From Me</div>
-                                </div>
+                            <div className="stat-info">
+                                <span className="stat-value">{total}</span>
+                                <span className="stat-label">Users</span>
                             </div>
                         </div>
-                    </ConditionalRender>
+                        <div className="stat-card stat-card--receive">
+                            <div className="stat-icon">
+                                <Icon name='download' color="#10b981" width={20} height={20} />
+                            </div>
+                            <div className="stat-info">
+                                <span className="stat-value">{stats.totalCanGet}</span>
+                                <span className="stat-label">Can Get</span>
+                            </div>
+                        </div>
+                        <div className="stat-card stat-card--give">
+                            <div className="stat-icon">
+                                <Icon name='upload' color="#f59e0b" width={20} height={20} />
+                            </div>
+                            <div className="stat-info">
+                                <span className="stat-value">{stats.totalCanGive}</span>
+                                <span className="stat-label">Can Give</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    {exchangeResults.map(([user, exchanges], userIndex) => (
-                        <div key={userIndex}
-                             className={`exchange-table__row ${collapsedUsers.has(user.id) ? 'collapsed' : ''}`}>
-                            <button
-                                className='collapse-toggle'
-                                onClick={() => toggleUserCollapse(user.id)}
-                                aria-label={collapsedUsers.has(user.id) ? 'Expand' : 'Collapse'}
+                    {/* Search Bar */}
+                    <div className="exchange-search">
+                        <Icon name='search' color="#9ca3af" width={16} height={16} />
+                        <input 
+                            type="text"
+                            placeholder="Search users..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        {searchQuery && (
+                            <button 
+                                className="clear-search" 
+                                onClick={() => setSearchQuery('')}
+                                aria-label="Clear search"
                             >
-                                {collapsedUsers.has(user.id) ? '+' : '-'}
+                                <Icon name='close' color="#9ca3af" width={14} height={14} />
                             </button>
-                            <div className='exchange-table__cell user-cell'>
-                                <div className='user-info'>
-                                    <img alt='' src={user?.logo || logo}/>
-                                    <p><h2>{user?.username || user?.name}</h2></p>
-                                </div>
-                                {!collapsedUsers.has(user.id) && (
-                                    <p className='user-email'>
-                                        <a href={`mailto:${user?.contactEmail || user?.email}`}>
-                                            <Icon name='mail' color="#87CEFA" width={30} height={21}
-                                                  className="email-icon"/>
-                                            <span title={user?.contactEmail || user?.email} className="email-text">{user?.contactEmail || user?.email}</span>
-                                        </a>
-                                    </p>
-                                )}
-                            </div>
-                            <div className='exchange-table__cell exchanges-cell'>
-                                {!collapsedUsers.has(user.id) && (
-                                    <div className='exchanges-grid'>
-                                        {exchanges.map((exchange, exchangeIndex) => (
-                                            <div key={exchangeIndex} className='exchange-row'>
-                                                <div className='exchange-item left-item'>
-                                                    <div className='set-title'>{exchange.set?.name}</div>
-                                                    <div className='numbers-list'>
-                                                        {exchange.exchange.user2CanGive.length ?
-                                                            (() => {
-                                                                const regularNumbers = exchange.exchange.user2CanGive.filter(item => !item.extra);
-                                                                const extraNumbers = exchange.exchange.user2CanGive.filter(item => item.extra);
-                                                                return (
-                                                                    <>
-                                                                        {regularNumbers.length > 0 && (
-                                                                            <div className='regular-numbers'>
-                                                                                {regularNumbers.map((item, i) => <span
-                                                                                    key={i}>{formatNumberDisplay(item)}</span>)}
-                                                                            </div>
-                                                                        )}
-                                                                        {extraNumbers.length > 0 && (
-                                                                            <>
-                                                                                <p className='extra-numbers-title'>{exchange.set?.extraNumbersTitle || 'Extra Numbers'}</p>
-                                                                                <div className='regular-numbers'>
-                                                                                    {extraNumbers.map((item, i) => <span
-                                                                                        key={i}>{formatNumberDisplay(item)}</span>)}
-                                                                                </div>
-                                                                            </>
-                                                                        )}
-                                                                    </>
-                                                                );
-                                                            })() :
-                                                            <div className='regular-numbers'>
-                                                                <span className='no-numbers'>-</span>
-                                                            </div>
-                                                        }
-                                                    </div>
+                        )}
+                    </div>
 
-
-
-                                                </div>
-                                                <div className='exchange-item right-item'>
-
-
-
-                                                    <div className='set-title'>{exchange.set?.name}</div>
-                                                    <div className='numbers-list'>
-                                                        {exchange.exchange.user1CanGive.length ?
-                                                            (() => {
-                                                                const regularNumbers = exchange.exchange.user1CanGive.filter(item => !item.extra);
-                                                                const extraNumbers = exchange.exchange.user1CanGive.filter(item => item.extra);
-                                                                return (
-                                                                    <>
-                                                                        {regularNumbers.length > 0 && (
-                                                                            <div className='regular-numbers'>
-                                                                                {regularNumbers.map((item, i) => <span
-                                                                                    key={i}>{formatNumberDisplay(item)}</span>)}
-                                                                            </div>
-                                                                        )}
-                                                                        {extraNumbers.length > 0 && (
-                                                                            <>
-                                                                                <p className='extra-numbers-title'>{exchange.set?.extraNumbersTitle || 'Extra Numbers'}</p>
-                                                                                <div className='regular-numbers'>
-                                                                                    {extraNumbers.map((item, i) => <span
-                                                                                        key={i}>{formatNumberDisplay(item)}</span>)}
-                                                                                </div>
-                                                                            </>
-                                                                        )}
-                                                                    </>
-                                                                );
-                                                            })() :
-                                                            <div className='regular-numbers'>
-                                                                <span className='no-numbers'>-</span>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </div>
+                    {/* User Cards */}
+                    <div className="exchange-users-list">
+                        {filteredResults.map(([user, exchanges], userIndex) => {
+                            const isCollapsed = collapsedUsers.has(user.id);
+                            const userCanGet = exchanges.reduce((sum, e) => sum + e.exchange.user2CanGive.length, 0);
+                            const userCanGive = exchanges.reduce((sum, e) => sum + e.exchange.user1CanGive.length, 0);
+                            
+                            return (
+                                <div 
+                                    key={userIndex} 
+                                    className={`user-card ${isCollapsed ? 'user-card--collapsed' : ''}`}
+                                >
+                                    <div 
+                                        className="user-card__header"
+                                        onClick={() => toggleUserCollapse(user.id)}
+                                    >
+                                        <div className="user-card__avatar">
+                                            <img alt={user?.username || user?.name} src={user?.logo || logo}/>
+                                        </div>
+                                        <div className="user-card__info">
+                                            <h3 className="user-card__name">{user?.username || user?.name}</h3>
+                                            <div className="user-card__meta">
+                                                <span className="exchange-badge exchange-badge--receive">
+                                                    <Icon name='download' color="#10b981" width={12} height={12} />
+                                                    {userCanGet}
+                                                </span>
+                                                <span className="exchange-badge exchange-badge--give">
+                                                    <Icon name='upload' color="#f59e0b" width={12} height={12} />
+                                                    {userCanGive}
+                                                </span>
                                             </div>
-                                        ))}
+                                        </div>
+                                        <div className="user-card__actions">
+                                            <a 
+                                                href={`mailto:${user?.contactEmail || user?.email}`}
+                                                className="contact-btn"
+                                                onClick={(e) => e.stopPropagation()}
+                                                title={user?.contactEmail || user?.email}
+                                            >
+                                                <Icon name='mail' color="#87CEFA" width={20} height={20} />
+                                            </a>
+                                            <button 
+                                                className="expand-btn"
+                                                aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                                            >
+                                                <Icon 
+                                                    name={isCollapsed ? 'chevron-down' : 'chevron-up'} 
+                                                    color="#9ca3af" 
+                                                    width={20} 
+                                                    height={20} 
+                                                />
+                                            </button>
+                                        </div>
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                                    
+                                    {!isCollapsed && (
+                                        <div className="user-card__content">
+                                            {exchanges.map((exchange, exchangeIndex) => (
+                                                <div key={exchangeIndex} className="set-exchange-card">
+                                                    <div className="set-exchange-card__body">
+                                                        <div className="exchange-column exchange-column--receive">
+                                                            <div className="exchange-column__header">
+                                                                <Icon name='download' color="#10b981" width={14} height={14} />
+                                                                <span>Can Give Me</span>
+                                                            </div>
+                                                            <div className="exchange-column__numbers">
+                                                                {exchange.exchange.user2CanGive.length > 0 ? (
+                                                                    <>
+                                                                        {(() => {
+                                                                            const regularNumbers = exchange.exchange.user2CanGive.filter(item => !item.extra);
+                                                                            const extraNumbers = exchange.exchange.user2CanGive.filter(item => item.extra);
+                                                                            return (
+                                                                                <>
+                                                                                    {regularNumbers.length > 0 && (
+                                                                                        <div className="numbers-group">
+                                                                                            {regularNumbers.map((item, i) => (
+                                                                                                <span key={i} className="number-tag number-tag--receive">
+                                                                                                    {formatNumberDisplay(item)}
+                                                                                                </span>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    )}
+                                                                                    {extraNumbers.length > 0 && (
+                                                                                        <div className="extra-section">
+                                                                                            <span className="extra-label">
+                                                                                                {exchange.set?.extraNumbersTitle || 'Extra'}
+                                                                                            </span>
+                                                                                            <div className="numbers-group">
+                                                                                                {extraNumbers.map((item, i) => (
+                                                                                                    <span key={i} className="number-tag number-tag--receive number-tag--extra">
+                                                                                                        {formatNumberDisplay(item)}
+                                                                                                    </span>
+                                                                                                ))}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    )}
+                                                                                </>
+                                                                            );
+                                                                        })()}
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="no-items">None</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="exchange-divider"></div>
+                                                        <div className="exchange-column exchange-column--give">
+                                                            <div className="exchange-column__header">
+                                                                <Icon name='upload' color="#f59e0b" width={14} height={14} />
+                                                                <span>Need From Me</span>
+                                                            </div>
+                                                            <div className="exchange-column__numbers">
+                                                                {exchange.exchange.user1CanGive.length > 0 ? (
+                                                                    <>
+                                                                        {(() => {
+                                                                            const regularNumbers = exchange.exchange.user1CanGive.filter(item => !item.extra);
+                                                                            const extraNumbers = exchange.exchange.user1CanGive.filter(item => item.extra);
+                                                                            return (
+                                                                                <>
+                                                                                    {regularNumbers.length > 0 && (
+                                                                                        <div className="numbers-group">
+                                                                                            {regularNumbers.map((item, i) => (
+                                                                                                <span key={i} className="number-tag number-tag--give">
+                                                                                                    {formatNumberDisplay(item)}
+                                                                                                </span>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    )}
+                                                                                    {extraNumbers.length > 0 && (
+                                                                                        <div className="extra-section">
+                                                                                            <span className="extra-label">
+                                                                                                {exchange.set?.extraNumbersTitle || 'Extra'}
+                                                                                            </span>
+                                                                                            <div className="numbers-group">
+                                                                                                {extraNumbers.map((item, i) => (
+                                                                                                    <span key={i} className="number-tag number-tag--give number-tag--extra">
+                                                                                                        {formatNumberDisplay(item)}
+                                                                                                    </span>
+                                                                                                ))}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    )}
+                                                                                </>
+                                                                            );
+                                                                        })()}
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="no-items">None</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
 
-                    <ConditionalRender if={showNoData}>
-                        <p className='no-data'>
-                            No potential exchanges found.
-                        </p>
-                    </ConditionalRender>
-                </div>
+                    {filteredResults.length === 0 && searchQuery && (
+                        <div className="no-results">
+                            <Icon name='search' color="#6b7280" width={48} height={48} />
+                            <p>No matches found for "{searchQuery}"</p>
+                        </div>
+                    )}
+                </ConditionalRender>
+
+                <ConditionalRender if={showNoData}>
+                    <div className="no-data-container">
+                        <div className="no-data-icon">
+                            <Icon name='search' color="#6b7280" width={64} height={64} />
+                        </div>
+                        <h3>No Exchanges Found</h3>
+                        <p>No potential exchange partners found for this set.</p>
+                    </div>
+                </ConditionalRender>
             </div>
         </div>
     )

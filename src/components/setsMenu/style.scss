@@ -15,6 +15,10 @@
   box-sizing: border-box;
   z-index: 999;
 
+  .smartphone-menu-trigger {
+    display: none;
+  }
+
   .avatar {
     background: rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -200,26 +204,70 @@
     padding-top: 100px;
 
     .smartphone-menu-trigger {
-      width: 40px;
-      height: 40px;
+      display: flex;
+      width: auto;
+      min-width: 45px;
+      height: auto;
+      padding: 10px 8px;
       position: absolute;
       left: 100%;
       top: 107px;
-      background: $color-2nd;
-      display: flex;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 6px; // space between lines
+      gap: 2px;
       cursor: pointer;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      animation: pulseLeft 2s ease-in-out 3;
+      transition: all 0.3s ease;
 
+      &:hover {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        box-shadow: 3px 3px 15px rgba(39, 174, 96, 0.5);
+      }
 
-      span {
-        display: block;
-        width: 24px;
-        height: 2px;
-        background: #fff;
-        border-radius: 2px;
+      .trigger-icon {
+        font-size: 18px;
+        color: #fff;
+        line-height: 1;
+      }
+
+      .trigger-label {
+        font-size: 10px;
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+
+      .trigger-arrow {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1;
+        animation: bounceRight 1.5s ease-in-out infinite;
+      }
+    }
+
+    @keyframes pulseLeft {
+      0%, 100% {
+        transform: translateX(0);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      50% {
+        transform: translateX(5px);
+        box-shadow: 4px 4px 20px rgba(39, 174, 96, 0.6);
+      }
+    }
+
+    @keyframes bounceRight {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      50% {
+        transform: translateX(3px);
       }
     }
 

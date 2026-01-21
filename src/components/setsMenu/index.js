@@ -22,12 +22,12 @@ const SetsMenu = ({isAdmin, data}) => {
     const menu = useSelector((categories) => categories.categoriesReducer);
 
     const fetchUser = useCallback(async () => {
-        const userData = await getUserById(filterParams)
+        const userData = await getUserById({ userId: filterParams.userId })
         if (!userData.length) {
             window.location = '/'
         }
         setUserInfo(userData ? userData[0] : {})
-    }, [filterParams]);
+    }, [filterParams.userId]);
 
     useEffect(() => {
         getCategoriesWithSetTypes(dispatch).catch((err) => {
@@ -67,9 +67,9 @@ const SetsMenu = ({isAdmin, data}) => {
         <nav className="menu" tabIndex="0">
             <header className="avatar">
                 <div className="smartphone-menu-trigger">
-                     <span></span>
-                     <span></span>
-                     <span></span>
+                     <span className="trigger-icon">☰</span>
+                     <span className="trigger-label">Menu</span>
+                     <span className="trigger-arrow">›</span>
                 </div>
                 <img alt='' src={userInfo?.logo || logo}/>
                 <h2>{userInfo?.username || userInfo?.name}</h2>

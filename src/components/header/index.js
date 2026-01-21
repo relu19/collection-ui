@@ -265,7 +265,7 @@ const Header = () => {
                 {/*{!userDetails?.name && <span className='pointer' onClick={() => setLogInModal(true)}>Add your collection</span>}*/}
 
                 <ConditionalRender if={!userDetails?.name}>
-                    <button className="google-signin-btn" onClick={() => setConsentModal(true)}>
+                    <button className="google-signin-btn sign-in-trigger" onClick={() => setConsentModal(true)}>
                         Sign in with Google
                     </button>
                 </ConditionalRender>
