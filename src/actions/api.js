@@ -96,12 +96,25 @@ class Actions {
       return Promise.reject({ sessionExpired: true, handled: true });
     }
 
+    const PUBLIC_ROUTES = [
+      '/users',
+      '/sets',
+      '/numbers',
+      '/categories',
+      '/set-types'
+    ];
+
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     } else {
-      console.warn('No auth token found for request:', request.url);
-    }
+      const isPublic = PUBLIC_ROUTES.some(route =>
+          request.url.startsWith(route)
+      );
 
+      if (!isPublic) {
+        console.warn('Missing auth token for protected request:', request.url);
+      }
+    }
     const params = {
       method: request.method || 'GET',
       headers,
