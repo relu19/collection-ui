@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getAuthToken } from '../../utils/tokenUtils';
+import { useEffect, useRef } from 'react';
 import './style.scss';
 
 const SERVER_URI = process.env.REACT_APP_SERVER_URI;

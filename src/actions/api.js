@@ -1,5 +1,3 @@
-'use strict';
-
 import notificationService from '../services/notificationService';
 import { getAuthToken, isTokenExpired } from '../utils/tokenUtils';
 

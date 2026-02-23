@@ -1,14 +1,12 @@
 import './style.scss'
 import React, {useEffect, useState} from "react";
-import {getUsers} from "../../actions/users";
-import {getAllSets, getUsersWithSetInCollection, getSetWithNumbers, getGlobalExchanges} from "../../actions/set";
+import { getGlobalExchanges} from "../../actions/set";
 import ConditionalRender from "../../utils/conditionalRender";
 import Icon from "../icon";
 import logo from "../../images/avatar.jpg";
 
 const GlobalExchange = ({setModal, userDetails}) => {
     const [users, setUsers] = useState([])
-    const [allSets, setAllSets] = useState([])
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0)
     const [showNoData, setShowNoData] = useState(false);
@@ -86,7 +84,6 @@ const GlobalExchange = ({setModal, userDetails}) => {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setUsers([]);
-                setAllSets([]);
                 setExchangeResults([]);
                 setLoading(false);
             }
