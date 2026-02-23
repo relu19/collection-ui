@@ -143,8 +143,11 @@ class Actions {
               setTimeout(() => {
                 window.location.reload();
               }, 3000);
-              
-              throw { sessionExpired: true, handled: true };
+
+              const err = new Error("Session expired");
+              err.sessionExpired = true;
+              err.handled = true;
+              throw err;
             }
             const text = await res.text();
             return text ? JSON.parse(text) : {};
