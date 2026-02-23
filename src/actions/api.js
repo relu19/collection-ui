@@ -1,116 +1,101 @@
 import notificationService from '../services/notificationService';
 import { getAuthToken, isTokenExpired } from '../utils/tokenUtils';
 
-const SERVER_URI = process.env.REACT_APP_SERVER_URI
+const SERVER_URI = process.env.REACT_APP_SERVER_URI;
 
-class Actions {
-  /**
-   * Make a GET request
-   *
-   * @param {String} url API url to make request call
-   * @param {String} [query] Query string
-   * @returns {Promise}
-   */
-  static get(url, query) {
-    const request = {
-      method: 'get',
-      url,
-      query,
-    };
-    return this.makeRequest({ request });
+// build url corect + query params
+function buildUrl(path = "", query) {
+  let url = `${SERVER_URI.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+
+  if (query) {
+    const qs = typeof query === "string"
+        ? query
+        : new URLSearchParams(query).toString();
+
+    url += (url.includes('?') ? '&' : '?') + qs;
   }
 
-  /**
-   * Make a POST JSON request
-   *
-   * @param {Object} data The data to be inserted
-   * @param {string} url path
-   * @returns {Promise}
-   */
-  static post(data, url) {
-    const request = {
-      method: 'POST',
-      url,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-    };
+  return url;
+}
 
-    return this.makeRequest({ request });
+class Actions {
+
+  static get(url, query) {
+    return this.makeRequest({
+      request: {
+        method: 'GET',
+        url,
+        query,
+      }
+    });
+  }
+
+  static post(data, url) {
+    return this.makeRequest({
+      request: {
+        method: 'POST',
+        url,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }
+    });
   }
 
   static patch(data, url) {
-    const request = {
-      method: 'PATCH',
-      url,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-    };
-    return this.makeRequest({ request });
+    return this.makeRequest({
+      request: {
+        method: 'PATCH',
+        url,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }
+    });
   }
 
   static put(data, url) {
-    const request = {
-      method: 'PUT',
-      url,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    };
-    return this.makeRequest({ request });
+    return this.makeRequest({
+      request: {
+        method: 'PUT',
+        url,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }
+    });
   }
 
-  /**
-   * Delete all extra numbers for a set and user
-   * @param {number} setId
-   * @param {number} userId
-   * @returns {Promise}
-   */
   static deleteExtraNumbers(setId, userId) {
     return this.post({ setId, userId }, '/remove-extra-numbers');
   }
 
-
-  /**
-   * Make a generic request
-   *
-   * @param {Object} request Request to be made. Must be of the form: {method, url, query [optional]}
-   * @param {Function} [callback] Function to be run after the server responds
-   * @returns {Promise}
-   */
   static makeRequest({ request }) {
-    const headers = request.headers || {};
-    
-    // Add Authorization header if token exists
+
+    const headers = { ...(request.headers || {}) };
+
     const token = getAuthToken();
-    
-    // Check if token is expired before making request
+
     if (token && isTokenExpired(token)) {
-      console.error('Token expired. Clearing auth data...');
       localStorage.removeItem('auth');
       localStorage.removeItem('collector-data');
-      
-      // Show nice notification instead of throwing error
-      notificationService.error('Your session has expired. Please log in again. Refreshing...', {
-        duration: 3000
-      });
-      
-      // Reload page after 3 seconds
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-      
-      // Return rejected promise with a flag to prevent further processing
+
+      notificationService.error(
+          'Your session has expired. Please log in again. Refreshing...',
+          { duration: 3000 }
+      );
+
+      setTimeout(() => window.location.reload(), 3000);
+
       return Promise.reject({ sessionExpired: true, handled: true });
     }
-    
+
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     } else {
@@ -118,58 +103,53 @@ class Actions {
     }
 
     const params = {
+      method: request.method || 'GET',
       headers,
-      method: request.method || 'GET'
     };
-    // Don't set the body if it's a GET request as it will crash on Microsoft Edge
-    params.body = request.method !== 'GET' && request.body ? request.body : params.body;
-    // Do the API Request
 
-    return fetch(SERVER_URI + request.url, params)
+    if (request.method !== 'GET' && request.body) {
+      params.body = request.body;
+    }
+
+    const finalUrl = buildUrl(request.url, request.query);
+
+    return fetch(finalUrl, params)
         .then(async (res) => {
-            // Check for authentication errors
-            if (res.status === 401) {
-              // Token expired or invalid, clear auth data
-              localStorage.removeItem('auth');
-              localStorage.removeItem('collector-data');
-              console.error('Authentication failed. Please log in again.');
-              
-              // Show nice notification
-              notificationService.error('Your session has expired. Please log in again. Refreshing...', {
-                duration: 3000
-              });
-              
-              // Reload page after 3 seconds
-              setTimeout(() => {
-                window.location.reload();
-              }, 3000);
 
-              const err = new Error("Session expired");
-              err.sessionExpired = true;
-              err.handled = true;
-              throw err;
-            }
-            const text = await res.text();
-            return text ? JSON.parse(text) : {};
+          if (res.status === 401) {
+            localStorage.removeItem('auth');
+            localStorage.removeItem('collector-data');
+
+            notificationService.error(
+                'Your session has expired. Please log in again. Refreshing...',
+                { duration: 3000 }
+            );
+
+            setTimeout(() => window.location.reload(), 3000);
+
+            const err = new Error("Session expired");
+            err.sessionExpired = true;
+            err.handled = true;
+            throw err;
+          }
+
+          const text = await res.text();
+          return text ? JSON.parse(text) : {};
         })
         .catch((err) => {
-            // If error was already handled, don't re-throw
-            if (err.handled) {
-              return Promise.reject(err);
-            }
-            
-            console.log('err', err);
-            // Detect no internet
-            if (err.message === 'Failed to fetch') {
-                console.error('No internet connection (or no connection to the server).');
-                notificationService.error('No internet connection. Please check your network.', {
-                  duration: 5000
-                });
-            }
-            throw err; // Re-throw to maintain error handling in calling code
+
+          if (err.handled) return Promise.reject(err);
+
+          if (err.message === 'Failed to fetch') {
+            notificationService.error(
+                'No internet connection or server unreachable.',
+                { duration: 5000 }
+            );
+          }
+
+          throw err;
         });
   }
-
 }
 
 export default Actions;
